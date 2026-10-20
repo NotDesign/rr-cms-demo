@@ -3,7 +3,10 @@ export const signed = value => (value > 0 ? '+' : value < 0 ? '−' : '') + mone
 export const number = value => Number(String(value).replaceAll(',', '').replace('−', '-').replace(/×$/, ''));
 export const tone = value => number(value) > 0 ? 'positive' : number(value) < 0 ? 'negative' : 'neutral';
 export const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const playerId = name => ({shawn1328:'P1328',demo_1001:'P1001',demo_1002:'P1002',demo_1003:'P1003'}[name] || name);
+export const playerId = name => name === 'shawn1328' ? 'P1328' : /^demo_\d+$/.test(name) ? 'P'+name.slice(5) : name;
+export const scenario = record => record.seedId || record.id;
+export const columnIndex = (def, header) => def.headers.indexOf(header);
+export const rowRecordId = (def, row) => def.recordIds?.[def.rows.indexOf(row)] || row[columnIndex(def,'投注單號')] || row[columnIndex(def,'結算單號')];
 export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',merchant:'',type:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
 export function filterRecords(records, key, filters) {
   const category = {electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[key];
@@ -16,14 +19,14 @@ export function filterRecords(records, key, filters) {
     if (filters.query && !text.includes(filters.query.trim().toLowerCase())) return false;
     if (filters.event && !r.event.includes(filters.event)) return false;
     if (filters.result === 'win' && r.net <= 0 || filters.result === 'loss' && r.net >= 0 || filters.result === 'zero' && r.net !== 0) return false;
-    if (filters.difficulty && (r.id === 'DEMO-E001' ? '一般' : r.id === 'DEMO-E002' ? '困難' : '') !== filters.difficulty) return false;
-    if (filters.endReason && (r.id === 'DEMO-E001' ? '玩家主動收取' : r.id === 'DEMO-E002' ? '闖關失敗' : '') !== filters.endReason) return false;
-    if (filters.multiplier && (filters.multiplier === 'high' ? r.id !== 'DEMO-E002' : r.id !== 'DEMO-E001')) return false;
+    if (filters.difficulty && r.difficulty !== filters.difficulty) return false;
+    if (filters.endReason && r.endReason !== filters.endReason) return false;
+    if (filters.multiplier && (filters.multiplier === 'high' ? !(r.maxMultiplier>=1.5) : !(r.maxMultiplier<1.5))) return false;
     if (filters.recon && r.recon !== filters.recon) return false;
     if (filters.room && r.kind !== '捕魚') return false;
-    if (filters.fish && !((r.id === 'DEMO-F001' ? 'F9001 F9002 F9003 F9004 F9005 F9006 金龍 小丑魚 河豚' : r.id === 'DEMO-F002' ? 'F9101 河豚' : '').toLowerCase().includes(filters.fish.toLowerCase()))) return false;
-    if (filters.shot && !(r.id.startsWith('DEMO-F') && fishingDetail(r).shots.some(s=>s.id.toLowerCase().includes(filters.shot.toLowerCase())))) return false;
-    if (filters.tool && (filters.tool === '雷射炮' ? r.id !== 'DEMO-F001' : r.id !== 'DEMO-F002')) return false;
+    if (filters.fish && !(r.kind==='捕魚' && fishingDetail(r).fish.flat().join(' ').toLowerCase().includes(filters.fish.toLowerCase()))) return false;
+    if (filters.shot && !(r.kind==='捕魚' && fishingDetail(r).shots.some(s=>s.id.toLowerCase().includes(filters.shot.toLowerCase())))) return false;
+    if (filters.tool && (filters.tool === '雷射炮' ? scenario(r)!=='DEMO-F001' : scenario(r)!=='DEMO-F002')) return false;
     return true;
   });
 }
@@ -37,15 +40,15 @@ export function totals(records) {
 }
 export function rowsFor(def, records) {
   const ids = new Set(records.map(r=>r.id));
-  if (!['player','stats'].includes(def.key)) return def.rows.filter(row => ids.has(def.key === 'slots' ? 'DEMO-S'+row[3].replace('#','') : row[1]));
+  if (!['player','stats'].includes(def.key)) return def.rows.filter((row,i) => ids.has(def.recordIds[i]));
   if (def.key === 'stats') return ['電子遊戲','老虎機','捕魚','棋牌'].flatMap(kind => {
     const rs=records.filter(r=>r.kind===kind);if(!rs.length)return [];
     const t=totals(rs), free=rs.filter(r=>r.bet===0).length;
     const rate=kind==='電子遊戲' ? '收取 '+rs.filter(r=>r.payout>0).length+' / '+rs.length+' 回合' :
       kind==='老虎機' ? '免費觸發 '+rs.filter(r=>r.event==='觸發免費旋轉').length+' / '+(rs.length-free)+' 付費轉' :
-      kind==='捕魚' ? '首領擊殺 '+(ids.has('DEMO-F001')?1:0)+' / '+((ids.has('DEMO-F001')?100:0)+(ids.has('DEMO-F002')?60:0))+' 發' :
+      kind==='捕魚' ? '首領擊殺 '+rs.filter(r=>scenario(r)==='DEMO-F001').length+' / '+rs.reduce((s,r)=>s+fishingDetail(r).shots.length,0)+' 發' :
       '炸彈 '+rs.filter(r=>r.game==='經典鬥地主').length+' / '+rs.filter(r=>r.game==='經典鬥地主').length+' 鬥地主局';
-    return [[kind,String(t.players),String(t.games),String(t.count),money(t.bet),money(t.bet),money(t.payout),signed(-t.net),String(t.count),'0.00','0.00',money(rs.reduce((s,r)=>s+r.bonus,0)),'0','0',rate,'查看']];
+    return [[kind,String(t.players),[...new Set(rs.map(r=>playerId(r.player)))].join('、'),String(t.games),String(t.count),money(t.bet),money(t.bet),money(t.payout),signed(-t.net),String(t.count),'0.00','0.00',money(rs.reduce((s,r)=>s+r.bonus,0)),'0','0',rate,'查看']];
   });
   const groups=new Map();
   for(const r of records) {const k=r.player+'|'+r.game;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);}
@@ -60,6 +63,33 @@ export function summaryFor(def, records) {
   if(def.key==='stats')return [['遊戲類型',String(t.categories)],['記錄筆數',String(t.count)],['有效投注（USDT）',money(t.bet)],['投注派彩差額（USDT）',signed(-t.net)]];
   return [[def.key==='slots'?'旋轉次數（免費 '+records.filter(r=>!r.bet).length+' 次）':'記錄筆數',String(t.count)],
     ['實扣投注（USDT）',money(t.bet)],['結算派彩（USDT）',money(t.payout)],['玩家淨盈虧（USDT）',signed(t.net)]];
+}
+// Aggregate the entire filtered result, never only the visible page. Balances,
+// multipliers, ranking and cumulative P&L are deliberately non-additive.
+export function tableTotals(def, records, rows=rowsFor(def,records)) {
+  const t=totals(records);
+  return def.headers.map((header,i)=>{
+    if(i===0)return '合計';
+    if(header==='玩家數')return String(t.players);
+    if(header==='遊戲數')return String(t.games);
+    if(header==='玩家 ID')return String(t.players)+' 位玩家';
+    if(def.aggregates?.[i]==='sum'){
+      const n=rows.reduce((sum,row)=>sum+number(row[i]),0);
+      return def.columnTypes[i]==='money'?money(n):def.columnTypes[i]==='signed'?signed(n):String(n);
+    }
+    if(def.aggregates?.[i]==='shots')return rows.reduce((s,r)=>s+Number(r[i].split(' / ')[0]),0)+' / '+rows.reduce((s,r)=>s+Number(r[i].split(' / ')[1]),0);
+    return '';
+  });
+}
+export function migrateWorkspace(saved, definitions) {
+  if(!saved || saved.schemaVersion>=2)return saved;
+  const insertions={all:3,electronic:3,slots:2,fishing:3,chess:3,stats:2};
+  return {...saved,schemaVersion:2,tabs:saved.tabs?.map(tab=>{
+    const at=insertions[tab.key];if(at===undefined)return tab;
+    const columns=tab.columns?.map(i=>i>=at?i+1:i);
+    if(columns){const pos=columns.indexOf(at-1);columns.splice(pos<0?0:pos+1,0,at);}
+    return {...tab,columns:columns||definitions.find(d=>d.key===tab.key)?.headers.map((_,i)=>i),sort:tab.sort?{...tab.sort,index:tab.sort.index>=at?tab.sort.index+1:tab.sort.index}:null};
+  })};
 }
 export function sortedRows(rows, sort) {
   if(!sort)return rows;
@@ -81,20 +111,20 @@ export function balances(records, target) {
   return {before:balance,after:balance};
 }
 export function fishingDetail(record) {
-  const first=record.id==='DEMO-F001',paid=first?90:60,free=first?10:0,prefix=first?'0301':'0302';
+  const first=scenario(record)==='DEMO-F001',paid=first?90:60,free=first?10:0,prefix=record.round.replace('FB-',''),scale=record.scale||1,base=record.fishBase||(first?9001:9101);
   const shots=Array.from({length:paid+free},(_,i)=>({
     id:'SH-'+prefix+'-'+String(i+1).padStart(3,'0'),
     time:'T+'+String(Math.floor(i/60)).padStart(2,'0')+':'+String(i%60).padStart(2,'0'),
-    bullet:i<paid?'普通子彈 B-01':'獎勵子彈 B-02',cost:i<paid?2:0,
-    source:i<paid?'付費':'首領獎勵',target:first?(i>=90?'F9010':'F'+(9001+Math.min(Math.floor(i/15),5))):'F9101',
+    bullet:i<paid?'普通子彈 B-01':'獎勵子彈 B-02',cost:i<paid?2*scale:0,
+    source:i<paid?'付費':'首領獎勵',target:first?'F'+(i>=90?base+9:base+Math.min(Math.floor(i/15),5)):'F'+base,
     result:first&&[14,29,44,59,74,89].includes(i)?'擊殺':'命中未擊殺',
     tool:first&&i>=75&&i<=89?'雷射炮':'普通炮台'
   }));
   const fish=first?Array.from({length:6},(_,i)=>[
-    'F'+(9001+i),i===5?'金龍首領':i<3?'小丑魚':'河豚',i===5?'FS-009':'FS-00'+(i<3?1:2),
-    'SH-0301-'+String((i+1)*15).padStart(3,'0'),i===5?'雷射擊殺':'子彈擊殺',
-    i===5?'技能 20×＋轉盤 30×':'6.00×',money(i===5?0:12),money(i===5?40:0),
-    money(i===5?60:0),money(i===5?100:12),'PAY-F001-'+(i+1),'已入帳'
-  ]):[['F9101','河豚','FS-002','SH-0302-060','命中未擊殺','未達捕獲條件','0.00','0.00','0.00','0.00','無派彩交易','未產生派彩']];
-  return {shots,fish,paid,free,toolCost:first?20:0,normal:first?60:0,skill:first?40:0,bonus:first?60:0};
+    'F'+(base+i),i===5?'金龍首領':i<3?'小丑魚':'河豚',i===5?'FS-009':'FS-00'+(i<3?1:2),
+    'SH-'+prefix+'-'+String((i+1)*15).padStart(3,'0'),i===5?'雷射擊殺':'子彈擊殺',
+    i===5?'技能 20×＋轉盤 30×':'6.00×',money((i===5?0:12)*scale),money((i===5?40:0)*scale),
+    money((i===5?60:0)*scale),money((i===5?100:12)*scale),'PAY-'+record.id+'-'+(i+1),'已入帳'
+  ]):[['F'+base,'河豚','FS-002','SH-'+prefix+'-060','命中未擊殺','未達捕獲條件','0.00','0.00','0.00','0.00','無派彩交易','未產生派彩']];
+  return {shots,fish,paid,free,toolCost:first?20*scale:0,normal:first?60*scale:0,skill:first?40*scale:0,bonus:first?60*scale:0};
 }

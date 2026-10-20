@@ -1,4 +1,5 @@
-import {money,signed,number,tone,escape as e,playerId,defaultFilters,filterRecords,totals,rowsFor,summaryFor,sortedRows,csv,balances,fishingDetail} from './core.js';
+import {money,signed,number,tone,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail} from './core.js';
+import {localize,translate,languageNames} from './i18n.js';
 
 const DATA=await fetch('./data/demo-data.json').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -20,14 +21,18 @@ const storageKey='rr-cms-workspace-v1';
 function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),sort:null,page:1,pageSize:50,columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:3,scroll:{x:0,y:0,main:0}};}
 let saved;
 try{saved=JSON.parse(localStorage.getItem(storageKey));}catch{}
+saved=migrateWorkspace(saved,DATA.reports);
+let locale=languageNames[saved?.locale]?saved.locale:'zh-Hant';
+const tr=text=>translate(text,locale);
+const localized=root=>localize(root,locale);
 let tabs=Array.isArray(saved?.tabs)&&saved.tabs.length?saved.tabs.filter(t=>t&&typeof t.id==='string'&&(defs.has(t.key)||t.key==='new'||t.key.startsWith('draft:'))).map(t=>({...tab(t.key,t.title),...t,filters:{...defaultFilters(),...t.filters},draft:{...defaultFilters(),...t.draft}})):[tab('all'),tab('slots'),tab('fishing'),tab('player')];
 if(!tabs.length)tabs=[tab('all')];
 let activeId=tabs.some(t=>t.id===saved?.activeId)?saved.activeId:tabs[0].id;
 let category='reports',submenuOpen=saved?.submenuOpen??true,languageOpen=false,dialogState=null,toastTimer;
 if(saved?.theme==='light')document.documentElement.dataset.theme='light';
 const current=()=>tabs.find(t=>t.id===activeId)||tabs[0];
-function persist(){try{localStorage.setItem(storageKey,JSON.stringify({tabs,activeId,submenuOpen,theme:document.documentElement.dataset.theme||'dark'}));}catch{}}
-function toast(text){$('#toast').textContent=text;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600);}
+function persist(){try{localStorage.setItem(storageKey,JSON.stringify({schemaVersion:2,tabs,activeId,submenuOpen,locale,theme:document.documentElement.dataset.theme||'dark'}));}catch{}}
+function toast(text){$('#toast').textContent=tr(text);$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600);}
 function saveView(){const t=current(),v=$('.table-viewport');if(v)t.scroll={x:v.scrollLeft,y:v.scrollTop,main:$('#content').scrollTop};else t.scroll.main=$('#content').scrollTop;persist();}
 function activate(id){saveView();activeId=id;if(defs.has(current().key))category='reports';closeDialog();render();}
 function openReport(key,{duplicate=false,filters=null}={}){
@@ -44,15 +49,18 @@ function closeTab(id){
 }
 function renderRail(){
   $('#rail').innerHTML='<a class="brand" href="#all" data-action="open-all" aria-label="R&R 所有遊戲報表">'+img('56714.svg','R&R')+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+icon(icons[key])+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+img('07623.svg')+'</span></button><small class="version">DEMO · 2026.10.20</small></div>';
+  const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
-  if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu"><button data-lang="zh-Hant" role="menuitem">✓　繁體中文</button><button data-lang="zh-Hans" role="menuitem" aria-disabled="true">　　简体中文<small>　　此 Demo 目前提供繁體中文</small></button><button data-lang="en" role="menuitem" aria-disabled="true">　　English<small>　　此 Demo 目前提供繁體中文</small></button></div>');
+  if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
+  localized($('#rail'));
 }
 function renderMenu(){
   const menu=menus.find(m=>m[0]===category);
   $('#submenu').innerHTML='<div class="submenu-head"><span>'+menu[1]+'</span><button class="icon-button close" data-action="collapse" aria-label="收合子選單">×</button></div><nav>'+menu[2].map((label,i)=>{
     const d=category==='reports'?DATA.reports[i]:null;
-    return '<button class="submenu-link '+(d&&current().key===d.key?'active':'')+'" '+(d?'data-report="'+d.key+'"':'data-draft="'+e(label)+'"')+'>'+(d?icon(d.icon):icon(icons[category]))+'<span>'+label+'</span></button>';
+    return '<button title="'+e(label)+'" class="submenu-link '+(d&&current().key===d.key?'active':'')+'" '+(d?'data-report="'+d.key+'"':'data-draft="'+e(label)+'"')+'>'+(d?icon(d.icon):icon(icons[category]))+'<span>'+label+'</span></button>';
   }).join('')+'</nav>';
+  localized($('#submenu'));
 }
 function renderHeader(){
   $('#header').innerHTML='<button class="icon-button mobile-menu" data-action="mobile-menu" aria-label="開啟主選單">☰</button><div class="work-tabs" role="tablist" aria-label="工作分頁">'+tabs.map(t=>'<div class="work-tab '+(t.id===activeId?'active':'')+'" role="presentation"><button role="tab" class="work-tab-label" aria-selected="'+(t.id===activeId)+'" tabindex="'+(t.id===activeId?0:-1)+'" data-tab="'+t.id+'" title="'+e(t.title)+'">'+e(t.title)+'</button><button class="tab-close" data-close-tab="'+t.id+'" aria-label="關閉 '+e(t.title)+'">×</button></div>').join('')+'</div><button class="add-tab" data-action="new-tab" aria-label="新增工作分頁" title="新增工作分頁">＋</button><div class="utilities"><button class="icon-button optional" data-action="search" aria-label="快速搜尋">'+icon('24459.svg')+'</button><button class="icon-button optional-small" data-action="apps" aria-label="頁面捷徑">'+icon('f04ae.svg')+'</button><button class="icon-button optional-small" data-action="notifications" aria-label="通知">'+icon('cac57.svg')+'<span class="notification-count">2</span></button><button class="icon-button" data-action="theme" aria-label="切換明暗外觀" title="切換明暗外觀">'+icon('7e997.svg')+'</button><button class="avatar" data-action="profile" aria-label="平台管理員帳號"><span>平台管理員</span>'+img('fbeb1.png','平台管理員')+'</button></div>';
@@ -85,6 +93,7 @@ function getReport(){
 }
 function linkCell(d,row,index,text){
   if(index===d.headers.length-1)return '<button class="detail-link" data-row-detail="'+e(rowId(d,row))+'">'+e(text)+'</button>';
+  if(d.key==='stats'&&d.headers[index]==='玩家 ID')return text.split('、').map(id=>'<button class="text-link" data-player="'+e(DATA.records.find(r=>playerId(r.player)===id)?.player||id)+'">'+e(id)+'</button>').join('、');
   if(d.headers[index].includes('玩家帳號')||d.headers[index].includes('玩家 ID')){
     const name=d.key==='player'?row[0]:d.key==='slots'?row[1]:row[2];
     return '<button class="text-link" data-player="'+e(name)+'">'+e(text)+'</button>';
@@ -92,8 +101,8 @@ function linkCell(d,row,index,text){
   if(d.headers[index].includes('投注單號')||d.headers[index].includes('結算單號'))return '<button class="text-link" data-record="'+e(text)+'">'+e(text)+'</button>';
   return e(text);
 }
-function rowId(d,row){return d.key==='player'?'player:'+row[0]:d.key==='stats'?'stats:'+row[0]:d.key==='slots'?'DEMO-S'+row[3].replace('#',''):row[1];}
-const isNumeric=h=>/投注|派彩|盈虧|成本|獎金|餘額|金額|倍數|倍率|數$|次數|排行/.test(h)&&!/(單號|類型|時間|摘要|記錄)/.test(h);
+function rowId(d,row){return d.key==='player'?'player:'+row[0]:d.key==='stats'?'stats:'+row[0]:rowRecordId(d,row);}
+const isNumeric=(d,i)=>['money','signed','number'].includes(d.columnTypes[i])||/倍率|倍數|排行/.test(d.headers[i]);
 function tableHtml(d,rs,rows){
   const t=current(),visible=t.columns.filter(i=>i>=0&&i<d.headers.length);
   if(!visible.length)t.columns=[0];
@@ -104,10 +113,12 @@ function tableHtml(d,rs,rows){
   const pageCount=Math.max(1,Math.ceil(rows.length/t.pageSize));t.page=Math.max(1,Math.min(t.page,pageCount));
   const pageRows=rows.slice((t.page-1)*t.pageSize,t.page*t.pageSize);
   const tdStyle=(st,i)=>' style="width:'+st.width+'px;min-width:'+st.width+'px;'+(st.left!==null?'left:'+st.left+'px;':'')+'"';
-  const heads=cols.map((col,i)=>'<th scope="col" data-column="'+col+'" aria-sort="'+(t.sort?.index===col?(t.sort.direction==='asc'?'ascending':'descending'):'none')+'" class="'+(isNumeric(d.headers[col])?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(t.sort?.index===col?'sorted':'')+'"'+tdStyle(style[i],i)+'><button data-sort="'+col+'" title="點擊排序；右鍵凍結欄位">'+e(d.headers[col])+'<span class="sort-mark">'+(t.sort?.index===col?(t.sort.direction==='asc'?'↑':'↓'):'↕')+'</span></button></th>').join('');
-  const body=pageRows.map(row=>'<tr>'+cols.map((col,i)=>'<td title="'+e(row[col])+'" class="'+(isNumeric(d.headers[col])?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(col===d.pnlColumn||d.key==='slots'&&col===17?tone(row[col]):'')+'"'+tdStyle(style[i],i)+'>'+linkCell(d,row,col,row[col])+'</td>').join('')+'</tr>').join('');
+  const heads=cols.map((col,i)=>'<th scope="col" data-column="'+col+'" aria-sort="'+(t.sort?.index===col?(t.sort.direction==='asc'?'ascending':'descending'):'none')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(t.sort?.index===col?'sorted':'')+'"'+tdStyle(style[i],i)+'><button data-sort="'+col+'" title="'+e(tr(d.headers[col]))+'"><span class="header-label">'+e(d.headers[col])+'</span><span class="sort-mark">'+(t.sort?.index===col?(t.sort.direction==='asc'?'↑':'↓'):'↕')+'</span></button></th>').join('');
+  const totalsRow=tableTotals(d,rs,rows);
+  const total='<tr class="totals-row" aria-label="查詢結果合計">'+cols.map((col,i)=>'<td title="'+e(totalsRow[col]||'此欄不適用加總')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(d.columnTypes[col]==='signed'&&totalsRow[col]?tone(totalsRow[col]):'')+'"'+tdStyle(style[i],i)+'>'+e(totalsRow[col])+'</td>').join('')+'</tr>';
+  const body=pageRows.map(row=>'<tr>'+cols.map((col,i)=>'<td title="'+e(tr(row[col]))+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(d.columnTypes[col]==='signed'?tone(row[col]):'')+'"'+tdStyle(style[i],i)+'>'+linkCell(d,row,col,row[col])+'</td>').join('')+'</tr>').join('');
   const note=rows.length?'顯示 '+((t.page-1)*t.pageSize+1)+'–'+Math.min(rows.length,t.page*t.pageSize)+' 筆，共 '+rows.length+' 筆 · USDT · 橫向捲動查看完整欄位 · 右鍵表頭可凍結至該欄':'符合條件的記錄為 0 筆';
-  return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div><div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表">'+(rows.length?'<table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr></thead><tbody>'+body+'</tbody></table>':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><p class="table-note">'+note+'</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
+  return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div><div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表"><table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr>'+total+'</thead><tbody>'+body+'</tbody></table>'+(rows.length?'':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><p class="table-note">'+note+'<br>合計涵蓋全部篩選結果；玩家與遊戲數去重，倍率、餘額及累積盈虧不相加。</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
 }
 function distribution(rs){
   const types=['電子遊戲','老虎機','捕魚','棋牌'],values=types.map(k=>totals(rs.filter(r=>r.kind===k)).bet),max=Math.max(...values,1);
@@ -123,7 +134,8 @@ function renderContent(){
 }
 function render(){
   $('#app').classList.toggle('submenu-closed',!submenuOpen);renderRail();renderMenu();renderHeader();renderContent();persist();
-  document.title=(current().title||'遊戲報表')+' · R&R CMS Demo';
+  document.documentElement.lang=locale;localized($('#app'));
+  document.title=tr(current().title||'遊戲報表')+' · R&R CMS Demo';
   if(defs.has(current().key))history.replaceState(null,'','#'+current().key);
   requestAnimationFrame(()=>{
     const t=current(),v=$('.table-viewport');if(v){v.scrollLeft=t.scroll.x;v.scrollTop=t.scroll.y;}
@@ -138,6 +150,7 @@ function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   const dialog=$('#modal');if(dialog.open)dialog.close();
   dialog.className=drawer?'drawer':'';
   dialog.innerHTML='<div class="dialog-header"><div><h2 id="dialog-title">'+title+'</h2>'+(subtitle?'<small>'+subtitle+'</small>':'')+'</div><button class="icon-button close" data-action="close-dialog" aria-label="關閉視窗">×</button></div><div class="dialog-body">'+html+'</div>'+(footer?'<div class="dialog-footer">'+footer+'</div>':'');
+  localized(dialog);
   dialog.showModal();
 }
 function closeDialog(){if($('#modal').open)$('#modal').close();dialogState=null;}
@@ -170,7 +183,7 @@ function openRecord(id){
   ])+'<p class="detail-note">退款 0.00 USDT · 費用 0.00 USDT · 對帳差額 0.00 USDT。父層總額與明細交易不重複加總。</p>');
   let specific='';
   if(r.kind==='電子遊戲'){
-    const win=r.id==='DEMO-E001';
+    const win=scenario(r)==='DEMO-E001';
     specific=section('逐關歷程',miniTable(['事件 ID','關卡','操作／結果','本金','倍率','當時可領 USDT'],win?[
       ['EV-E001-01','開始','初始下注','80.00','1.00×','80.00'],
       ['EV-E001-02','第 1 關','通過','80.00','1.05×','84.00'],
@@ -183,7 +196,7 @@ function openRecord(id){
       ['EV-E002-04','第 3 關','失敗，未領獎金作廢','150.00','0.00×','0.00']
     ]))+section('收取與終局',kv([['結束原因',win?'玩家主動收取':'第 3 關失敗'],['實際收取倍率',win?'1.20×':'未收取'],['實際派彩',money(r.payout)+' USDT'],['收取方式',win?'手動全額收取':'未執行收取'],['最後未入帳金額',win?'0.00 USDT':'240.00 USDT（已失效）'],['規則版本','DEMO-PROGRESS-1.0']]))+'<p class="detail-note">示例追加下注會增加實扣本金；單純繼續闖關不再扣款。失敗前可領金額不屬於已入帳派彩。</p>';
   }else if(r.kind==='捕魚'){
-    const f=fishingDetail(r),first=r.id==='DEMO-F001';
+    const f=fishingDetail(r),first=scenario(r)==='DEMO-F001';
     const shots=f.shots.map(s=>[s.id,s.time,s.bullet,s.source,money(s.cost),s.target,s.result,s.tool]);
     specific=section('射擊與道具摘要',kv([['付費／免費射擊',f.paid+' / '+f.free+' 發'],['單發成本','2.00 USDT（免費彈 0.00）'],['子彈成本',money(f.paid*2)+' USDT'],['使用道具',first?'雷射炮 IT-LAS01 × 1':'未使用道具'],['道具成本',money(f.toolCost)+' USDT'],['擊殺／首領擊殺',first?'6 / 1':'0 / 0']]))+
       section('魚隻命中、擊殺與獎金',miniTable(['魚隻實例 ID','魚種','魚種 ID','關聯射擊','結果','實際倍率','一般獎金','技能獎金','轉盤獎金','合計 USDT','派彩交易 ID','入帳'],f.fish))+
@@ -195,14 +208,13 @@ function openRecord(id){
       section('逐發射擊 · '+f.shots.length+' 發',miniTable(['射擊 ID','相對時間','子彈類型','來源','成本 USDT','魚隻 ID','命中結果','武器／道具'],shots))+
       '<p class="detail-note">每發與魚隻實例均保留 ID。付費子彈 '+money(f.paid*2)+'＋道具 '+money(f.toolCost)+'＝'+money(r.bet)+' USDT；一般 '+money(f.normal)+'＋技能 '+money(f.skill)+'＋獎勵 '+money(f.bonus)+'＝'+money(r.payout)+' USDT。</p>';
   }else if(r.kind==='老虎機'){
-    const row=defs.get('slots').rows.find(row=>row[3]==='#'+r.id.replace('DEMO-S',''));
-    const index=number(row[3].slice(1))-601;
-    specific=section('旋轉與獎勵關聯',kv([['旋轉編號',row[3]],['遊戲場次','SL-001'],['旋轉類型',row[4]],['父旋轉',row[11]],['免費旋轉序號',row[12]],['消除／重轉次數',row[13]],['觸發事件',row[5]],['派彩倍數',row[19]],['場次累積盈虧',row[17]+' USDT']]))+
-      section('派彩拆分',miniTable(['基本派彩','獎勵派彩','累積獎池派彩','合計 USDT'],[[row[14],row[15],row[16],row[7]]]))+
-      section('場次旋轉關聯',miniTable(['旋轉','類型','事件','實扣','派彩','淨盈虧','結算後餘額'],defs.get('slots').rows.filter((x,i)=>Math.abs(i-index)<=2).map(x=>[x[3],x[4],x[5],x[6],x[7],x[8],x[18]])))+
+    const d=defs.get('slots'),row=d.rows.find(row=>rowRecordId(d,row)===r.id),v=h=>row[columnIndex(d,h)],sessionRows=d.rows.filter(x=>x[columnIndex(d,'遊戲場次')]===v('遊戲場次')),index=sessionRows.indexOf(row);
+    specific=section('旋轉與獎勵關聯',kv([['旋轉編號',v('旋轉編號')],['遊戲場次',v('遊戲場次')],['旋轉類型',v('旋轉類型')],['父旋轉',v('父旋轉／獎勵回合 ID')],['免費旋轉序號',v('免費旋轉序號')],['消除／重轉次數',v('消除／重轉次數')],['觸發事件',v('觸發事件')],['派彩倍數',v('派彩倍數')],['場次累積盈虧',v('場次累積盈虧')+' USDT']]))+
+      section('派彩拆分',miniTable(['基本派彩','獎勵派彩','累積獎池派彩','合計 USDT'],[['基本派彩','獎勵派彩','累積獎池派彩','結算派彩'].map(v)]))+
+      section('場次旋轉關聯',miniTable(['旋轉','類型','事件','實扣','派彩','淨盈虧','結算後餘額'],sessionRows.filter((x,i)=>Math.abs(i-index)<=2).map(x=>['旋轉編號','旋轉類型','觸發事件','實扣投注','結算派彩','本次淨盈虧','結算後餘額'].map(h=>x[columnIndex(d,h)]))))+
       '<p class="detail-note">金額沿用設計參考的 14 次旋轉範例；父子關聯與消除次數為補充模擬。免費旋轉不使用零投注作為倍數分母。</p>';
   }else{
-    const blackjack=r.id==='DEMO-C001',bull=r.id==='DEMO-C002';
+    const blackjack=scenario(r)==='DEMO-C001',bull=scenario(r)==='DEMO-C002';
     const cards=values=>'<div class="card-hand">'+values.map(v=>'<span class="playing-card '+(/[♥♦]/.test(v)?'negative':'')+'">'+v+'</span>').join('')+'</div>';
     specific=blackjack?section('21 點 · 已結束牌局',kv([['房間／桌號','21 點／T-01'],['座位','02'],['結果','玩家 20 點勝莊家 18 點'],['分牌／加倍','未分牌／未加倍'],['保險下注','未投保，0.00 USDT'],['派彩倍數','2.00×（含本金）']]))+
       section('玩家手牌 · 20 點',cards(['K♠','Q♥']))+section('莊家手牌 · 18 點',cards(['10♣','8♦']))+
@@ -214,6 +226,12 @@ function openRecord(id){
       section('底牌',cards(['大王','A♠','3♦']))+
       section('倍數與終局',miniTable(['事件','倍數前','倍數後','結算影響'],[['叫分完成','1×','2×','底分 × 2'],['四張 7 炸彈','2×','4×','底分 × 4'],['農民陣營勝','4×','4×','地主對兩位農民各負 200.00']]))+
       '<p class="detail-note">示例地主淨損失＝50.00 × 4 × 2 位農民＝400.00 USDT；此局派彩為 0.00 USDT。</p>';
+  }
+  if(r.id!==scenario(r)){
+    specific=specific.replaceAll(scenario(r).replace('DEMO-',''),r.id.replace('DEMO-',''));
+    const seed=DATA.records.find(x=>x.id===scenario(r));
+    if(seed)specific=specific.replaceAll(seed.round,r.round);
+    if(r.kind==='捕魚')specific=specific.replaceAll('0301',r.round.replace('FB-','')).replaceAll('0302',r.round.replace('FB-','')).replaceAll('F9006','F'+(r.fishBase+5));
   }
   showDialog('投注明細 · '+e(r.game),common+detailSummary(r)+specific+wallet+button('查看玩家詳情','detail-player','primary','data-name="'+r.player+'"'),{drawer:true,subtitle:r.id+' · USDT · 模擬資料'});
 }
@@ -276,7 +294,7 @@ document.addEventListener('click',event=>{
     saveView();const index=Number(target.dataset.sort),t=current();t.sort={index,direction:t.sort?.index===index&&t.sort.direction==='asc'?'desc':'asc'};t.page=1;t.scroll.y=0;render();return;
   }
   if(target.hasAttribute('data-page')){saveView();current().page=Number(target.dataset.page);current().scroll.y=0;render();return;}
-  if(target.dataset.lang){languageOpen=false;renderRail();if(target.dataset.lang!=='zh-Hant')toast('此 Demo 目前以繁體中文提供完整內容');return;}
+  if(target.dataset.lang){saveView();locale=target.dataset.lang;languageOpen=false;render();return;}
   if(target.hasAttribute('data-move-column')){
     const i=Number(target.dataset.moveColumn),j=i+Number(target.dataset.direction),s=dialogState;
     [s.order[i],s.order[j]]=[s.order[j],s.order[i]];showColumns();return;
@@ -305,14 +323,14 @@ document.addEventListener('click',event=>{
     }
     case 'export':{
       const {d,rows}=getReport(),cols=current().columns;
-      const blob=new Blob([csv(cols.map(i=>d.headers[i]),rows.map(r=>cols.map(i=>r[i])))],{type:'text/csv;charset=utf-8;'});
+      const blob=new Blob([csv(cols.map(i=>tr(d.headers[i])),rows.map(r=>cols.map(i=>tr(r[i]))))],{type:'text/csv;charset=utf-8;'});
       const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='R&R_'+d.title+'_USDT_'+current().filters.start+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已匯出 '+rows.length+' 筆篩選結果（USDT）');break;
     }
     case 'detail-player':openPlayer(target.dataset.name);break;
     case 'player-records':openReport('all',{duplicate:true,filters:{query:target.dataset.name}});break;
     case 'search':showDialog('快速搜尋','<input id="quick-search" class="dialog-search" placeholder="搜尋報表名稱、玩家帳號或 ID" aria-label="快速搜尋"><div id="search-list">'+showSearch()+'</div>');requestAnimationFrame(()=>$('#quick-search').focus());break;
     case 'apps':showDialog('頁面捷徑','<div class="search-results">'+DATA.reports.map(d=>'<button class="search-result" data-report="'+d.key+'">'+icon(d.icon)+d.title+'</button>').join('')+'</div>');break;
-    case 'notifications':showDialog('通知','<div class="small-menu"><button data-record="DEMO-F002"><strong>補單核對完成</strong><p class="notice">捕魚批次 FB-0302 已完成核對，未重複扣款。</p></button><button data-action="open-all"><strong>模擬資料準備完成</strong><p class="notice">21 筆記錄、4 位玩家、6 款遊戲，幣別為 USDT。</p></button></div>');break;
+    case 'notifications':showDialog('通知','<div class="small-menu"><button data-record="DEMO-F002"><strong>補單核對完成</strong><p class="notice">捕魚批次 FB-0302 已完成核對，未重複扣款。</p></button><button data-action="open-all"><strong>模擬資料準備完成</strong><p class="notice">96 筆記錄、29 位玩家、6 款遊戲，幣別為 USDT。</p></button></div>');break;
     case 'profile':showDialog('平台管理員',kv([['使用者','平台管理員'],['環境','互動 Demo'],['資料來源','USDT 模擬資料']])+'<p class="notice">操作與分頁設定儲存在目前瀏覽器。此示範未連接正式帳號與資金系統。</p>');break;
   }
 });
