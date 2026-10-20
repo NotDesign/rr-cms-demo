@@ -1,0 +1,6 @@
+design/
+node_modules/
+artifacts/
+.DS_Store
+*.zip
+.env*

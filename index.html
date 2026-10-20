@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="R&R CMS 遊戲報表互動示範，提供 USDT 模擬資料、工作分頁與各玩法明細。">
+  <meta name="theme-color" content="#202022">
+  <title>R&R CMS · 遊戲報表 Demo</title>
+  <link rel="icon" href="assets/figma/56714.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="#content" class="skip-link">跳至報表內容</a>
+  <div id="app" class="app-shell">
+    <aside id="rail" class="rail" aria-label="主選單"></aside>
+    <aside id="submenu" class="submenu" aria-label="子選單"></aside>
+    <div class="main-shell">
+      <header id="header" class="topbar"></header>
+      <main id="content" tabindex="-1"></main>
+    </div>
+  </div>
+  <dialog id="modal" aria-labelledby="dialog-title"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
