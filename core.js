@@ -19,6 +19,21 @@ export const scenario = record => record.seedId || record.id;
 export const columnIndex = (def, header) => def.headers.indexOf(header);
 export const rowRecordId = (def, row) => def.recordIds?.[def.rows.indexOf(row)] || row[columnIndex(def,'投注單號')] || row[columnIndex(def,'結算單號')];
 export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',wrapper:'',merchant:'',game:'',type:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
+// Report dates always use UTC+8; rolling ranges include today.
+export function datePresetRange(preset,now=new Date()){
+ const end=new Date(now.getTime()+8*60*60*1000);end.setUTCHours(0,0,0,0);
+ const start=new Date(end);
+ switch(preset){
+  case 'today':break;
+  case 'yesterday':start.setUTCDate(start.getUTCDate()-1);end.setUTCDate(end.getUTCDate()-1);break;
+  case 'week':start.setUTCDate(start.getUTCDate()-6);break;
+  case 'month':start.setUTCDate(start.getUTCDate()-29);break;
+  case 'last-month':start.setUTCDate(1);start.setUTCMonth(start.getUTCMonth()-1);end.setUTCDate(0);break;
+  case 'demo':return {start:'2026-10-15',end:'2026-10-15'};
+  default:throw new RangeError('Unknown date preset: '+preset);
+ }
+ return {start:start.toISOString().slice(0,10),end:end.toISOString().slice(0,10)};
+}
 export function filterRecords(records, key, filters) {
   const category = {electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[key];
   return records.filter(r => {

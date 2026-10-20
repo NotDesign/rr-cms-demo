@@ -13,7 +13,8 @@ dialog{color:var(--text);background:var(--paper);border:1px solid #ffffff1c;bord
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
 
 /* Every filter occupies one shared grid column, with the same 40px control. */
-.filter-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-items:end;gap:16px}
+.filters{--filter-columns:8}
+.filter-row{display:grid;grid-template-columns:repeat(var(--filter-columns),minmax(0,1fr));align-items:end;gap:16px}
 .filter-row .field,.filter-row .field.date,.filter-row .field.search,.filter-row .field.currency,.extra-filters .field{width:100%;min-width:0;max-width:none}
 .field{gap:6px}
 .filters{gap:12px}
@@ -21,7 +22,6 @@ dialog{color:var(--text);background:var(--paper);border:1px solid #ffffff1c;bord
 .field input,.field select,.date-button{height:40px;min-height:40px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
 .filter-actions{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .filter-actions .button{height:40px;width:100%;min-width:0;padding:6px 12px;overflow:hidden;text-overflow:ellipsis}
-.extra-filters{grid-template-columns:repeat(7,minmax(0,1fr))}
 .report-table th{height:56px;white-space:normal;vertical-align:middle}
 .report-table th button{display:flex;justify-content:flex-start;align-items:center;gap:6px;line-height:18px;min-height:56px}
 .report-table th.num button{justify-content:flex-end}
@@ -44,8 +44,8 @@ dialog{color:var(--text);background:var(--paper);border:1px solid #ffffff1c;bord
 .mini-table th{white-space:normal;min-width:100px;line-height:18px}
 [lang=th] body{font-family:"IBM Plex Sans Thai","Noto Sans TC",sans-serif}
 [data-theme=light] .report-table .totals-row td{background:#e7efdf}
-@media(max-width:1500px){.filter-row,.extra-filters{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.filter-actions{gap:12px}}
-@media(max-width:760px){.filter-row,.extra-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.field.currency{grid-column:auto}.table-viewport{max-height:416px}}
+@media(max-width:1500px){.filters{--filter-columns:4}.filter-row{gap:12px}.filter-actions{gap:12px}}
+@media(max-width:760px){.filters{--filter-columns:2}.field.currency{grid-column:auto}.table-viewport{max-height:416px}}
 /* Shared detail views: square covers, compact metrics and drill-down navigation. */
 .detail-path,.org-path{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;line-height:20px;color:var(--muted)}
 .detail-path button{color:var(--positive);padding:4px 0}.org-path button{font-size:11px}.detail-path{border-bottom:1px solid var(--line);padding-bottom:12px}
@@ -143,10 +143,10 @@ th.filtered .filter-dot{display:block}
 .report-table .totals-row td,[data-theme=light] .report-table .totals-row td{background:var(--row);border-bottom-color:var(--action-line)}
 .chooser-card:hover,.game-card:hover,.entity-card:hover{border-color:var(--action-line);background:var(--action-fill)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline-color:var(--action)}
-.filter-row:not(.extra-filters){grid-template-columns:repeat(8,minmax(0,1fr))}
 .filter-reset .button{height:40px;width:100%;padding:6px 12px}
 .field .filter-live{display:flex;align-items:center;gap:6px;color:var(--action);line-height:16px}
 .filter-live::before{content:"";width:5px;height:5px;flex:none;border-radius:50%;background:currentColor}
 .date-error{color:var(--negative);font-size:12px;min-height:18px}
-@media(max-width:1500px){.filter-row:not(.extra-filters){grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:760px){.filter-row:not(.extra-filters){grid-template-columns:repeat(2,minmax(0,1fr))}}
+.date-presets .button[aria-pressed=true]{color:var(--action);border-color:var(--action);background:var(--action-fill)}
+.dates label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}
+.dialog-body .dates input[type=date]{height:40px;min-width:0;width:100%;color:var(--text);font-size:14px}

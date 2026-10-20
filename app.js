@@ -1,6 +1,6 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail} from './core.js?v=9';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange} from './core.js?v=10';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=9';
-import {localize,translate,languageNames} from './i18n.js?v=9.1';
+import {localize,translate,languageNames} from './i18n.js?v=10';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -337,12 +337,21 @@ function applyColumnFilter({close=true}={}){
   current().page=1;current().scroll.y=0;if(close)closeDialog();render();return true;
 }
 function scheduleColumnFilter(){const s=dialogState,id=activeId;clearTimeout(columnTimer);columnTimer=setTimeout(()=>{if(dialogState===s&&activeId===id)applyColumnFilter({close:false});},350);}
+const datePresets=[['today','今天'],['yesterday','昨天'],['week','近一週'],['month','近一月'],['last-month','上個月'],['demo','模擬資料日 · 10/15']];
+function datePresetButtons(filters){
+  const now=new Date();
+  return datePresets.map(([key,label])=>{const range=datePresetRange(key,now);return '<button type="button" class="button small" data-action="date-'+key+'" data-date-preset="'+key+'" aria-pressed="'+(filters.start===range.start&&filters.end===range.end)+'" title="'+range.start.replaceAll('-','/')+' — '+range.end.replaceAll('-','/')+'">'+e(label)+'</button>';}).join('');
+}
+function updateDatePresets(start,end){
+  const now=new Date();
+  for(const button of document.querySelectorAll('[data-date-preset]')){const range=datePresetRange(button.dataset.datePreset,now);button.setAttribute('aria-pressed',String(start===range.start&&end===range.end));}
+}
 function showDate(){
   const f=current().draft;
   dialogState={type:'date'};
-  showDialog('日期區間','<div class="dates"><label>開始日期<br><br><input type="date" id="date-start" value="'+e(f.start)+'"></label><label>結束日期<br><br><input type="date" id="date-end" value="'+e(f.end)+'"></label></div><div class="date-presets">'+button('模擬資料日 · 10/15','date-demo','small')+button('本月','date-month','small')+'</div><p class="notice">選擇有效日期後自動篩選。模擬資料日期為 2026/10/15，時間採 UTC+8。</p><p class="date-error" id="date-error" role="alert"></p>',{footer:button('完成','date-apply','primary')});
+  showDialog('日期區間','<div class="dates"><label>開始日期<input type="date" id="date-start" value="'+e(f.start)+'"></label><label>結束日期<input type="date" id="date-end" value="'+e(f.end)+'"></label></div><div class="date-presets" role="group" aria-label="快速選擇時間區間">'+datePresetButtons(f)+'</div><p class="notice">今天與昨天依 UTC+8 計算；近一週含今天共 7 天，近一月含今天共 30 天，上個月為完整曆月。</p><p class="notice">選擇有效日期後自動篩選。模擬資料日期為 2026/10/15，時間採 UTC+8。</p><p class="date-error" id="date-error" role="alert"></p>',{footer:button('完成','date-apply','primary')});
 }
-function applyDate({close=false,notify=false}={}){const start=$('#date-start')?.value,end=$('#date-end')?.value;if(!start||!end||start>end){if($('#date-error'))$('#date-error').textContent=tr('請確認開始日期不晚於結束日期');if(notify)toast('請確認開始日期不晚於結束日期');return false;}if($('#date-error'))$('#date-error').textContent='';current().draft.start=start;current().draft.end=end;if(close)closeDialog();queryForm();return true;}
+function applyDate({close=false,notify=false}={}){const start=$('#date-start')?.value,end=$('#date-end')?.value;if(!start||!end||start>end){if($('#date-error'))$('#date-error').textContent=tr('請確認開始日期不晚於結束日期');if(notify)toast('請確認開始日期不晚於結束日期');return false;}if($('#date-error'))$('#date-error').textContent='';updateDatePresets(start,end);current().draft.start=start;current().draft.end=end;if(close)closeDialog();queryForm();return true;}
 function showSearch(query=''){
   const matches=DATA.reports.filter(d=>d.title.includes(query));
   const players=[...new Set(DATA.records.map(r=>r.player))].filter(n=>query&&(n.includes(query)||playerId(n).toLowerCase().includes(query.toLowerCase())));
@@ -442,8 +451,7 @@ document.addEventListener('click',event=>{
     case 'open-all':openReport('all');break;
     case 'close-dialog':finishDialog();break;
     case 'date':showDate();break;
-    case 'date-demo':$('#date-start').value='2026-10-15';$('#date-end').value='2026-10-15';applyDate();break;
-    case 'date-month':$('#date-start').value='2026-10-01';$('#date-end').value='2026-10-31';applyDate();break;
+    case 'date-today':case 'date-yesterday':case 'date-week':case 'date-month':case 'date-last-month':case 'date-demo':{const range=datePresetRange(target.dataset.action.slice(5));$('#date-start').value=range.start;$('#date-end').value=range.end;applyDate();break;}
     case 'date-apply':applyDate({close:true,notify:true});break;
     case 'columns':showColumns();break;
     case 'columns-default':{const d=defs.get(current().key);dialogState={type:'columns',order:d.headers.map((_,i)=>i),shown:d.headers.map((_,i)=>i),freeze:3};showColumns();break;}
