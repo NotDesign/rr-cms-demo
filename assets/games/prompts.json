@@ -1,0 +1,43 @@
+{
+  "generator": "built-in image_gen.imagegen",
+  "original_size": "1254x1254",
+  "web_assets": "256x256 JPEG derivatives; CSS border-radius:12px",
+  "assets": [
+    {
+      "key": "electronic",
+      "subject": "A sleek small silver exploration spacecraft flying upward through three glowing emerald cosmic gates, luminous starfield and deep blue nebula. Emphasize a staged space adventure, one bold centered spacecraft and orbital path.",
+      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A sleek small silver exploration spacecraft flying upward through three glowing emerald cosmic gates, luminous starfield and deep blue nebula. Emphasize a staged space adventure, one bold centered spacecraft and orbital path. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
+      "file": "assets/games/electronic.jpg"
+    },
+    {
+      "key": "slots",
+      "subject": "An emerald gemstone mine overflowing with luminous green crystals and a polished golden treasure cart, with a few elegant golden slot reel shapes integrated subtly. One bold emerald cluster as focal point.",
+      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. An emerald gemstone mine overflowing with luminous green crystals and a polished golden treasure cart, with a few elegant golden slot reel shapes integrated subtly. One bold emerald cluster as focal point. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
+      "file": "assets/games/slots.jpg"
+    },
+    {
+      "key": "fishing",
+      "subject": "An imposing majestic golden dragon fish swimming in a luminous deep teal underwater arena, smaller colorful reef fish and light rays, dramatic golden fins and bright clear eye. One bold centered fish.",
+      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. An imposing majestic golden dragon fish swimming in a luminous deep teal underwater arena, smaller colorful reef fish and light rays, dramatic golden fins and bright clear eye. One bold centered fish. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
+      "file": "assets/games/fishing.jpg"
+    },
+    {
+      "key": "blackjack",
+      "subject": "A luxurious green felt blackjack table with an elegant ace of spades and a king of hearts fanned prominently, glossy black and emerald casino chips, warm gold rim lighting. Clear playing-card composition; only natural A and K card indices are permitted.",
+      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A luxurious green felt blackjack table with an elegant ace of spades and a king of hearts fanned prominently, glossy black and emerald casino chips, warm gold rim lighting. Clear playing-card composition; only natural A and K card indices are permitted. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
+      "file": "assets/games/blackjack.jpg"
+    },
+    {
+      "key": "bull",
+      "subject": "A dignified powerful stylized golden bull mascot with curved horns, alongside a refined fan of five playing cards and stacked emerald casino chips on dark green felt. Premium Chinese Niu Niu card-game theme, no text or lettering.",
+      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A dignified powerful stylized golden bull mascot with curved horns, alongside a refined fan of five playing cards and stacked emerald casino chips on dark green felt. Premium Chinese Niu Niu card-game theme, no text or lettering. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
+      "file": "assets/games/bull.jpg"
+    },
+    {
+      "key": "landlord",
+      "subject": "A refined stylized Chinese Dou Dizhu card-game cover: a fan of playing cards with a red and a black joker, tasteful golden coins and emerald chips, festive red silk and dark jade backdrop. Prominent central card fan, no human figures, no text or lettering.",
+      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A refined stylized Chinese Dou Dizhu card-game cover: a fan of playing cards with a red and a black joker, tasteful golden coins and emerald chips, festive red silk and dark jade backdrop. Prominent central card fan, no human figures, no text or lettering. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
+      "file": "assets/games/landlord.jpg"
+    }
+  ]
+}
