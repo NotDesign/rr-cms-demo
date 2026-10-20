@@ -143,3 +143,10 @@ th.filtered .filter-dot{display:block}
 .report-table .totals-row td,[data-theme=light] .report-table .totals-row td{background:var(--row);border-bottom-color:var(--action-line)}
 .chooser-card:hover,.game-card:hover,.entity-card:hover{border-color:var(--action-line);background:var(--action-fill)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline-color:var(--action)}
+.filter-row:not(.extra-filters){grid-template-columns:repeat(8,minmax(0,1fr))}
+.filter-reset .button{height:40px;width:100%;padding:6px 12px}
+.field .filter-live{display:flex;align-items:center;gap:6px;color:var(--action);line-height:16px}
+.filter-live::before{content:"";width:5px;height:5px;flex:none;border-radius:50%;background:currentColor}
+.date-error{color:var(--negative);font-size:12px;min-height:18px}
+@media(max-width:1500px){.filter-row:not(.extra-filters){grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:760px){.filter-row:not(.extra-filters){grid-template-columns:repeat(2,minmax(0,1fr))}}

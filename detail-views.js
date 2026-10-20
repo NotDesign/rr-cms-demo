@@ -1,8 +1,6 @@
-import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=6';
-export const games={
- '星際闖關':{cover:'electronic',type:'電子遊戲'},'翡翠金礦':{cover:'slots',type:'老虎機'},'深海獵場':{cover:'fishing',type:'捕魚'},
- '經典 21 點':{cover:'blackjack',type:'棋牌'},'搶莊牛牛':{cover:'bull',type:'棋牌'},'經典鬥地主':{cover:'landlord',type:'棋牌'}
-};
+import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=9';
+import {gameCatalog} from './game-catalog.js?v=9';
+export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));
 export function gameIdentity(name,size=48){const g=games[name];return '<span class="game-identity"><img class="game-cover" width="'+size+'" height="'+size+'" src="assets/games/'+g.cover+'.jpg" alt="'+e(name)+'" loading="lazy"><span><strong>'+e(name)+'</strong><small>'+g.type+'</small></span></span>';}
 export function gameCards(records){
  const total=totals(records).bet;

@@ -18,13 +18,15 @@ export const playerId = name => name === 'shawn1328' ? 'P1328' : /^demo_\d+$/.te
 export const scenario = record => record.seedId || record.id;
 export const columnIndex = (def, header) => def.headers.indexOf(header);
 export const rowRecordId = (def, row) => def.recordIds?.[def.rows.indexOf(row)] || row[columnIndex(def,'投注單號')] || row[columnIndex(def,'結算單號')];
-export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',merchant:'',type:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
+export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',wrapper:'',merchant:'',game:'',type:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
 export function filterRecords(records, key, filters) {
   const category = {electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[key];
   return records.filter(r => {
     if (category && category !== r.kind) return false;
     if (filters.start && r.date < filters.start || filters.end && r.date > filters.end) return false;
-    if (filters.type && ![r.kind,r.game].includes(filters.type)) return false;
+    if (filters.type && ![r.kind,r.game,r.gameFamily].includes(filters.type)) return false;
+    if (filters.wrapper && r.wrapperId !== filters.wrapper) return false;
+    if (filters.game && r.game !== filters.game) return false;
     if (filters.merchant && r.site !== filters.merchant) return false;
     const text = [r.id,r.player,playerId(r.player),r.round,r.game,r.event].join(' ').toLowerCase();
     if (filters.query && !text.includes(filters.query.trim().toLowerCase())) return false;
@@ -34,7 +36,7 @@ export function filterRecords(records, key, filters) {
     if (filters.endReason && r.endReason !== filters.endReason) return false;
     if (filters.multiplier && (filters.multiplier === 'high' ? !(r.maxMultiplier>=1.5) : !(r.maxMultiplier<1.5))) return false;
     if (filters.recon && r.recon !== filters.recon) return false;
-    if (filters.room && r.kind !== '捕魚') return false;
+    if (filters.room && (r.kind !== '捕魚'||r.room !== filters.room)) return false;
     if (filters.fish && !(r.kind==='捕魚' && fishingDetail(r).fish.flat().join(' ').toLowerCase().includes(filters.fish.toLowerCase()))) return false;
     if (filters.shot && !(r.kind==='捕魚' && fishingDetail(r).shots.some(s=>s.id.toLowerCase().includes(filters.shot.toLowerCase())))) return false;
     if (filters.tool && (filters.tool === '雷射炮' ? scenario(r)!=='DEMO-F001' : scenario(r)!=='DEMO-F002')) return false;
@@ -58,7 +60,7 @@ export function rowsFor(def, records) {
     const rate=kind==='電子遊戲' ? '收取 '+rs.filter(r=>r.payout>0).length+' / '+rs.length+' 回合' :
       kind==='老虎機' ? '免費觸發 '+rs.filter(r=>r.event==='觸發免費旋轉').length+' / '+(rs.length-free)+' 付費轉' :
       kind==='捕魚' ? '首領擊殺 '+rs.filter(r=>scenario(r)==='DEMO-F001').length+' / '+rs.reduce((s,r)=>s+fishingDetail(r).shots.length,0)+' 發' :
-      '炸彈 '+rs.filter(r=>r.game==='經典鬥地主').length+' / '+rs.filter(r=>r.game==='經典鬥地主').length+' 鬥地主局';
+      '炸彈 '+rs.filter(r=>r.gameFamily==='landlord'||r.game==='經典鬥地主').length+' / '+rs.filter(r=>r.gameFamily==='landlord'||r.game==='經典鬥地主').length+' 鬥地主局';
     return [[kind,String(t.players),[...new Set(rs.map(r=>playerId(r.player)))].join('、'),String(t.games),String(t.count),money(t.bet),money(t.bet),money(t.payout),signed(-t.net),String(t.count),'0.00','0.00',money(rs.reduce((s,r)=>s+r.bonus,0)),'0','0',rate,'查看']];
   });
   const groups=new Map();
@@ -192,7 +194,7 @@ export function fishingDetail(record) {
 // Demonstration rules only; exact supplier rules remain a future API contract.
 export function chessDetail(r){
  const s=r.scale||1,v=r.cardVariant||0;
- if(r.game==='經典 21 點'){
+ if(r.gameFamily==='blackjack'||r.game==='經典 21 點'){
   const variants=[
    {result:'玩家 20 點勝莊家 18 點',player:['K♠','Q♥'],dealer:['10♣','8♦'],payout:600,bet:300,action:'停牌'},
    {result:'玩家 18 點負莊家 20 點',player:['10♠','8♥'],dealer:['K♣','Q♦'],payout:0,bet:300,action:'停牌'},
@@ -205,7 +207,7 @@ export function chessDetail(r){
   return {...x,action:v%7===4?'加倍：'+money(150*s)+' → '+money(300*s):v%7===5?'分牌：每手 '+money(150*s):v%7===6?'主注 '+money(300*s)+'＋保險 '+money(150*s):x.action,bet:x.bet*s,payout:x.payout*s,base:(v%7===4||v%7===5?150:300)*s,net:(x.payout-x.bet)*s,rule:'DEMO-BJ-1.0',variant:v%7,
    hands:v%7===5?[[r.round+'-H1','8♠ K♥','負',150*s,0],[r.round+'-H2','8♦ 3♣ K♦','勝',150*s,300*s]]:v%7===6?[[r.round+'-MAIN','10♠ 8♥','負',300*s,0],[r.round+'-INS','莊家 A♣ K♦','保險中獎',150*s,450*s]]:[[r.round+'-H1',x.player.join(' '),x.result,x.bet*s,x.payout*s]]};
  }
- if(r.game==='搶莊牛牛'){
+ if(r.gameFamily==='bull'||r.game==='搶莊牛牛'){
   const a=[['牛牛勝牛七','牛牛','牛七',300],['牛七負牛牛','牛七','牛牛',0],['雙方牛牛，和局','牛牛','牛牛',150],['牛七勝牛六，1 倍結算','牛七','牛六',200]][v%4];
   return {result:a[0],player:a[1]==='牛牛'?['10♠','J♥','Q♣','K♦','10♥']:['7♠','8♥','5♣','2♦','5♥'],dealer:a[2]==='牛牛'?['10♣','J♦','Q♠','K♥','10♦']:a[2]==='牛七'?['7♣','8♦','5♠','2♥','5♣']:['6♣','8♦','6♠','2♥','4♣'],bet:150*s,payout:a[3]*s,net:(a[3]-150)*s,base:50*s,multiplier:v%4===3?'1×':'3×',action:a[0],rule:'DEMO-NIU-1.0',variant:v%4};
  }

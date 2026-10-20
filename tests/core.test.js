@@ -4,7 +4,8 @@ import {readFileSync} from 'node:fs';
 import {filterRecords,filterReportColumns,visibleFreezeCount,defaultFilters,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,number,playerId,rowRecordId,sortedRows,csv,balances,fishingDetail,financialTone,organizationRecords,chessDetail,money} from '../core.js';
 const d=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url)));
 test('all seven reports reconcile the same USDT fixture',()=>{
-  assert.deepEqual(totals(d.records),{count:400,players:36,games:6,categories:4,bet:95740,payout:146555,net:50815});
+  assert.deepEqual(totals(d.records),{count:1200,players:132,games:18,categories:4,bet:291350,payout:440560,net:149210});
+  assert.deepEqual(totals(d.records.filter(r=>!r.player.startsWith('demo_3'))),{count:400,players:36,games:6,categories:4,bet:95740,payout:146555,net:50815});
   for(const def of d.reports){
     const records=filterRecords(d.records,def.key,defaultFilters()),rows=rowsFor(def,records),t=totals(records);
     assert.equal(rows.length,def.rows.length,def.key);
@@ -17,8 +18,8 @@ test('search, date, type, outcome and exact shot queries affect record sets',()=
   assert.equal(filterRecords(d.records,'all',{...f(),query:'P1001'}).length,4);
   assert.equal(filterRecords(d.records,'all',{...f(),query:'DEMO-E001'}).length,1);
   assert.equal(filterRecords(d.records,'all',{...f(),start:'2026-10-20',end:'2026-10-20'}).length,0);
-  assert.equal(filterRecords(d.records,'chess',{...f(),type:'經典 21 點'}).length,34);
-  assert.equal(filterRecords(d.records,'electronic',{...f(),result:'loss'}).length,34);
+  assert.equal(filterRecords(d.records,'chess',{...f(),type:'經典 21 點'}).length,68);
+  assert.equal(filterRecords(d.records,'electronic',{...f(),result:'loss'}).length,101);
   assert.equal(filterRecords(d.records,'fishing',{...f(),shot:'SH-0301-090'}).length,1);
   assert.equal(filterRecords(d.records,'fishing',{...f(),shot:'SH-0301-999'}).length,0);
   assert.equal(filterRecords(d.records,'fishing',{...f(),fish:'F9006',tool:'雷射炮'}).length,1);
@@ -41,7 +42,7 @@ test('fishing shots, kills, tool costs and payout breakdown reconcile',()=>{
   }
 });
 test('player ID remains linked to the same player in every report and CSV',()=>{
-  assert.equal(new Set(d.records.map(r=>r.id)).size,400);
+  assert.equal(new Set(d.records.map(r=>r.id)).size,1200);
   assert.ok(d.records.every(r=>r.player_id===playerId(r.player)));
   for(const def of d.reports){
     const id=def.headers.indexOf('玩家 ID');assert.notEqual(id,-1,def.key);
@@ -94,13 +95,13 @@ test('column search matches localized values while stored selections remain cano
   const def=d.reports.find(x=>x.key==='all'),col=def.headers.indexOf('遊戲類型');
   const translated=v=>v==='捕魚'?'Bắn cá':v;
   const result=filterReportColumns(def,d.records,{[col]:{query:' BẮN CÁ ',values:['捕魚']}},translated);
-  assert.equal(result.rows.length,100);assert.ok(result.records.every(r=>r.kind==='捕魚'));
+  assert.equal(result.rows.length,300);assert.ok(result.records.every(r=>r.kind==='捕魚'));
 });
 test('column time ranges include exact boundaries and preserve no-result summaries',()=>{
   const def=d.reports.find(x=>x.key==='all');
-  const result=filterReportColumns(def,d.records,{0:{kind:'time',min:'14:28',max:'14:28:16'}});
+  const result=filterReportColumns(def,d.records,{0:{kind:'time',min:'14:28:16',max:'14:28:16'}});
   assert.equal(result.records.length,1);assert.equal(result.records[0].id,'DEMO-E001');
-  const empty=filterReportColumns(def,d.records,{0:{kind:'time',min:'23:00'}});
+  const empty=filterReportColumns(def,d.records,{0:{kind:'time',min:'00:00',max:'07:59:59'}});
   assert.equal(summaryFor(def,empty.records)[1][1],'0.00');assert.equal(tableTotals(def,empty.records,empty.rows)[6],'0.00');
 });
 test('aggregate column filters retain complete underlying player/game and category groups',()=>{
@@ -110,7 +111,7 @@ test('aggregate column filters retain complete underlying player/game and catego
   assert.equal(totals(result.records).bet,620);assert.equal(totals(result.records).payout,760);
   assert.equal(tableTotals(player,result.records,result.rows)[8],'+140.00');
   const category=filterReportColumns(stats,d.records,{0:{values:['捕魚']}});
-  assert.equal(category.rows.length,1);assert.equal(category.records.length,100);
+  assert.equal(category.rows.length,1);assert.equal(category.records.length,300);
   assert.equal(number(tableTotals(stats,category.records,category.rows)[5]),totals(category.records).bet);
 });
 test('custom freezing follows reordered widths and retains an unfrozen area on narrow viewports',()=>{
@@ -121,8 +122,8 @@ test('custom freezing follows reordered widths and retains an unfrozen area on n
   assert.equal(visibleFreezeCount([150,180],0,1000),0);
 });
 
-test('all categories contain 100 samples; every row keeps its source wager and payout',()=>{
- for(const kind of ['電子遊戲','老虎機','捕魚','棋牌'])assert.equal(d.records.filter(r=>r.kind===kind).length,100);
+test('all categories contain 300 samples; every row keeps its source wager and payout',()=>{
+ for(const kind of ['電子遊戲','老虎機','捕魚','棋牌'])assert.equal(d.records.filter(r=>r.kind===kind).length,300);
  const seed=JSON.parse(readFileSync(new URL('../data/seed-data.json',import.meta.url)));
  for(const r of seed.records){const current=d.records.find(x=>x.id===r.id);for(const k of ['bet','payout','net'])assert.equal(current[k],r[k]);}
  for(const def of d.reports.filter(x=>!['stats','player'].includes(x.key)))for(const row of def.rows){
@@ -161,10 +162,36 @@ test('hierarchy partitions records and amounts once and keeps every player in on
  assert.deepEqual(organizationRecords(d.records,d.organizations,'invalid'),[]);
 });
 
+test('expanded game catalog and every platform/site have consistent playable scenarios',()=>{
+ assert.equal(d.games.length,18);
+ assert.equal(d.organizations.filter(o=>o.level==='包網商').length,6);
+ const sites=d.organizations.filter(o=>o.level==='現金網');assert.equal(sites.length,18);
+ for(const site of sites){const records=organizationRecords(d.records,d.organizations,site.id);assert.ok(records.length>0,site.id);assert.ok(records.every(r=>r.wrapperId===site.parent));}
+ for(const game of d.games){const records=d.records.filter(r=>r.game===game.name);assert.ok(records.length>0,game.name);assert.ok(records.every(r=>r.gameId===game.id&&r.gameFamily===game.family&&r.kind===game.type));assert.equal(records.some(r=>r.jackpot!==null),game.hasJackpot);assert.ok(records.some(r=>r.net<0),game.name+' needs a loss scenario');assert.ok(records.some(r=>r.net>0),game.name+' needs a win scenario');}
+ for(const r of d.records)assert.match(r.time,/^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/);
+ const sessions=new Map();for(const r of d.records.filter(r=>r.kind==='老虎機')){const key=r.session||'SL-001';if(!sessions.has(key))sessions.set(key,new Set());sessions.get(key).add(r.player+'|'+r.game);}for(const games of sessions.values())assert.equal(games.size,1);
+});
+
+test('platform, site, game, card family and fishing-room filters intersect correctly',()=>{
+ const f=defaultFilters(),site=d.organizations.find(o=>o.id==='SITE-C1');
+ const records=filterRecords(d.records,'all',{...f,wrapper:site.parent,merchant:site.name});assert.ok(records.length>0);assert.ok(records.every(r=>r.cashId===site.id));
+ assert.equal(filterRecords(d.records,'all',{...f,wrapper:'PKG-F',merchant:site.name}).length,0);
+ for(const game of d.games){const filtered=filterRecords(d.records,'all',{...f,game:game.name});assert.ok(filtered.length>0);assert.ok(filtered.every(r=>r.game===game.name));}
+ const blackjack=filterRecords(d.records,'chess',{...f,type:'blackjack'});assert.equal(new Set(blackjack.map(r=>r.game)).size,2);assert.ok(blackjack.every(r=>r.gameFamily==='blackjack'));
+ const fishing=filterRecords(d.records,'fishing',{...f,game:'龍宮爭霸',room:'龍宮 02 房'});assert.ok(fishing.length>0);assert.ok(fishing.every(r=>r.room==='龍宮 02 房'));
+ assert.equal(filterRecords(d.records,'fishing',{...f,game:'龍宮爭霸',room:'深海 01 房'}).length,0);
+});
+
+test('slot payouts reconcile when a game uses a normal bonus instead of a jackpot',()=>{
+ const def=d.reports.find(d=>d.key==='slots'),at=h=>def.headers.indexOf(h);
+ for(const row of def.rows){const r=d.records.find(r=>r.id===rowRecordId(def,row));assert.equal(number(row[at('累積獎池派彩')]),r.jackpotAward);assert.equal(number(row[at('基本派彩')])+number(row[at('獎勵派彩')])+number(row[at('累積獎池派彩')]),r.payout,r.id);assert.equal(row[at('遊戲名稱')],r.game);}
+ const noPool=d.records.filter(r=>r.poolConvertedToBonus);assert.ok(noPool.length>0);assert.ok(noPool.every(r=>r.jackpot===null&&r.jackpotAward===0&&!r.event.includes('獎池')));
+});
+
 test('card variants preserve hand settlement and provide wins, losses and pushes',()=>{
  const rs=d.records.filter(r=>r.kind==='棋牌');
  for(const r of rs){const c=chessDetail(r);assert.equal(c.bet,r.bet);assert.equal(c.payout+r.jackpotAward,r.payout);assert.equal(c.net+r.jackpotAward,r.net);if(c.hands){assert.equal(c.hands.reduce((n,h)=>n+h[3],0),r.bet);assert.equal(c.hands.reduce((n,h)=>n+h[4],0),r.basePayout);}}
- for(const game of new Set(rs.map(r=>r.game)))for(const outcome of [-1,0,1])if(game!=='經典鬥地主'||outcome!==0)assert.ok(rs.some(r=>r.game===game&&Math.sign(r.net)===outcome),game+': '+outcome);
+ for(const game of new Set(rs.map(r=>r.game)))for(const outcome of [-1,0,1])if(rs.find(r=>r.game===game).gameFamily!=='landlord'||outcome!==0)assert.ok(rs.some(r=>r.game===game&&Math.sign(r.net)===outcome),game+': '+outcome);
 });
 
 test('blackjack scaled actions agree with per-hand stake',()=>{

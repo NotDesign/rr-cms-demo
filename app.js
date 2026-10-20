@@ -1,8 +1,8 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail} from './core.js?v=7';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=6';
-import {localize,translate,languageNames} from './i18n.js?v=7';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail} from './core.js?v=9';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=9';
+import {localize,translate,languageNames} from './i18n.js?v=9.1';
 
-const DATA=await fetch('./data/demo-data.json?v=6').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
+const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
 const icons={dashboard:'6398b.svg',reports:'8ec9b.svg',promotion:'5783c.svg',jackpot:'a4bc9.svg',games:'e6435.svg',merchant:'7aa63.svg',players:'a24ad.svg',settlement:'59865.svg',system:'8a8c6.svg'};
 const menus=[
@@ -28,9 +28,11 @@ const tr=text=>translate(text,locale);
 const localized=root=>localize(root,locale);
 let tabs=Array.isArray(saved?.tabs)&&saved.tabs.length?saved.tabs.filter(t=>t&&typeof t.id==='string'&&(defs.has(t.key)||t.key==='new'||t.key.startsWith('draft:'))).map(t=>({...tab(t.key,t.title),...t,filters:{...defaultFilters(),...t.filters},draft:{...defaultFilters(),...t.draft}})):[tab('all'),tab('slots'),tab('fishing'),tab('player')];
 if(!tabs.length)tabs=[tab('all')];
+for(const t of tabs)if(['electronic','chess'].includes(t.key))for(const field of ['filters','draft']){const game=DATA.games.find(g=>g.name===t[field].type);if(game){t[field].game=game.name;t[field].type=game.family;}}
 let activeId=tabs.some(t=>t.id===saved?.activeId)?saved.activeId:tabs[0].id;
 let detailTrail=[],detailRange={start:'2026-10-15',end:'2026-10-15'};
 let category='reports',submenuOpen=saved?.submenuOpen??true,languageOpen=false,dialogState=null,toastTimer;
+const queryTimers=new Map();let columnTimer,composing=false;
 if(saved?.theme==='light')document.documentElement.dataset.theme='light';
 const current=()=>tabs.find(t=>t.id===activeId)||tabs[0];
 function persist(){try{localStorage.setItem(storageKey,JSON.stringify({schemaVersion:3,tabs,activeId,submenuOpen,locale,theme:document.documentElement.dataset.theme||'dark'}));}catch{}}
@@ -77,16 +79,19 @@ function textField(label,name,placeholder,cls=''){
 }
 function filtersHtml(def){
   const f=current().draft;
-  const types=def.key==='chess'?[['','全部玩法'],['經典 21 點','21 點'],['搶莊牛牛','牛牛'],['經典鬥地主','鬥地主']]:[['','全部類型'],'電子遊戲','老虎機','捕魚','棋牌'];
+  const types=def.key==='chess'?[['','全部玩法'],['blackjack','21 點'],['bull','牛牛'],['landlord','鬥地主']]:[['','全部類型'],'電子遊戲','老虎機','捕魚','棋牌'];
   const typeLabel=def.key==='chess'?'棋牌玩法':def.key==='fishing'?'房間／場次':def.key==='electronic'?'玩法':'遊戲類型';
-  const gameSelect=def.key==='fishing'?selectField(typeLabel,'room',[['','全部場次'],['深海 01 房','深海 01 房']]):
-    def.key==='electronic'?selectField(typeLabel,'type',[['','全部玩法'],['星際闖關','星際闖關']]):
+  const rooms=[...new Set(DATA.records.filter(r=>r.kind==='捕魚'&&(!f.game||r.game===f.game)).map(r=>r.room))];
+  const gameSelect=def.key==='fishing'?selectField(typeLabel,'room',[['','全部場次'],...rooms]):
+    def.key==='electronic'?selectField(typeLabel,'type',[['','全部玩法'],['progression','闖關加碼']]):
     def.key==='slots'?selectField('旋轉類型','event',[['','全部旋轉'],['免費旋轉','免費旋轉'],['獎勵','獎勵事件'],['累積獎池','累積獎池']]):
     selectField(typeLabel,'type',types);
   let extra='';
   if(def.key==='electronic')extra=selectField('觸發事件','event',[['','全部事件'],['收取','主動收取'],['失敗','闖關失敗'],['追加','追加下注'],['獎池觸發','獎池觸發']])+selectField('結束原因','endReason',[['','全部原因'],'玩家主動收取','闖關失敗'])+selectField('難度','difficulty',[['','全部難度'],'一般','困難'])+selectField('最高倍率','multiplier',[['','不限倍率'],['high','≥ 1.50×'],['low','< 1.50×']])+selectField('結算／對帳','recon',[['','全部狀態'],'已核對','補單已核對']);
   if(def.key==='fishing')extra=textField('魚種／魚隻實例 ID','fish','例如 F9006')+textField('射擊 ID','shot','例如 SH-0301-090')+selectField('道具／技能','tool',[['','全部類型'],'雷射炮',['無道具','無道具']])+selectField('觸發事件','event',[['','全部事件'],['雷射炮','雷射炮'],['金龍','首領事件'],['獎池觸發','獎池觸發'],['未捕獲','未捕獲']])+selectField('結算／對帳','recon',[['','全部狀態'],'已核對','補單已核對']);
-  return '<form id="query-form" class="filters"><div class="filter-row"><div class="field date"><label>日期區間</label><button type="button" class="date-button" data-action="date">'+e(f.start.replaceAll('-','/'))+(f.start!==f.end?' — '+e(f.end.replaceAll('-','/')):'')+'<span class="chevron">'+img('7d07b.svg')+'</span></button></div>'+selectField('商戶／站點','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網').map(o=>[o.name,o.name])])+gameSelect+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="filter-actions"><button class="button primary" type="submit">查詢</button><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
+  const category={electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[def.key];
+  const games=DATA.games.filter(g=>(!category||g.type===category)&&(!f.type||[g.type,g.family,g.name].includes(f.type)));
+  return '<form id="query-form" class="filters"><div class="filter-row"><div class="field date"><label>日期區間</label><button type="button" class="date-button" data-action="date">'+e(f.start.replaceAll('-','/'))+(f.start!==f.end?' — '+e(f.end.replaceAll('-','/')):'')+'<span class="chevron">'+img('7d07b.svg')+'</span></button></div>'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('商戶／站點','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網'&&(!f.wrapper||o.parent===f.wrapper)).map(o=>[o.name,o.name])])+gameSelect+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
 }
 function summaryHtml(def,rs){return '<div class="summary">'+summaryFor(def,rs).map(([label,v],i)=>'<div class="summary-card"><p class="summary-label">'+label+'</p><p class="summary-number '+financialTone(label,v)+'">'+v+'</p></div>').join('')+'</div>';}
 function getReport(){
@@ -183,7 +188,8 @@ function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   localized(dialog);
   dialog.showModal();
 }
-function closeDialog(){if($('#modal').open)$('#modal').close();dialogState=null;detailTrail=[];}
+function closeDialog(){clearTimeout(columnTimer);if($('#modal').open)$('#modal').close();dialogState=null;detailTrail=[];}
+function finishDialog(){if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog();}
 function miniTable(headers,rows,rich={},totalValues=null){
   const numeric=h=>/USDT|投注|派彩|盈虧|獎金|成本|本金|金額|倍率|倍數|發數|筆數|數量/.test(h)&&!/單號|記錄時間|投注時間|等級/.test(h);
   return '<div class="mini-scroll"><table class="mini-table"><thead><tr>'+headers.map(h=>'<th class="'+(numeric(h)?'num':'')+'">'+h+'</th>').join('')+'</tr>'+(totalValues?'<tr class="mini-totals">'+totalValues.map((v,i)=>'<th class="'+(numeric(headers[i])?'num ':'')+financialTone(headers[i],v)+'">'+e(v)+'</th>').join('')+'</tr>':'')+'</thead><tbody>'+rows.map((row,ri)=>'<tr>'+row.map((v,i)=>'<td class="'+(numeric(headers[i])?'num ':'')+financialTone(headers[i],v)+'">'+(rich[i]?rich[i](v,ri):e(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
@@ -306,7 +312,7 @@ function showColumnMenu(index,anchor){
   const pos=t.columns.indexOf(index),filterable=index<d.headers.length-1;
   const range=numeric||time?'<div class="column-range"><label>'+(time?'開始時間':'最小值')+'<input id="column-min" type="'+(time?'time':'number')+'" '+(time?'step="1"':'step="any"')+' value="'+e(s.min)+'"></label><label>'+(time?'結束時間':'最大值')+'<input id="column-max" type="'+(time?'time':'number')+'" '+(time?'step="1"':'step="any"')+' value="'+e(s.max)+'"></label></div>':'';
   const html='<div class="column-freeze"><button class="button small" data-freeze="'+(pos+1)+'">凍結至此欄</button><button class="button small" data-freeze="0" '+(!t.freeze?'disabled':'')+'>取消凍結</button></div><p class="notice">凍結依目前欄位順序；窄螢幕會保留可捲動區域。</p>'+(filterable?'<div class="column-filter-form"><label for="column-query">搜尋此欄</label><input id="column-query" value="'+e(s.query)+'" placeholder="輸入關鍵字" autocomplete="off">'+range+'<div class="column-value-toolbar"><strong>篩選值</strong><button data-action="column-select-all">全選</button><button data-action="column-select-none">清空</button></div><small id="column-selection" aria-live="polite"></small><div id="column-values" class="column-values"></div><p class="column-error" role="alert" id="column-error"></p></div>':'');
-  showDialog('欄位操作 · '+e(d.headers[index]),html,{footer:filterable?button('清除此欄','column-clear')+button('取消','close-dialog')+button('套用','column-apply','primary'):''});
+  showDialog('欄位操作 · '+e(d.headers[index]),html,{footer:filterable?button('清除此欄','column-clear')+button('完成','column-apply','primary'):''});
   const dialog=$('#modal');dialog.classList.add('column-popover');
   if(filterable)renderColumnValues();
   const rect=s.anchor||{left:12,bottom:12};const left=Math.max(12,Math.min(rect.left,innerWidth-dialog.offsetWidth-12)),top=Math.max(12,Math.min(rect.bottom+6,innerHeight-dialog.offsetHeight-12));
@@ -319,33 +325,52 @@ function renderColumnValues(){
   $('#column-values').innerHTML=matches.length?matches.map(([v,count])=>'<label class="column-value"><input type="checkbox" data-column-value="'+e(v)+'" '+(s.values===null||s.values.includes(v)?'checked':'')+'><span title="'+e(tr(v))+'">'+e(tr(v))+'</span><small>'+count+'</small></label>').join(''):'<p class="notice">沒有符合的選項</p>';
   $('#column-selection').textContent=tr(s.values===null?'全部值':'已選 '+s.values.length+' 項');
 }
-function applyColumnFilter(){
+function applyColumnFilter({close=true}={}){
+  clearTimeout(columnTimer);
   const s=dialogState,min=$('#column-min')?.value||'',max=$('#column-max')?.value||'';
-  if(min!==''&&max!==''&&(s.kind==='number'?Number(min)>Number(max):min>max)){$('#column-error').textContent=tr('最小值或開始時間不可大於最大值或結束時間');return;}
+  if(!s||s.type!=='column')return false;
+  if(min!==''&&max!==''&&(s.kind==='number'?Number(min)>Number(max):min>max)){$('#column-error').textContent=tr('最小值或開始時間不可大於最大值或結束時間');return false;}
+  if($('#column-error'))$('#column-error').textContent='';
   const rule={query:s.query.trim(),values:s.values,min,max,kind:s.kind};
   if(rule.values===null)delete rule.values;
   saveView();if(hasColumnFilter(rule))current().columnFilters[s.index]=rule;else delete current().columnFilters[s.index];
-  current().page=1;current().scroll.y=0;closeDialog();render();
+  current().page=1;current().scroll.y=0;if(close)closeDialog();render();return true;
 }
+function scheduleColumnFilter(){const s=dialogState,id=activeId;clearTimeout(columnTimer);columnTimer=setTimeout(()=>{if(dialogState===s&&activeId===id)applyColumnFilter({close:false});},350);}
 function showDate(){
   const f=current().draft;
-  showDialog('日期區間','<div class="dates"><label>開始日期<br><br><input type="date" id="date-start" value="'+e(f.start)+'"></label><label>結束日期<br><br><input type="date" id="date-end" value="'+e(f.end)+'"></label></div><div class="date-presets">'+button('模擬資料日 · 10/15','date-demo','small')+button('本月','date-month','small')+'</div><p class="notice">目前模擬資料日期為 2026/10/15，時間採 UTC+8。選擇其他日期可查看無資料狀態。</p>',{footer:button('取消','close-dialog')+button('套用日期','date-apply','primary')});
+  dialogState={type:'date'};
+  showDialog('日期區間','<div class="dates"><label>開始日期<br><br><input type="date" id="date-start" value="'+e(f.start)+'"></label><label>結束日期<br><br><input type="date" id="date-end" value="'+e(f.end)+'"></label></div><div class="date-presets">'+button('模擬資料日 · 10/15','date-demo','small')+button('本月','date-month','small')+'</div><p class="notice">選擇有效日期後自動篩選。模擬資料日期為 2026/10/15，時間採 UTC+8。</p><p class="date-error" id="date-error" role="alert"></p>',{footer:button('完成','date-apply','primary')});
 }
+function applyDate({close=false,notify=false}={}){const start=$('#date-start')?.value,end=$('#date-end')?.value;if(!start||!end||start>end){if($('#date-error'))$('#date-error').textContent=tr('請確認開始日期不晚於結束日期');if(notify)toast('請確認開始日期不晚於結束日期');return false;}if($('#date-error'))$('#date-error').textContent='';current().draft.start=start;current().draft.end=end;if(close)closeDialog();queryForm();return true;}
 function showSearch(query=''){
   const matches=DATA.reports.filter(d=>d.title.includes(query));
   const players=[...new Set(DATA.records.map(r=>r.player))].filter(n=>query&&(n.includes(query)||playerId(n).toLowerCase().includes(query.toLowerCase())));
   return '<div class="search-results">'+matches.map(d=>'<button class="search-result" data-report="'+d.key+'">'+icon(d.icon)+'<span>'+d.title+'</span></button>').join('')+players.map(n=>'<button class="search-result" data-player="'+n+'">'+icon('a24ad.svg')+'<span>'+n+' · '+playerId(n)+'</span></button>').join('')+(!matches.length&&!players.length?'<p class="notice">找不到符合的頁面或玩家。</p>':'')+'</div>';
 }
-function queryForm(){
-  const values=Object.fromEntries(new FormData($('#query-form')));
-  current().draft={...current().draft,...values};current().filters={...current().draft};current().page=1;current().scroll={x:current().scroll.x,y:0,main:0};render();
+function queryForm(t=current()){
+  clearTimeout(queryTimers.get(t.id));queryTimers.delete(t.id);
+  if(!tabs.includes(t)||JSON.stringify(t.filters)===JSON.stringify(t.draft))return;
+  const f=t.draft;
+  if(f.wrapper&&f.merchant&&!DATA.organizations.some(o=>o.name===f.merchant&&o.parent===f.wrapper))f.merchant='';
+  if(f.game&&f.type&&!DATA.games.some(g=>g.name===f.game&&[g.name,g.type,g.family].includes(f.type)))f.game='';
+  if(f.game&&f.room&&!DATA.records.some(r=>r.game===f.game&&r.room===f.room))f.room='';
+  const active=t.id===activeId,focus=active&&document.activeElement?.closest('#query-form')?document.activeElement:null;
+  const selection=focus?.tagName==='INPUT'&&focus.selectionStart!==null?[focus.selectionStart,focus.selectionEnd]:null,id=focus?.id;
+  if(active)saveView();t.filters={...f};t.page=1;t.scroll.y=0;
+  if(!active){persist();return;}render();
+  if(id)requestAnimationFrame(()=>{if(activeId!==t.id)return;const input=document.getElementById(id);input?.focus({preventScroll:true});if(input&&selection)input.setSelectionRange(...selection);});
 }
+function scheduleQuery(){const t=current();clearTimeout(queryTimers.get(t.id));queryTimers.set(t.id,setTimeout(()=>queryForm(t),350));}
 document.addEventListener('submit',event=>{if(event.target.id==='query-form'){event.preventDefault();queryForm();}});
 document.addEventListener('input',event=>{
-  if(event.target.closest('#query-form')&&event.target.name)current().draft[event.target.name]=event.target.value;
+  if(event.target.closest('#query-form')&&event.target.name){current().draft[event.target.name]=event.target.value;if(event.target.tagName==='INPUT'&&!event.isComposing&&!composing)scheduleQuery();}
   if(event.target.id==='quick-search')$('#search-list').innerHTML=showSearch(event.target.value);
-  if(event.target.id==='column-query'){dialogState.query=event.target.value;renderColumnValues();}
+  if(event.target.id==='column-query'){dialogState.query=event.target.value;renderColumnValues();if(!event.isComposing&&!composing)scheduleColumnFilter();}
+  if(['column-min','column-max'].includes(event.target.id))scheduleColumnFilter();
 });
+document.addEventListener('compositionstart',()=>{composing=true;});
+document.addEventListener('compositionend',event=>{composing=false;if(event.target.closest('#query-form')&&event.target.name){current().draft[event.target.name]=event.target.value;scheduleQuery();}if(event.target.id==='column-query'){dialogState.query=event.target.value;renderColumnValues();scheduleColumnFilter();}});
 document.addEventListener('change',event=>{
   if(event.target.id==='page-size'){saveView();current().pageSize=Number(event.target.value);current().page=1;current().scroll.y=0;render();}
   if(event.target.matches('[data-show-column]')){
@@ -358,8 +383,11 @@ document.addEventListener('change',event=>{
     if(s.values===null)s.values=s.options.map(([v])=>v);
     s.values=event.target.checked?[...new Set([...s.values,v])]:s.values.filter(x=>x!==v);
     $('#column-selection').textContent=tr('已選 '+s.values.length+' 項');
+    applyColumnFilter({close:false});
   }
-  if(event.target.closest('#query-form')&&event.target.name)current().draft[event.target.name]=event.target.value;
+  if(['column-min','column-max'].includes(event.target.id))applyColumnFilter({close:false});
+  if(['date-start','date-end'].includes(event.target.id))applyDate();
+  if(event.target.closest('#query-form')&&event.target.name&&!composing){current().draft[event.target.name]=event.target.value;queryForm();}
 });
 document.addEventListener('click',event=>{
   const target=event.target.closest('button,a');if(!target)return;
@@ -405,21 +433,18 @@ document.addEventListener('click',event=>{
     case 'new-tab':newTab();break;
     case 'language':languageOpen=!languageOpen;renderRail();break;
     case 'theme':document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'dark':'light';persist();break;
-    case 'reset':current().filters=defaultFilters();current().draft=defaultFilters();current().columnFilters={};current().sort=null;current().page=1;current().scroll={x:0,y:0,main:0};render();break;
-    case 'column-select-all':dialogState.values=null;renderColumnValues();break;
-    case 'column-select-none':dialogState.values=[];renderColumnValues();break;
+    case 'reset':clearTimeout(queryTimers.get(activeId));queryTimers.delete(activeId);current().filters=defaultFilters();current().draft=defaultFilters();current().columnFilters={};current().sort=null;current().page=1;current().scroll={x:0,y:0,main:0};render();break;
+    case 'column-select-all':dialogState.values=null;renderColumnValues();applyColumnFilter({close:false});break;
+    case 'column-select-none':dialogState.values=[];renderColumnValues();applyColumnFilter({close:false});break;
     case 'column-apply':applyColumnFilter();break;
     case 'column-clear':{const i=dialogState.index;saveView();delete current().columnFilters[i];current().page=1;current().scroll.y=0;closeDialog();render();break;}
     case 'column-clear-all':saveView();current().columnFilters={};current().page=1;current().scroll.y=0;render();break;
     case 'open-all':openReport('all');break;
-    case 'close-dialog':closeDialog();break;
+    case 'close-dialog':finishDialog();break;
     case 'date':showDate();break;
-    case 'date-demo':$('#date-start').value='2026-10-15';$('#date-end').value='2026-10-15';break;
-    case 'date-month':$('#date-start').value='2026-10-01';$('#date-end').value='2026-10-31';break;
-    case 'date-apply':{
-      const start=$('#date-start').value,end=$('#date-end').value;if(!start||!end||start>end){toast('請確認開始日期不晚於結束日期');return;}
-      current().draft.start=start;current().draft.end=end;current().filters={...current().draft};current().page=1;closeDialog();render();break;
-    }
+    case 'date-demo':$('#date-start').value='2026-10-15';$('#date-end').value='2026-10-15';applyDate();break;
+    case 'date-month':$('#date-start').value='2026-10-01';$('#date-end').value='2026-10-31';applyDate();break;
+    case 'date-apply':applyDate({close:true,notify:true});break;
     case 'columns':showColumns();break;
     case 'columns-default':{const d=defs.get(current().key);dialogState={type:'columns',order:d.headers.map((_,i)=>i),shown:d.headers.map((_,i)=>i),freeze:3};showColumns();break;}
     case 'columns-apply':{
@@ -435,7 +460,7 @@ document.addEventListener('click',event=>{
     case 'player-records':openReport('all',{duplicate:true,filters:{query:target.dataset.name}});break;
     case 'search':showDialog('快速搜尋','<input id="quick-search" class="dialog-search" placeholder="搜尋報表名稱、玩家帳號或 ID" aria-label="快速搜尋"><div id="search-list">'+showSearch()+'</div>');requestAnimationFrame(()=>$('#quick-search').focus());break;
     case 'apps':showDialog('頁面捷徑','<div class="search-results">'+DATA.reports.map(d=>'<button class="search-result" data-report="'+d.key+'">'+icon(d.icon)+d.title+'</button>').join('')+'</div>');break;
-    case 'notifications':showDialog('通知','<div class="small-menu"><button data-record="DEMO-F002"><strong>補單核對完成</strong><p class="notice">捕魚批次 FB-0302 已完成核對，未重複扣款。</p></button><button data-action="open-all"><strong>模擬資料準備完成</strong><p class="notice">400 筆記錄、36 位玩家、6 款遊戲，幣別為 USDT。</p></button></div>');break;
+    case 'notifications':showDialog('通知','<div class="small-menu"><button data-record="DEMO-F002"><strong>補單核對完成</strong><p class="notice">捕魚批次 FB-0302 已完成核對，未重複扣款。</p></button><button data-action="open-all"><strong>模擬資料準備完成</strong><p class="notice">'+DATA.records.length.toLocaleString('en-US')+' 筆記錄、'+DATA.totals.players+' 位玩家、'+DATA.totals.games+' 款遊戲，幣別為 USDT。</p></button></div>');break;
     case 'profile':showDialog('平台管理員',kv([['使用者','平台管理員'],['環境','互動 Demo'],['資料來源','USDT 模擬資料']])+'<p class="notice">操作與分頁設定儲存在目前瀏覽器。此示範未連接正式帳號與資金系統。</p>');break;
   }
 });
@@ -457,8 +482,8 @@ document.addEventListener('keydown',event=>{
     activate(tabs[index].id);requestAnimationFrame(()=>$('[data-tab="'+activeId+'"]').focus());
   }
 });
-$('#modal').addEventListener('click',event=>{if(event.target===$('#modal')){const r=$('#modal').getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog();}});
-$('#modal').addEventListener('cancel',()=>{dialogState=null;detailTrail=[];});
+$('#modal').addEventListener('click',event=>{if(event.target===$('#modal')){const r=$('#modal').getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)finishDialog();}});
+$('#modal').addEventListener('cancel',()=>{if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();clearTimeout(columnTimer);dialogState=null;detailTrail=[];});
 window.addEventListener('beforeunload',saveView);
 const requested=location.hash.slice(1);if(defs.has(requested)){let t=tabs.find(t=>t.key===requested);if(!t){t=tab(requested);tabs.push(t);}activeId=t.id;}
 render();
