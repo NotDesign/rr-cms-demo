@@ -75,6 +75,43 @@ export function summaryFor(def, records) {
   return [[def.key==='slots'?'旋轉次數（免費 '+records.filter(r=>!r.bet).length+' 次）':'記錄筆數',String(t.count)],
     ['實扣投注（USDT）',money(t.bet)],['結算派彩（USDT）',money(t.payout)],['玩家淨盈虧（USDT）',signed(t.net)]];
 }
+// Column filters run on the displayed report grain. Player/game and category
+// aggregates keep their underlying records so cards, totals and drill-down agree.
+export const hasColumnFilter = rule => !!rule && (!!String(rule.query||'').trim() || Array.isArray(rule.values) || rule.min!==undefined&&rule.min!=='' || rule.max!==undefined&&rule.max!=='');
+const normalized = value => String(value??'').normalize('NFKC').trim().toLocaleLowerCase();
+export function filterReportColumns(def, records, filters={}, display=value=>String(value)) {
+  const active=Object.entries(filters).filter(([index,rule])=>Number.isInteger(Number(index))&&Number(index)>=0&&Number(index)<def.headers.length-1&&hasColumnFilter(rule));
+  const rows=rowsFor(def,records).filter(row=>active.every(([index,rule])=>{
+    const value=String(row[index]),query=normalized(rule.query);
+    if(query && !normalized(value).includes(query) && !normalized(display(value)).includes(query))return false;
+    if(Array.isArray(rule.values)&&!rule.values.includes(value))return false;
+    const time=rule.kind==='time',convert=x=>time?String(x).padEnd(8,':00'.slice(0,8-String(x).length)):number(x);
+    const actual=convert(value);
+    if(rule.min!==undefined&&rule.min!=='' && (Number.isNaN(actual)||actual<convert(rule.min)))return false;
+    if(rule.max!==undefined&&rule.max!=='' && (Number.isNaN(actual)||actual>convert(rule.max)))return false;
+    return true;
+  }));
+  if(!active.length)return {rows,records};
+  if(def.key==='player'){
+    const groups=new Set(rows.map(row=>row[0]+'\u0000'+row[4]));
+    return {rows,records:records.filter(r=>groups.has(r.player+'\u0000'+r.game))};
+  }
+  if(def.key==='stats'){
+    const kinds=new Set(rows.map(row=>row[0]));
+    return {rows,records:records.filter(r=>kinds.has(r.kind))};
+  }
+  const ids=new Set(rows.map(row=>rowRecordId(def,row)));
+  return {rows,records:records.filter(r=>ids.has(r.id))};
+}
+// Keep pinned columns usable at narrow widths; freeze only complete columns,
+// leaving room for the unfrozen part of the horizontally scrollable table.
+export function visibleFreezeCount(widths, requested, viewportWidth) {
+  const count=Math.min(Math.max(0,Number(requested)||0),widths.length);
+  const budget=Math.max(0,viewportWidth-Math.min(160,viewportWidth*.45));
+  let sum=0,shown=0;
+  for(let i=0;i<count;i++){if(sum+widths[i]>budget)break;sum+=widths[i];shown++;}
+  return shown;
+}
 // Aggregate the entire filtered result, never only the visible page. Balances,
 // multipliers, ranking and cumulative P&L are deliberately non-additive.
 export function tableTotals(def, records, rows=rowsFor(def,records)) {

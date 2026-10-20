@@ -1,6 +1,6 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail} from './core.js?v=6';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail} from './core.js?v=7';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=6';
-import {localize,translate,languageNames} from './i18n.js?v=6';
+import {localize,translate,languageNames} from './i18n.js?v=7';
 
 const DATA=await fetch('./data/demo-data.json?v=6').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -19,7 +19,7 @@ const img=(file,alt='')=>'<img src="assets/figma/'+file+'" alt="'+e(alt)+'" load
 const icon=file=>'<span class="icon" aria-hidden="true">'+img(file)+'</span>';
 const button=(label,action,cls='',attrs='')=>'<button class="button '+cls+'" data-action="'+action+'" '+attrs+'>'+label+'</button>';
 const storageKey='rr-cms-workspace-v1';
-function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),sort:null,page:1,pageSize:50,columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:3,scroll:{x:0,y:0,main:0}};}
+function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:3,scroll:{x:0,y:0,main:0}};}
 let saved;
 try{saved=JSON.parse(localStorage.getItem(storageKey));}catch{}
 saved=migrateWorkspace(saved,DATA.reports);
@@ -90,8 +90,8 @@ function filtersHtml(def){
 }
 function summaryHtml(def,rs){return '<div class="summary">'+summaryFor(def,rs).map(([label,v],i)=>'<div class="summary-card"><p class="summary-label">'+label+'</p><p class="summary-number '+financialTone(label,v)+'">'+v+'</p></div>').join('')+'</div>';}
 function getReport(){
-  const t=current(),d=defs.get(t.key),rs=filterRecords(DATA.records,t.key,t.filters);
-  return {t,d,rs,rows:sortedRows(rowsFor(d,rs),t.sort)};
+  const t=current(),d=defs.get(t.key),base=filterRecords(DATA.records,t.key,t.filters),result=filterReportColumns(d,base,t.columnFilters,tr);
+  return {t,d,rs:result.records,rows:sortedRows(result.rows,t.sort)};
 }
 function linkCell(d,row,index,text){
   if(index===d.headers.length-1)return '<button class="detail-link" data-row-detail="'+e(rowId(d,row))+'">'+e(text)+'</button>';
@@ -108,22 +108,29 @@ function linkCell(d,row,index,text){
 }
 function rowId(d,row){return d.key==='player'?'player:'+row[0]:d.key==='stats'?'stats:'+row[0]:rowRecordId(d,row);}
 const isNumeric=(d,i)=>['money','signed','number'].includes(d.columnTypes[i])||/倍率|倍數|排行/.test(d.headers[i]);
+const filterIcon='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14l-5.4 6.3V16l-3.2-1.7v-4L3 4Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+function columnFilterDescription(d,index,rule){
+  return [rule.query?'包含「'+rule.query+'」':'',Array.isArray(rule.values)?'已選 '+rule.values.length+' 項':'',rule.min!==undefined&&rule.min!==''?'≥ '+rule.min:'',rule.max!==undefined&&rule.max!==''?'≤ '+rule.max:''].filter(Boolean).join('；');
+}
 function tableHtml(d,rs,rows){
   const t=current(),visible=t.columns.filter(i=>i>=0&&i<d.headers.length);
   if(!visible.length)t.columns=[0];
-  const cols=visible.length?visible:[0],freeze=Math.min(innerWidth<760?1:t.freeze,cols.length);
+  const cols=visible.length?visible:[0],viewportWidth=Math.max(0,($('#content').clientWidth||innerWidth)-(innerWidth<760?64:232));
+  const freeze=visibleFreezeCount(cols.map(i=>d.widths[i]),t.freeze,viewportWidth);
   let left=0;
   const style=cols.map((col,i)=>{const x={width:d.widths[col],left:i<freeze?left:null,last:i===freeze-1};left+=d.widths[col];return x;});
   const tableWidth=style.reduce((n,c)=>n+c.width,0);
   const pageCount=Math.max(1,Math.ceil(rows.length/t.pageSize));t.page=Math.max(1,Math.min(t.page,pageCount));
   const pageRows=rows.slice((t.page-1)*t.pageSize,t.page*t.pageSize);
   const tdStyle=(st,i)=>' style="width:'+st.width+'px;min-width:'+st.width+'px;'+(st.left!==null?'left:'+st.left+'px;':'')+'"';
-  const heads=cols.map((col,i)=>'<th scope="col" data-column="'+col+'" aria-sort="'+(t.sort?.index===col?(t.sort.direction==='asc'?'ascending':'descending'):'none')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(t.sort?.index===col?'sorted':'')+'"'+tdStyle(style[i],i)+'><button data-sort="'+col+'" title="'+e(tr(d.headers[col]))+'"><span class="header-label">'+e(d.headers[col])+'</span><span class="sort-mark">'+(t.sort?.index===col?(t.sort.direction==='asc'?'↑':'↓'):'↕')+'</span></button></th>').join('');
+  const heads=cols.map((col,i)=>'<th scope="col" data-column="'+col+'" aria-sort="'+(t.sort?.index===col?(t.sort.direction==='asc'?'ascending':'descending'):'none')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(t.sort?.index===col?'sorted ':'')+(hasColumnFilter(t.columnFilters[col])?'filtered':'')+'"'+tdStyle(style[i],i)+'><div class="header-content"><button data-sort="'+col+'" title="'+e(tr(d.headers[col]))+'"><span class="header-label">'+e(d.headers[col])+'</span><span class="sort-mark">'+(t.sort?.index===col?(t.sort.direction==='asc'?'↑':'↓'):'↕')+'</span></button><button class="column-trigger" data-column-menu="'+col+'" title="'+e(tr('欄位操作：'+d.headers[col]))+'" aria-label="'+e(tr('欄位操作：'+d.headers[col]))+'" aria-haspopup="dialog">'+(col===d.headers.length-1?'⋯':filterIcon)+'<span class="filter-dot" aria-hidden="true"></span></button></div></th>').join('');
   const totalsRow=tableTotals(d,rs,rows);
   const total='<tr class="totals-row" aria-label="查詢結果合計">'+cols.map((col,i)=>'<td title="'+e(totalsRow[col]||'此欄不適用加總')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+financialTone(d.headers[col],totalsRow[col])+'"'+tdStyle(style[i],i)+'>'+e(totalsRow[col])+'</td>').join('')+'</tr>';
   const body=pageRows.map(row=>'<tr>'+cols.map((col,i)=>'<td title="'+e(tr(row[col]))+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+financialTone(d.headers[col],row[col])+'"'+tdStyle(style[i],i)+'>'+linkCell(d,row,col,row[col])+'</td>').join('')+'</tr>').join('');
-  const note=rows.length?'顯示 '+((t.page-1)*t.pageSize+1)+'–'+Math.min(rows.length,t.page*t.pageSize)+' 筆，共 '+rows.length+' 筆 · USDT · 橫向捲動查看完整欄位 · 右鍵表頭可凍結至該欄':'符合條件的記錄為 0 筆';
-  return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('機構總覽','organizations','small')+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div><div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表"><table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr>'+total+'</thead><tbody>'+body+'</tbody></table>'+(rows.length?'':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><p class="table-note">'+note+'<br>合計涵蓋全部篩選結果；玩家與遊戲數去重，倍率、餘額及累積盈虧不相加。獎池派彩已含在結算派彩內。</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
+  const note=rows.length?'顯示 '+((t.page-1)*t.pageSize+1)+'–'+Math.min(rows.length,t.page*t.pageSize)+' 筆，共 '+rows.length+' 筆 · USDT · 表頭漏斗可搜尋、篩選與凍結欄位':'符合條件的記錄為 0 筆';
+  const chips=Object.entries(t.columnFilters).filter(([,r])=>hasColumnFilter(r)).map(([col,r])=>'<button class="filter-chip" data-column-menu="'+col+'" title="'+e(tr(columnFilterDescription(d,Number(col),r)))+'">'+e(d.headers[col])+' · '+e(columnFilterDescription(d,Number(col),r))+'</button><button class="chip-remove" data-clear-column="'+col+'" aria-label="'+e(tr('清除此欄篩選：'+d.headers[col]))+'">×</button>').join('');
+  const filterBar='<div class="column-filter-bar"><span class="freeze-status" data-freeze-status>'+freezeDescription(t.freeze,freeze)+'</span>'+(chips?'<div class="active-column-filters">'+chips+'</div>'+button('清除欄位篩選','column-clear-all','text-button'):'<span class="muted">表頭漏斗可搜尋、篩選與凍結欄位</span>')+'</div>';
+  return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('機構總覽','organizations','small')+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div>'+filterBar+'<div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表"><table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr>'+total+'</thead><tbody>'+body+'</tbody></table>'+(rows.length?'':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><p class="table-note">'+note+'<br>合計涵蓋全部篩選結果；玩家與遊戲數去重，倍率、餘額及累積盈虧不相加。獎池派彩已含在結算派彩內。</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
 }
 function distribution(rs){
   const types=['電子遊戲','老虎機','捕魚','棋牌'],values=types.map(k=>totals(rs.filter(r=>r.kind===k)).bet),max=Math.max(...values,1);
@@ -147,12 +154,21 @@ function render(){
     $('#content').scrollTop=t.scroll.main;
     const active=$('.work-tab.active');if(active)active.scrollIntoView({block:'nearest',inline:'nearest'});
     alignHeader();
+    updateFrozenColumns();
   });
 }
 function alignHeader(){const page=$('.page');if(page)$('#header').style.width=page.getBoundingClientRect().width+'px';}
-new ResizeObserver(alignHeader).observe($('#content'));
+function freezeDescription(requested,visible){return requested?'凍結左側 '+requested+' 欄'+(visible<requested?'（此寬度顯示 '+visible+' 欄）':''):'未凍結欄位';}
+function updateFrozenColumns(){
+  const viewport=$('.table-viewport'),table=$('.report-table');if(!viewport||!table)return;
+  const t=current(),d=defs.get(t.key),widths=t.columns.map(i=>d.widths[i]),count=visibleFreezeCount(widths,t.freeze,viewport.clientWidth);
+  for(const row of table.rows){let left=0;Array.from(row.cells).forEach((cell,i)=>{cell.classList.toggle('frozen',i<count);cell.classList.toggle('freeze-end',i===count-1);cell.style.left=i<count?left+'px':'';left+=widths[i];});}
+  const status=$('[data-freeze-status]');if(status)status.textContent=tr(freezeDescription(t.freeze,count));
+}
+new ResizeObserver(()=>{alignHeader();updateFrozenColumns();}).observe($('#content'));
 function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   const dialog=$('#modal');if(dialog.open)dialog.close();
+  dialog.style.cssText='';
   dialog.className=drawer?'drawer':'';
   dialog.innerHTML='<div class="dialog-header"><div><h2 id="dialog-title">'+title+'</h2>'+(subtitle?'<small>'+subtitle+'</small>':'')+'</div><button class="icon-button close" data-action="close-dialog" aria-label="關閉視窗">×</button></div><div class="dialog-body">'+html+'</div>'+(footer?'<div class="dialog-footer">'+footer+'</div>':'');
   localized(dialog);
@@ -270,7 +286,37 @@ function showColumns(){
   }
   const d=defs.get(current().key),s=dialogState;
   const list='<div class="column-grid">'+s.order.map((index,pos)=>'<div class="column-item"><label><input type="checkbox" data-show-column="'+index+'" '+(s.shown.includes(index)?'checked':'')+'>'+e(d.headers[index])+'</label><button data-move-column="'+pos+'" data-direction="-1" aria-label="向前移動 '+e(d.headers[index])+'" '+(pos===0?'disabled':'')+'>↑</button><button data-move-column="'+pos+'" data-direction="1" aria-label="向後移動 '+e(d.headers[index])+'" '+(pos===s.order.length-1?'disabled':'')+'>↓</button></div>').join('')+'</div>';
-  showDialog('欄位設定', '<p class="notice">勾選顯示欄位，使用箭頭調整順序。此設定只套用目前工作分頁。</p>'+list+'<label>凍結左側欄位　<select id="freeze-count">'+[0,1,2,3,4,5].map(n=>option(String(n),n===0?'不凍結':n+' 欄',String(s.freeze))).join('')+'</select></label>',{footer:button('恢復預設','columns-default')+button('套用','columns-apply','primary')});
+  showDialog('欄位設定', '<p class="notice">勾選顯示欄位，使用箭頭調整順序。此設定只套用目前工作分頁。</p>'+list+'<label>凍結左側欄位　<select id="freeze-count">'+Array.from({length:s.shown.length+1},(_,n)=>option(String(n),n===0?'不凍結':n+' 欄',String(s.freeze))).join('')+'</select></label><p class="notice">凍結依目前欄位順序；窄螢幕會保留可捲動區域。</p>',{footer:button('恢復預設','columns-default')+button('套用','columns-apply','primary')});
+}
+function showColumnMenu(index,anchor){
+  const t=current(),d=defs.get(t.key),rule=structuredClone(t.columnFilters[index]||{}),others={...t.columnFilters};delete others[index];
+  const rows=filterReportColumns(d,filterRecords(DATA.records,t.key,t.filters),others,tr).rows,counts=new Map();
+  for(const row of rows){const value=String(row[index]);counts.set(value,(counts.get(value)||0)+1);}
+  const numeric=['money','signed','number'].includes(d.columnTypes[index]),time=/時間/.test(d.headers[index]);
+  const s=dialogState={type:'column',index,query:rule.query||'',values:rule.values??null,min:rule.min??'',max:rule.max??'',kind:time?'time':numeric?'number':'text',options:[...counts].sort((a,b)=>numeric?number(a[0])-number(b[0]):tr(a[0]).localeCompare(tr(b[0]),locale,{numeric:true})),anchor:anchor?.getBoundingClientRect()};
+  const pos=t.columns.indexOf(index),filterable=index<d.headers.length-1;
+  const range=numeric||time?'<div class="column-range"><label>'+(time?'開始時間':'最小值')+'<input id="column-min" type="'+(time?'time':'number')+'" '+(time?'step="1"':'step="any"')+' value="'+e(s.min)+'"></label><label>'+(time?'結束時間':'最大值')+'<input id="column-max" type="'+(time?'time':'number')+'" '+(time?'step="1"':'step="any"')+' value="'+e(s.max)+'"></label></div>':'';
+  const html='<div class="column-freeze"><button class="button small" data-freeze="'+(pos+1)+'">凍結至此欄</button><button class="button small" data-freeze="0" '+(!t.freeze?'disabled':'')+'>取消凍結</button></div><p class="notice">凍結依目前欄位順序；窄螢幕會保留可捲動區域。</p>'+(filterable?'<div class="column-filter-form"><label for="column-query">搜尋此欄</label><input id="column-query" value="'+e(s.query)+'" placeholder="輸入關鍵字" autocomplete="off">'+range+'<div class="column-value-toolbar"><strong>篩選值</strong><button data-action="column-select-all">全選</button><button data-action="column-select-none">清空</button></div><small id="column-selection" aria-live="polite"></small><div id="column-values" class="column-values"></div><p class="column-error" role="alert" id="column-error"></p></div>':'');
+  showDialog('欄位操作 · '+e(d.headers[index]),html,{footer:filterable?button('清除此欄','column-clear')+button('取消','close-dialog')+button('套用','column-apply','primary'):''});
+  const dialog=$('#modal');dialog.classList.add('column-popover');
+  if(filterable)renderColumnValues();
+  const rect=s.anchor||{left:12,bottom:12};const left=Math.max(12,Math.min(rect.left,innerWidth-dialog.offsetWidth-12)),top=Math.max(12,Math.min(rect.bottom+6,innerHeight-dialog.offsetHeight-12));
+  dialog.style.left=left+'px';dialog.style.top=top+'px';
+  if(filterable)$('#column-query').focus();
+}
+function renderColumnValues(){
+  const s=dialogState,q=s.query.normalize('NFKC').trim().toLocaleLowerCase();
+  const matches=s.options.filter(([v])=>v.normalize('NFKC').toLocaleLowerCase().includes(q)||tr(v).normalize('NFKC').toLocaleLowerCase().includes(q));
+  $('#column-values').innerHTML=matches.length?matches.map(([v,count])=>'<label class="column-value"><input type="checkbox" data-column-value="'+e(v)+'" '+(s.values===null||s.values.includes(v)?'checked':'')+'><span title="'+e(tr(v))+'">'+e(tr(v))+'</span><small>'+count+'</small></label>').join(''):'<p class="notice">沒有符合的選項</p>';
+  $('#column-selection').textContent=tr(s.values===null?'全部值':'已選 '+s.values.length+' 項');
+}
+function applyColumnFilter(){
+  const s=dialogState,min=$('#column-min')?.value||'',max=$('#column-max')?.value||'';
+  if(min!==''&&max!==''&&(s.kind==='number'?Number(min)>Number(max):min>max)){$('#column-error').textContent=tr('最小值或開始時間不可大於最大值或結束時間');return;}
+  const rule={query:s.query.trim(),values:s.values,min,max,kind:s.kind};
+  if(rule.values===null)delete rule.values;
+  saveView();if(hasColumnFilter(rule))current().columnFilters[s.index]=rule;else delete current().columnFilters[s.index];
+  current().page=1;current().scroll.y=0;closeDialog();render();
 }
 function showDate(){
   const f=current().draft;
@@ -289,6 +335,7 @@ document.addEventListener('submit',event=>{if(event.target.id==='query-form'){ev
 document.addEventListener('input',event=>{
   if(event.target.closest('#query-form')&&event.target.name)current().draft[event.target.name]=event.target.value;
   if(event.target.id==='quick-search')$('#search-list').innerHTML=showSearch(event.target.value);
+  if(event.target.id==='column-query'){dialogState.query=event.target.value;renderColumnValues();}
 });
 document.addEventListener('change',event=>{
   if(event.target.id==='page-size'){saveView();current().pageSize=Number(event.target.value);current().page=1;current().scroll.y=0;render();}
@@ -297,6 +344,12 @@ document.addEventListener('change',event=>{
     s.shown=event.target.checked?[...s.shown,i]:s.shown.filter(x=>x!==i);
   }
   if(event.target.id==='freeze-count'&&dialogState)dialogState.freeze=Number(event.target.value);
+  if(event.target.hasAttribute('data-column-value')){
+    const s=dialogState,v=event.target.dataset.columnValue;
+    if(s.values===null)s.values=s.options.map(([v])=>v);
+    s.values=event.target.checked?[...new Set([...s.values,v])]:s.values.filter(x=>x!==v);
+    $('#column-selection').textContent=tr('已選 '+s.values.length+' 項');
+  }
   if(event.target.closest('#query-form')&&event.target.name)current().draft[event.target.name]=event.target.value;
 });
 document.addEventListener('click',event=>{
@@ -327,6 +380,8 @@ document.addEventListener('click',event=>{
   if(target.hasAttribute('data-sort')){
     saveView();const index=Number(target.dataset.sort),t=current();t.sort={index,direction:t.sort?.index===index&&t.sort.direction==='asc'?'desc':'asc'};t.page=1;t.scroll.y=0;render();return;
   }
+  if(target.hasAttribute('data-column-menu')){showColumnMenu(Number(target.dataset.columnMenu),target);return;}
+  if(target.hasAttribute('data-clear-column')){saveView();delete current().columnFilters[target.dataset.clearColumn];current().page=1;current().scroll.y=0;render();return;}
   if(target.hasAttribute('data-page')){saveView();current().page=Number(target.dataset.page);current().scroll.y=0;render();return;}
   if(target.dataset.lang){saveView();locale=target.dataset.lang;languageOpen=false;render();return;}
   if(target.hasAttribute('data-move-column')){
@@ -341,7 +396,12 @@ document.addEventListener('click',event=>{
     case 'new-tab':newTab();break;
     case 'language':languageOpen=!languageOpen;renderRail();break;
     case 'theme':document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'dark':'light';persist();break;
-    case 'reset':current().filters=defaultFilters();current().draft=defaultFilters();current().sort=null;current().page=1;current().scroll={x:0,y:0,main:0};render();break;
+    case 'reset':current().filters=defaultFilters();current().draft=defaultFilters();current().columnFilters={};current().sort=null;current().page=1;current().scroll={x:0,y:0,main:0};render();break;
+    case 'column-select-all':dialogState.values=null;renderColumnValues();break;
+    case 'column-select-none':dialogState.values=[];renderColumnValues();break;
+    case 'column-apply':applyColumnFilter();break;
+    case 'column-clear':{const i=dialogState.index;saveView();delete current().columnFilters[i];current().page=1;current().scroll.y=0;closeDialog();render();break;}
+    case 'column-clear-all':saveView();current().columnFilters={};current().page=1;current().scroll.y=0;render();break;
     case 'open-all':openReport('all');break;
     case 'close-dialog':closeDialog();break;
     case 'date':showDate();break;
@@ -355,7 +415,7 @@ document.addEventListener('click',event=>{
     case 'columns-default':{const d=defs.get(current().key);dialogState={type:'columns',order:d.headers.map((_,i)=>i),shown:d.headers.map((_,i)=>i),freeze:3};showColumns();break;}
     case 'columns-apply':{
       if(!dialogState.shown.length){toast('請至少保留一個欄位');return;}
-      saveView();current().columns=dialogState.order.filter(i=>dialogState.shown.includes(i));current().freeze=dialogState.freeze;current().scroll.x=0;closeDialog();render();toast('已套用目前分頁的欄位設定');break;
+      saveView();current().columns=dialogState.order.filter(i=>dialogState.shown.includes(i));current().freeze=Math.min(dialogState.freeze,current().columns.length);current().scroll.x=0;closeDialog();render();toast('已套用目前分頁的欄位設定');break;
     }
     case 'export':{
       const {d,rows}=getReport(),cols=current().columns;
@@ -373,13 +433,13 @@ document.addEventListener('click',event=>{
 document.addEventListener('click',event=>{if(languageOpen&&!event.target.closest('.language-menu,.language-trigger')){languageOpen=false;renderRail();}});
 document.addEventListener('contextmenu',event=>{
   const th=event.target.closest('.report-table th');if(!th)return;event.preventDefault();
-  const index=current().columns.indexOf(Number(th.dataset.column));
-  showDialog('凍結欄位','<p class="notice">將左側欄位固定，橫向捲動時仍可辨識記錄。</p><div class="small-menu"><button data-freeze="'+(index+1)+'">凍結至「'+e(defs.get(current().key).headers[Number(th.dataset.column)])+'」</button><button data-freeze="0">取消凍結</button></div>');
+  showColumnMenu(Number(th.dataset.column),th);
 });
 document.addEventListener('click',event=>{
   const b=event.target.closest('[data-freeze]');if(!b)return;saveView();current().freeze=Number(b.dataset.freeze);closeDialog();render();toast(current().freeze?'已凍結左側 '+current().freeze+' 欄':'已取消凍結');
 });
 document.addEventListener('keydown',event=>{
+  if(dialogState?.type==='column'&&event.key==='Enter'&&event.target.matches('#column-query,#column-min,#column-max')){event.preventDefault();applyColumnFilter();return;}
   if(event.key==='Escape'){languageOpen=false;renderRail();$('#app').classList.remove('mobile-open');}
   const button=event.target.closest('[role=tab]');
   if(button&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){

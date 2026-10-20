@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {filterRecords,defaultFilters,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,number,playerId,rowRecordId,sortedRows,csv,balances,fishingDetail,financialTone,organizationRecords,chessDetail,money} from '../core.js';
+import {filterRecords,filterReportColumns,visibleFreezeCount,defaultFilters,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,number,playerId,rowRecordId,sortedRows,csv,balances,fishingDetail,financialTone,organizationRecords,chessDetail,money} from '../core.js';
 const d=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url)));
 test('all seven reports reconcile the same USDT fixture',()=>{
   assert.deepEqual(totals(d.records),{count:400,players:36,games:6,categories:4,bet:95740,payout:146555,net:50815});
@@ -79,6 +79,46 @@ test('CSV preserves numeric precision, signs, quoting and Chinese headers',()=>{
 });
 test('numeric sorting handles commas and negative signs',()=>{
   assert.deepEqual(sortedRows([['−20.00'],['1,000.00'],['+15.00']],{index:0,direction:'asc'}),[['−20.00'],['+15.00'],['1,000.00']]);
+});
+test('column text, value and numeric filters combine and keep totals and CSV consistent',()=>{
+  const def=d.reports.find(x=>x.key==='all'),at=h=>def.headers.indexOf(h),base=filterRecords(d.records,'all',defaultFilters());
+  const result=filterReportColumns(def,base,{[at('玩家 ID')]:{query:'p1001'},[at('遊戲類型')]:{values:['捕魚']},[at('玩家淨盈虧')]:{min:'-120',max:'-40'}});
+  assert.equal(result.rows.length,2);assert.equal(result.records.length,2);
+  assert.equal(totals(result.records).bet,320);assert.equal(totals(result.records).payout,160);
+  assert.equal(tableTotals(def,result.records,result.rows)[at('玩家淨盈虧')],'−160.00');
+  const exported=csv(def.headers,result.rows);assert.ok(exported.includes('DEMO-F001'));assert.ok(exported.includes('DEMO-F002'));assert.ok(!exported.includes('DEMO-E001'));
+  assert.equal(filterReportColumns(def,base,{[at('玩家 ID')]:{values:[]}}).rows.length,0);
+  const exact=filterReportColumns(def,base,{[at('結算派彩')]:{min:'1,000',max:'1,000'}});assert.ok(exact.records.length>0);assert.ok(exact.records.every(r=>r.payout===1000));
+});
+test('column search matches localized values while stored selections remain canonical',()=>{
+  const def=d.reports.find(x=>x.key==='all'),col=def.headers.indexOf('遊戲類型');
+  const translated=v=>v==='捕魚'?'Bắn cá':v;
+  const result=filterReportColumns(def,d.records,{[col]:{query:' BẮN CÁ ',values:['捕魚']}},translated);
+  assert.equal(result.rows.length,100);assert.ok(result.records.every(r=>r.kind==='捕魚'));
+});
+test('column time ranges include exact boundaries and preserve no-result summaries',()=>{
+  const def=d.reports.find(x=>x.key==='all');
+  const result=filterReportColumns(def,d.records,{0:{kind:'time',min:'14:28',max:'14:28:16'}});
+  assert.equal(result.records.length,1);assert.equal(result.records[0].id,'DEMO-E001');
+  const empty=filterReportColumns(def,d.records,{0:{kind:'time',min:'23:00'}});
+  assert.equal(summaryFor(def,empty.records)[1][1],'0.00');assert.equal(tableTotals(def,empty.records,empty.rows)[6],'0.00');
+});
+test('aggregate column filters retain complete underlying player/game and category groups',()=>{
+  const player=d.reports.find(x=>x.key==='player'),stats=d.reports.find(x=>x.key==='stats');
+  const result=filterReportColumns(player,d.records,{1:{values:['P1001']},6:{min:200}});
+  assert.equal(result.rows.length,2);assert.equal(result.records.length,3);
+  assert.equal(totals(result.records).bet,620);assert.equal(totals(result.records).payout,760);
+  assert.equal(tableTotals(player,result.records,result.rows)[8],'+140.00');
+  const category=filterReportColumns(stats,d.records,{0:{values:['捕魚']}});
+  assert.equal(category.rows.length,1);assert.equal(category.records.length,100);
+  assert.equal(number(tableTotals(stats,category.records,category.rows)[5]),totals(category.records).bet);
+});
+test('custom freezing follows reordered widths and retains an unfrozen area on narrow viewports',()=>{
+  assert.equal(visibleFreezeCount([150,180,140,140],4,1000),4);
+  assert.equal(visibleFreezeCount([150,180,140,140],4,691),3);
+  assert.equal(visibleFreezeCount([150,180,140,140],4,300),1);
+  assert.equal(visibleFreezeCount([180,150,140],3,200),0);
+  assert.equal(visibleFreezeCount([150,180],0,1000),0);
 });
 
 test('all categories contain 100 samples; every row keeps its source wager and payout',()=>{
