@@ -157,15 +157,24 @@ function render(){
     updateFrozenColumns();
   });
 }
-function alignHeader(){const page=$('.page');if(page)$('#header').style.width=page.getBoundingClientRect().width+'px';}
+function alignHeader(){const page=$('.page');if(page)$('#header').style.width=page.getBoundingClientRect().width+'px';updateReportHeight();}
+function updateReportHeight(){
+  const content=$('#content'),page=$('.page'),card=$('.report-card'),viewport=$('.table-viewport');
+  if(!page||!card||!viewport)return;
+  const view=viewport.getBoundingClientRect(),report=card.getBoundingClientRect();
+  const top=view.top-content.getBoundingClientRect().top+content.scrollTop;
+  const below=report.bottom-view.bottom+page.getBoundingClientRect().bottom-report.bottom;
+  viewport.style.maxHeight=Math.max(240,Math.floor(content.clientHeight-top-below))+'px';
+}
 function freezeDescription(requested,visible){return requested?'凍結左側 '+requested+' 欄'+(visible<requested?'（此寬度顯示 '+visible+' 欄）':''):'未凍結欄位';}
 function updateFrozenColumns(){
   const viewport=$('.table-viewport'),table=$('.report-table');if(!viewport||!table)return;
-  const t=current(),d=defs.get(t.key),widths=t.columns.map(i=>d.widths[i]),count=visibleFreezeCount(widths,t.freeze,viewport.clientWidth);
+  const t=current(),widths=Array.from(table.tHead.rows[0].cells,cell=>cell.getBoundingClientRect().width),count=visibleFreezeCount(widths,t.freeze,viewport.clientWidth);
   for(const row of table.rows){let left=0;Array.from(row.cells).forEach((cell,i)=>{cell.classList.toggle('frozen',i<count);cell.classList.toggle('freeze-end',i===count-1);cell.style.left=i<count?left+'px':'';left+=widths[i];});}
   const status=$('[data-freeze-status]');if(status)status.textContent=tr(freezeDescription(t.freeze,count));
 }
 new ResizeObserver(()=>{alignHeader();updateFrozenColumns();}).observe($('#content'));
+document.fonts.ready.then(()=>{alignHeader();updateFrozenColumns();});
 function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   const dialog=$('#modal');if(dialog.open)dialog.close();
   dialog.style.cssText='';
