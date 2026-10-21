@@ -19,6 +19,15 @@ export const scenario = record => record.seedId || record.id;
 export const columnIndex = (def, header) => def.headers.indexOf(header);
 export const rowRecordId = (def, row) => def.recordIds?.[def.rows.indexOf(row)] || row[columnIndex(def,'投注單號')] || row[columnIndex(def,'結算單號')];
 export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',wrapper:'',merchant:'',game:'',type:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
+export const selectionValues = value => [...new Set((Array.isArray(value)?value:[value]).filter(v=>typeof v==='string'&&v))];
+export const matchesSelection = (selected,values) => !selectionValues(selected).length || selectionValues(selected).some(v=>values.includes(v));
+export function reconcileFilters(filters,organizations,games,records){
+ const f={...filters},keep=(value,valid)=>{const chosen=selectionValues(value).filter(v=>valid.includes(v));return Array.isArray(value)?chosen.length?chosen:'':chosen[0]||'';};
+ f.merchant=keep(f.merchant,organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>o.name));
+ f.game=keep(f.game,games.filter(g=>matchesSelection(f.type,[g.name,g.type,g.family])).map(g=>g.name));
+ if(f.room&&!records.some(r=>r.room===f.room&&matchesSelection(f.game,[r.game])))f.room='';
+ return f;
+}
 // Report dates always use UTC+8; rolling ranges include today.
 export function datePresetRange(preset,now=new Date()){
  const end=new Date(now.getTime()+8*60*60*1000);end.setUTCHours(0,0,0,0);
@@ -39,10 +48,10 @@ export function filterRecords(records, key, filters) {
   return records.filter(r => {
     if (category && category !== r.kind) return false;
     if (filters.start && r.date < filters.start || filters.end && r.date > filters.end) return false;
-    if (filters.type && ![r.kind,r.game,r.gameFamily].includes(filters.type)) return false;
-    if (filters.wrapper && r.wrapperId !== filters.wrapper) return false;
-    if (filters.game && r.game !== filters.game) return false;
-    if (filters.merchant && r.site !== filters.merchant) return false;
+    if (!matchesSelection(filters.type,[r.kind,r.game,r.gameFamily])) return false;
+    if (!matchesSelection(filters.wrapper,[r.wrapperId])) return false;
+    if (!matchesSelection(filters.game,[r.game])) return false;
+    if (!matchesSelection(filters.merchant,[r.site])) return false;
     const text = [r.id,r.player,playerId(r.player),r.round,r.game,r.event].join(' ').toLowerCase();
     if (filters.query && !text.includes(filters.query.trim().toLowerCase())) return false;
     if (filters.event && !r.event.includes(filters.event)) return false;

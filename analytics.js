@@ -4,6 +4,13 @@ export function playerProfitLoss(records){
  const profit=records.reduce((n,r)=>n+Math.max(0,r.net),0),loss=records.reduce((n,r)=>n+Math.min(0,r.net),0);
  return {profit,loss,net:profit+loss};
 }
+// Stable fictional metadata; documentation-only IP ranges never identify a real user.
+export function playerSourceProfile(player,records,organizations){
+ const seed=Number(String(player).replace(/\D/g,''))||1,first=records[0],site=organizations.find(o=>o.id===first?.cashId),wrapper=organizations.find(o=>o.id===first?.wrapperId);
+ const region=/越南/.test(site?.name)?'越南':/泰國/.test(site?.name)?'泰國':'台灣',device=['iOS／iPhone 示範裝置','Android／示範手機','Windows／桌面瀏覽器','macOS／桌面瀏覽器'][seed%4];
+ const latest=[...records].sort((a,b)=>(a.date+' '+a.time).localeCompare(b.date+' '+b.time)).at(-1),vpn=seed%4===0;
+ return {agent:(wrapper?.name||'示範包網商').replace('包網','代理')+' A-'+String(seed%12+1).padStart(2,'0'),region,registered:'2026-07-'+String(seed%27+1).padStart(2,'0')+' 09:'+String(seed%60).padStart(2,'0')+':00',registrationIp:'203.0.113.'+(seed%200+10),registrationDevice:device.split('／')[0],vpnIp:vpn?'198.51.100.'+(seed%200+10):'未偵測 VPN／代理',isp:'示範 ISP／'+region,lastLogin:latest?latest.date+' '+latest.time:'尚無登入記錄',lastIp:'192.0.2.'+(seed%200+10),lastDevice:device,vpn};
+}
 export function statisticsModel(records,{start,end}){
  const span=Math.round((Date.parse(end)-Date.parse(start))/dayMs)+1;
  const granularity=span===1?'hour':span<=62?'day':'month',buckets=[];

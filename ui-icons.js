@@ -1,5 +1,8 @@
 // Original 24px line icons. Decorative icons always accompany a readable label.
 export const paths={
+ chat:'<path d="M21 11a8 8 0 0 1-8 8H7l-5 3 1.5-6A8 8 0 1 1 21 11Z"/><path d="M7 10h.01M12 10h.01M17 10h.01"/>',
+ device:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 5h4m-3 14h2"/>',
+ pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
  dashboard:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
  reports:'<path d="M4 4v16h17M8 15l4-5 4 3 5-7"/>',
  promotion:'<path d="M3 10v5l10 3V7L3 10Zm10-3 6-3v17l-6-3M6 16l1 5h4l-1-4M22 9v6"/>',
@@ -27,4 +30,4 @@ export const paths={
  percent:'<path d="m5 19 14-14"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/>'
 };
 export function uiIcon(name,cls=''){return '<svg class="ui-icon '+cls+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.receipt)+'</svg>';}
-export function metricIcon(label){return /總虧損/.test(label)?'loss':/總盈利|盈虧|差額/.test(label)?'profit':/獎池/.test(label)?'jackpot':/派彩|獎金/.test(label)?'payout':/投注|成本|面額|費率|金額|餘額/.test(label)?'coins':/玩家|帳號/.test(label)?'players':/遊戲/.test(label)?'games':/時間|日期/.test(label)?'clock':/ID|單號/.test(label)?'id':/倍|率/.test(label)?'percent':/核對|結算|狀態/.test(label)?'shield':/射擊|子彈|擊殺/.test(label)?'target':'receipt';}
+export function metricIcon(label){return /裝置/.test(label)?'device':/地區/.test(label)?'pin':/VPN|IP|安全/.test(label)?'shield':/代理|ISP/.test(label)?'channels':/總虧損/.test(label)?'loss':/總盈利|盈虧|差額/.test(label)?'profit':/獎池/.test(label)?'jackpot':/派彩|獎金/.test(label)?'payout':/投注|成本|面額|費率|金額|餘額/.test(label)?'coins':/玩家|帳號/.test(label)?'players':/遊戲/.test(label)?'games':/時間|日期/.test(label)?'clock':/ID|單號/.test(label)?'id':/倍|率/.test(label)?'percent':/核對|結算|狀態/.test(label)?'shield':/射擊|子彈|擊殺/.test(label)?'target':'receipt';}
