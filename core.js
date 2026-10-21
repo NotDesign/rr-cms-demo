@@ -8,7 +8,7 @@ export function financialTone(label,value){
  const text=String(value).replaceAll(',','').replace('−','-');
  if(!/^[+\-]?\d+(?:\.\d+)?(?:\s*USDT)?$/.test(text))return '';
  if(/倍率|倍數|交易|狀態|時間|未入帳|未收取|基準|面額|費率|參考/.test(label))return '';
- return /盈虧|投注派彩差額|派彩|獎金|入帳 USDT|合計 USDT/.test(label)?tone(parseFloat(text)):'';
+ return /盈虧|總盈利|總虧損|投注派彩差額|派彩|獎金|入帳 USDT|合計 USDT/.test(label)?tone(parseFloat(text)):'';
 }
 export function organizationRecords(records,organizations,id){
  const n=organizations.find(o=>o.id===id);if(!n)return [];
@@ -189,12 +189,13 @@ export function balances(records, target) {
 export function fishingDetail(record) {
  const first=scenario(record)==='DEMO-F001',paid=first?90:60,free=first?10:0,prefix=record.round.replace('FB-',''),scale=record.scale||1,base=record.fishBase||(first?9001:9101);
  const award=scale*(record.rewardMultiplier||1);
- const limits=first?[30,75]:[20,50];
+ const limits=first?[30,50,60,80]:[20,32,38,56];
+ const rates=[1,1.5,2,3,4];
  const shots=Array.from({length:paid+free},(_,i)=>{
-  const level=i<limits[0]?1:i<limits[1]?2:3,rate=2**(level-1),unit=rate*scale;
+  const level=1+limits.filter(limit=>i>=limit).length,rate=rates[level-1],unit=rate*scale;
   return {id:'SH-'+prefix+'-'+String(i+1).padStart(3,'0'),time:'T+'+String(Math.floor(i/60)).padStart(2,'0')+':'+String(i%60).padStart(2,'0'),
    bullet:i<paid?'普通子彈 B-01':'獎勵子彈 B-02',level:'Lv.'+level,rate,unit,denomination:scale,cost:i<paid?unit:0,
-   source:i<paid?'付費':'首領獎勵',debitId:i<paid?'DEBIT-'+prefix+'-'+String(i+1).padStart(3,'0'):'免扣款',pricePlan:'DEMO-BULLET-1.0',
+   source:i<paid?'付費':'首領獎勵',debitId:i<paid?'DEBIT-'+prefix+'-'+String(i+1).padStart(3,'0'):'免扣款',pricePlan:'DEMO-BULLET-2.0',
    target:first?'F'+(i>=90?base+9:base+Math.min(Math.floor(i/15),5)):'F'+base,
    result:first&&[14,29,44,59,74,89].includes(i)?'擊殺':'命中未擊殺',tool:first&&i>=75&&i<=89?'雷射炮':'普通炮台'};
  });
@@ -228,4 +229,16 @@ export function chessDetail(r){
  }
  const win=v%3!==0,spring=v%3===2;
  return {result:win?'地主勝，'+(spring?'春天':'炸彈 1 次'):'農民勝，地主負',player:['大王','A♠','3♦'],dealer:[],bet:400*s,payout:win?800*s:0,net:win?400*s:-400*s,base:50*s,multiplier:'2 × 2 = 4×',action:spring?'叫分 2×；春天 2×':'叫分 2×；炸彈 2×',rule:'DEMO-DDZ-1.0',variant:v%3,spring};
+}
+
+// Detail tables sum only additive transactions; prices, balances and running values are not additive.
+export function detailTableTotals(headers,rows){
+ const additive=h=>!/單發|單價|費率|面額|面值|餘額|倍率|倍數|炮倍|基準|當時|本金|生效/.test(h)&&/USDT|實扣|投注|派彩|盈虧|獎金|成本|扣款|入帳|發數|筆數|數量/.test(h)&&!/單號|時間|狀態/.test(h);
+ return headers.map((h,i)=>{
+  if(!additive(h))return !i?'合計 · '+rows.length+' 筆':'';
+  const values=rows.map(r=>String(r[i]??'').replaceAll(',','').replace('−','-').replace('＋','+'));
+  if(!values.every(v=>/^[+-]?\d+(\.\d+)?$/.test(v)))return '';
+  const value=values.reduce((s,v)=>s+Number(v),0);
+  return /發數|筆數|數量/.test(h)?String(number(value)):/盈虧/.test(h)?signed(value):money(value);
+ });
 }

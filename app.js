@@ -1,6 +1,12 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange} from './core.js?v=10';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=9';
-import {localize,translate,languageNames} from './i18n.js?v=10';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals} from './core.js?v=11.2';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=11.2';
+import {localize,translate,languageNames} from './i18n.js?v=11.2';
+
+import {uiIcon,metricIcon} from './ui-icons.js?v=11.2';
+import {playerProfitLoss} from './analytics.js?v=11.2';
+import {statisticsDashboard} from './statistics-view.js?v=11.2';
+import {datePickerHtml,shiftMonth} from './date-picker.js?v=11.2';
+import {animateRegion} from './motion.js?v=11.2';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -19,7 +25,7 @@ const img=(file,alt='')=>'<img src="assets/figma/'+file+'" alt="'+e(alt)+'" load
 const icon=file=>'<span class="icon" aria-hidden="true">'+img(file)+'</span>';
 const button=(label,action,cls='',attrs='')=>'<button class="button '+cls+'" data-action="'+action+'" '+attrs+'>'+label+'</button>';
 const storageKey='rr-cms-workspace-v1';
-function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:3,scroll:{x:0,y:0,main:0}};}
+function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,statsView:'visual',shareMetric:'count',columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:3,scroll:{x:0,y:0,main:0}};}
 let saved;
 try{saved=JSON.parse(localStorage.getItem(storageKey));}catch{}
 saved=migrateWorkspace(saved,DATA.reports);
@@ -32,27 +38,32 @@ for(const t of tabs)if(['electronic','chess'].includes(t.key))for(const field of
 let activeId=tabs.some(t=>t.id===saved?.activeId)?saved.activeId:tabs[0].id;
 let detailTrail=[],detailRange={start:'2026-10-15',end:'2026-10-15'};
 let category='reports',submenuOpen=saved?.submenuOpen??true,languageOpen=false,dialogState=null,toastTimer;
-const queryTimers=new Map();let columnTimer,composing=false;
+const queryTimers=new Map();let columnTimer,composing=false,datePanel=null;
 if(saved?.theme==='light')document.documentElement.dataset.theme='light';
 const current=()=>tabs.find(t=>t.id===activeId)||tabs[0];
 function persist(){try{localStorage.setItem(storageKey,JSON.stringify({schemaVersion:3,tabs,activeId,submenuOpen,locale,theme:document.documentElement.dataset.theme||'dark'}));}catch{}}
 function toast(text){$('#toast').textContent=tr(text);$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600);}
 function saveView(){const t=current(),v=$('.table-viewport');if(v)t.scroll={x:v.scrollLeft,y:v.scrollTop,main:$('#content').scrollTop};else t.scroll.main=$('#content').scrollTop;persist();}
-function activate(id){saveView();activeId=id;if(defs.has(current().key))category='reports';closeDialog();render();}
+function activate(id){saveView();activeId=id;if(defs.has(current().key))category='reports';closeDialog();render();animateRegion($('#content'));}
 function openReport(key,{duplicate=false,filters=null}={}){
   saveView();let t=current().key==='new'?current():!duplicate?tabs.find(t=>t.key===key):null;
   if(!t){t=tab(key);tabs.push(t);}else if(t.key==='new'){Object.assign(t,tab(key),{id:t.id});}
   if(filters){t.filters={...defaultFilters(),...filters};t.draft={...t.filters};t.page=1;t.scroll={x:0,y:0,main:0};}
-  activeId=t.id;category='reports';submenuOpen=true;closeDialog();$('#app').classList.remove('mobile-open');render();
+  activeId=t.id;category='reports';submenuOpen=true;closeDialog();$('#app').classList.remove('mobile-open');render();animateRegion($('#content'));
 }
-function newTab(){saveView();const t=tab();tabs.push(t);activeId=t.id;closeDialog();render();}
+function newTab(){saveView();const t=tab();tabs.push(t);activeId=t.id;closeDialog();render();animateRegion($('#content'));}
 function closeTab(id){
   saveView();const i=tabs.findIndex(t=>t.id===id);if(i<0)return;tabs.splice(i,1);
   if(!tabs.length)tabs=[tab()];if(activeId===id)activeId=tabs[Math.max(0,i-1)]?.id||tabs[0].id;
   closeDialog();render();
 }
+const navIcon=key=>uiIcon(({merchant:'channels',settlement:'wallet',system:'settings'})[key]||key);
+function submenuIcon(label,def){
+ const reportIcons={all:'receipt',electronic:'games',slots:'slot',fishing:'fish',chess:'cards',player:'players',stats:'reports'};
+ return uiIcon(def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
+}
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#all" data-action="open-all" aria-label="R&R 所有遊戲報表">'+img('56714.svg','R&R')+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+icon(icons[key])+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+img('07623.svg')+'</span></button><small class="version">DEMO · 2026.10.20</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#all" data-action="open-all" aria-label="R&R 所有遊戲報表">'+'<img src="assets/rr-logo.svg" alt="R&R" width="120" height="91">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+img('07623.svg')+'</span></button><small class="version">DEMO · 2026.10.21</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -62,7 +73,7 @@ function renderMenu(){
   const menu=menus.find(m=>m[0]===category);
   $('#submenu').innerHTML='<div class="submenu-head"><span>'+menu[1]+'</span><button class="icon-button close" data-action="collapse" aria-label="收合子選單">×</button></div><nav>'+menu[2].map((label,i)=>{
     const d=category==='reports'?DATA.reports[i]:null;
-    return '<button title="'+e(label)+'" class="submenu-link '+(d&&current().key===d.key?'active':'')+'" '+(d?'data-report="'+d.key+'"':'data-draft="'+e(label)+'"')+'>'+(d?icon(d.icon):icon(icons[category]))+'<span>'+label+'</span></button>';
+    return '<button title="'+e(label)+'" class="submenu-link '+(d&&current().key===d.key?'active':'')+'" '+(d?'data-report="'+d.key+'"':'data-draft="'+e(label)+'"')+'>'+submenuIcon(label,d)+'<span>'+label+'</span></button>';
   }).join('')+'</nav>';
   localized($('#submenu'));
 }
@@ -91,9 +102,11 @@ function filtersHtml(def){
   if(def.key==='fishing')extra=textField('魚種／魚隻實例 ID','fish','例如 F9006')+textField('射擊 ID','shot','例如 SH-0301-090')+selectField('道具／技能','tool',[['','全部類型'],'雷射炮',['無道具','無道具']])+selectField('觸發事件','event',[['','全部事件'],['雷射炮','雷射炮'],['金龍','首領事件'],['獎池觸發','獎池觸發'],['未捕獲','未捕獲']])+selectField('結算／對帳','recon',[['','全部狀態'],'已核對','補單已核對']);
   const category={electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[def.key];
   const games=DATA.games.filter(g=>(!category||g.type===category)&&(!f.type||[g.type,g.family,g.name].includes(f.type)));
-  return '<form id="query-form" class="filters"><div class="filter-row"><div class="field date"><label>日期區間</label><button type="button" class="date-button" data-action="date">'+e(f.start.replaceAll('-','/'))+(f.start!==f.end?' — '+e(f.end.replaceAll('-','/')):'')+'<span class="chevron">'+img('7d07b.svg')+'</span></button></div>'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('商戶／站點','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網'&&(!f.wrapper||o.parent===f.wrapper)).map(o=>[o.name,o.name])])+gameSelect+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
+  return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('商戶／站點','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網'&&(!f.wrapper||o.parent===f.wrapper)).map(o=>[o.name,o.name])])+gameSelect+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
 }
-function summaryHtml(def,rs){return '<div class="summary">'+summaryFor(def,rs).map(([label,v],i)=>'<div class="summary-card"><p class="summary-label">'+label+'</p><p class="summary-number '+financialTone(label,v)+'">'+v+'</p></div>').join('')+'</div>';}
+function metricCard(label,value){return '<div class="summary-card"><span class="metric-icon">'+uiIcon(metricIcon(label))+'</span><div class="metric-copy"><p class="summary-label">'+e(label)+'</p><p class="summary-number '+financialTone(label,value)+'">'+e(value)+'</p></div></div>';}
+function summaryHtml(def,rs){return '<div class="summary">'+summaryFor(def,rs).map(([label,value])=>metricCard(label,value)).join('')+'</div>';}
+function statsViewControl(){const mode=current().statsView||'visual';return '<div class="view-toggle" role="group" aria-label="統計呈現方式">'+[['visual','視覺總覽'],['table','傳統表格']].map(([v,label])=>'<button data-stats-view="'+v+'" aria-pressed="'+(v===mode)+'">'+uiIcon(v==='visual'?'dashboard':'receipt')+label+'</button>').join('')+'</div>';}
 function getReport(){
   const t=current(),d=defs.get(t.key),base=filterRecords(DATA.records,t.key,t.filters),result=filterReportColumns(d,base,t.columnFilters,tr);
   return {t,d,rs:result.records,rows:sortedRows(result.rows,t.sort)};
@@ -147,7 +160,7 @@ function renderContent(){
   if(t.key==='new'){$('#content').innerHTML=chooser();return;}
   if(!defs.has(t.key)){$('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(t.title)+'</h1><p class="breadcrumb">'+menus.find(m=>m[0]===category)?.[1]+' / '+e(t.title)+'</p></div><span class="badge">導覽示意</span></div><section class="generic-page"><h2>此頁內容待後續規劃</h2><p class="muted">目前 Demo 優先提供完整的遊戲報表與模擬明細。</p>'+button('開啟所有遊戲投注記錄','open-all','primary')+'</section></div>';return;}
   const {d,rs,rows}=getReport();
-  $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+tableHtml(d,rs,rows)+(d.key==='stats'?distribution(rs):'')+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
+  $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
 }
 function render(){
   $('#app').classList.toggle('submenu-closed',!submenuOpen);renderRail();renderMenu();renderHeader();renderContent();persist();
@@ -178,24 +191,26 @@ function updateFrozenColumns(){
   for(const row of table.rows){let left=0;Array.from(row.cells).forEach((cell,i)=>{cell.classList.toggle('frozen',i<count);cell.classList.toggle('freeze-end',i===count-1);cell.style.left=i<count?left+'px':'';left+=widths[i];});}
   const status=$('[data-freeze-status]');if(status)status.textContent=tr(freezeDescription(t.freeze,count));
 }
-new ResizeObserver(()=>{alignHeader();updateFrozenColumns();}).observe($('#content'));
+new ResizeObserver(()=>{alignHeader();updateFrozenColumns();if(datePanel)renderDatePicker();}).observe($('#content'));
 document.fonts.ready.then(()=>{alignHeader();updateFrozenColumns();});
 function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
-  const dialog=$('#modal');if(dialog.open)dialog.close();
+  closeDate();
+  const dialog=$('#modal'),drilling=dialog.open&&dialog.classList.contains('drawer')&&drawer;if(dialog.open)dialog.close();
   dialog.style.cssText='';
   dialog.className=drawer?'drawer':'';
   dialog.innerHTML='<div class="dialog-header"><div><h2 id="dialog-title">'+title+'</h2>'+(subtitle?'<small>'+subtitle+'</small>':'')+'</div><button class="icon-button close" data-action="close-dialog" aria-label="關閉視窗">×</button></div><div class="dialog-body">'+html+'</div>'+(footer?'<div class="dialog-footer">'+footer+'</div>':'');
   localized(dialog);
-  dialog.showModal();
+  dialog.showModal();animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
-function closeDialog(){clearTimeout(columnTimer);if($('#modal').open)$('#modal').close();dialogState=null;detailTrail=[];}
+function closeDialog(){closeDate();clearTimeout(columnTimer);if($('#modal').open)$('#modal').close();dialogState=null;detailTrail=[];}
 function finishDialog(){if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog();}
 function miniTable(headers,rows,rich={},totalValues=null){
+  totalValues??=detailTableTotals(headers,rows);
   const numeric=h=>/USDT|投注|派彩|盈虧|獎金|成本|本金|金額|倍率|倍數|發數|筆數|數量/.test(h)&&!/單號|記錄時間|投注時間|等級/.test(h);
   return '<div class="mini-scroll"><table class="mini-table"><thead><tr>'+headers.map(h=>'<th class="'+(numeric(h)?'num':'')+'">'+h+'</th>').join('')+'</tr>'+(totalValues?'<tr class="mini-totals">'+totalValues.map((v,i)=>'<th class="'+(numeric(headers[i])?'num ':'')+financialTone(headers[i],v)+'">'+e(v)+'</th>').join('')+'</tr>':'')+'</thead><tbody>'+rows.map((row,ri)=>'<tr>'+row.map((v,i)=>'<td class="'+(numeric(headers[i])?'num ':'')+financialTone(headers[i],v)+'">'+(rich[i]?rich[i](v,ri):e(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
 }
-function kv(values){return '<div class="key-values">'+values.map(([label,value])=>'<div><small>'+e(label)+'</small><span class="'+financialTone(label,value)+'">'+e(value)+'</span></div>').join('')+'</div>';}
-function detailSummary(r){return '<div class="summary">'+[['實扣投注',money(r.bet)],['結算派彩',money(r.payout)],['玩家淨盈虧',signed(r.net)]].map(([label,v])=>'<div class="summary-card"><p class="summary-label">'+label+'（USDT）</p><p class="summary-number '+financialTone(label,v)+'">'+v+'</p></div>').join('')+'</div>';}
+function kv(values){return '<div class="key-values">'+values.map(([label,value])=>'<div><small>'+uiIcon(metricIcon(label))+e(label)+'</small><span class="'+financialTone(label,value)+'">'+e(value)+'</span></div>').join('')+'</div>';}
+function detailSummary(r,profitLoss=null){const items=[['實扣投注',money(r.bet)],['結算派彩',money(r.payout)],['玩家淨盈虧',signed(r.net)]];if(profitLoss)items.push(['總盈利',signed(profitLoss.profit)],['總虧損',signed(profitLoss.loss)]);return '<div class="summary '+(profitLoss?'player-summary':'')+'">'+items.map(([label,v])=>metricCard(label+'（USDT）',v)).join('')+'</div>';}
 function section(title,html){return '<section class="detail-section"><h3>'+title+'</h3>'+html+'</section>';}
 function timeline(events){return '<ol class="timeline">'+events.map(([time,title,text])=>'<li><small>'+e(time)+'</small><p>'+e(title)+'</p><small>'+e(text)+'</small></li>').join('')+'</ol>';}
 function detailDateLabel(){return detailRange.start.replaceAll('-','/')+(detailRange.start!==detailRange.end?' – '+detailRange.end.replaceAll('-','/'):'');}
@@ -214,7 +229,7 @@ function openOrganization(id='PROV-RR',mode='visual',replace=false){
  const childRows=children.length?children.map(o=>{const t=totals(organizationRecords(records,DATA.organizations,o.id));return [o.name,o.id,t.players,t.count,money(t.bet),money(t.payout),signed(-t.net)];}):[...new Set(records.map(r=>r.player))].map(name=>{const t=totals(records.filter(r=>r.player===name));return [name,playerId(name),t.games,t.count,money(t.bet),money(t.payout),signed(t.net)];});
  const childHeading=children.length?(org.level==='遊戲商'?'包網商列表':'現金網列表'):'玩家列表';
  const details=miniTable([children.length?'名稱':'玩家帳號',children.length?'機構 ID':'玩家 ID',children.length?'玩家數':'遊戲數','記錄筆數','投注 USDT','派彩 USDT',children.length?'投注派彩差額':'玩家淨盈虧'],childRows,{0:(v,i)=>'<button class="text-link" '+(children.length?'data-org="'+children[i].id:'data-player="'+v)+'">'+e(v)+' →</button>',1:(v,i)=>children.length?e(v):'<button class="text-link" data-player="'+childRows[i][0]+'">'+e(v)+'</button>'},['合計','',t.players,t.count,money(t.bet),money(t.payout),signed(children.length?-t.net:t.net)]);
- const cards=children.length?'<div class="entity-cards">'+children.map(o=>{const t=totals(organizationRecords(records,DATA.organizations,o.id));return '<button class="entity-card" data-org="'+o.id+'"><small>'+o.level+' · '+o.id+'</small><h3>'+o.name+' →</h3><div class="entity-values"><span>投注 USDT<strong>'+money(t.bet)+'</strong></span><span>投注派彩差額<strong class="'+tone(-t.net)+'">'+signed(-t.net)+'</strong></span></div><small>'+t.players+' 位玩家 · '+t.count+' 筆記錄</small></button>';}).join('')+'</div>':details;
+ const cards=children.length?'<div class="entity-cards">'+children.map(o=>{const t=totals(organizationRecords(records,DATA.organizations,o.id));return '<button class="entity-card" data-org="'+o.id+'"><small>'+uiIcon('channels')+o.level+' · '+o.id+'</small><h3>'+o.name+' →</h3><div class="entity-values"><span><small>'+uiIcon('coins')+'投注 USDT</small><strong>'+money(t.bet)+'</strong></span><span><small>'+uiIcon('profit')+'投注派彩差額</small><strong class="'+tone(-t.net)+'">'+signed(-t.net)+'</strong></span></div><small>'+t.players+' 位玩家 · '+t.count+' 筆記錄</small></button>';}).join('')+'</div>':details;
  const html=detailNavigation()+organizationPath(id)+viewToggle(mode)+financialSummary(records)+
   '<p class="notice">投注派彩差額＝實扣投注−結算派彩；未扣分潤與營運費用。此數值不等同機構實際收益。</p>'+
   (mode==='visual'?trendChart(records,detailDateLabel())+section(childHeading,cards)+section('各遊戲投注／盈虧',gameCards(records)):section(childHeading,details)+section('各遊戲投注／盈虧',gameTable(records)));
@@ -223,7 +238,7 @@ function openOrganization(id='PROV-RR',mode='visual',replace=false){
 function openPlayer(name,mode='visual',replace=false){
  const rs=detailBaseRecords().filter(r=>r.player===name);if(!rs.length){toast('此日期區間沒有玩家記錄');return;}rememberDetail(replace);
  const t=totals(rs),recent=[...rs].sort((a,b)=>b.time.localeCompare(a.time));dialogState={type:'player',name,mode};
- const html=detailNavigation()+organizationPath(rs[0].cashId)+viewToggle(mode)+kv([['玩家帳號',name],['玩家 ID',playerId(name)],['商戶／站點',rs[0].site],['最近遊戲',recent[0].game],['最近遊玩時間',recent[0].date+' '+recent[0].time],['結算後餘額',money(10000+t.net)+' USDT']])+detailSummary(t)+
+ const html=detailNavigation()+organizationPath(rs[0].cashId)+viewToggle(mode)+kv([['玩家帳號',name],['玩家 ID',playerId(name)],['商戶／站點',rs[0].site],['最近遊戲',recent[0].game],['最近遊玩時間',recent[0].date+' '+recent[0].time],['結算後餘額',money(10000+t.net)+' USDT']])+detailSummary(t,playerProfitLoss(rs))+'<p class="notice">總盈利為正數淨盈虧加總；總虧損為負數淨盈虧加總；兩者合計等於玩家淨盈虧。統計依目前日期區間。</p>'+
  (mode==='visual'?trendChart(rs,detailDateLabel())+section('各遊戲盈虧／投注額排行',gameCards(rs)):section('各遊戲盈虧／投注額排行',gameTable(rs)))+
  section('最近遊玩',recordList(rs,mode==='visual'))+button('在新分頁查看此玩家投注記錄','player-records','primary','data-name="'+name+'"');
  showDialog('玩家詳情 · '+e(name),html,{drawer:true,subtitle:playerId(name)+' · USDT · 模擬玩家資料'});
@@ -261,7 +276,7 @@ function openRecord(id,replace=false){
   }else if(r.kind==='捕魚'){
     const f=fishingDetail(r),first=scenario(r)==='DEMO-F001';
     const shots=f.shots.map(s=>[s.id,s.time,s.bullet,s.level,money(s.denomination),s.rate+'×',money(s.unit),s.source,money(s.cost),s.debitId,s.target,s.result,s.tool,s.pricePlan]);
-    specific=section('射擊與道具摘要',kv([['付費／免費射擊',f.paid+' / '+f.free+' 發'],['子彈等級','Lv.1／Lv.2／Lv.3'],['子彈成本',money(f.bulletCost)+' USDT'],['使用道具',first?'雷射炮 IT-LAS01 × 1':'未使用道具'],['道具成本',money(f.toolCost)+' USDT'],['擊殺／首領擊殺',first?'6 / 1':'0 / 0']]))+
+    specific=section('射擊與道具摘要',kv([['付費／免費射擊',f.paid+' / '+f.free+' 發'],['子彈等級','Lv.1／Lv.2／Lv.3／Lv.4／Lv.5'],['子彈成本',money(f.bulletCost)+' USDT'],['使用道具',first?'雷射炮 IT-LAS01 × 1':'未使用道具'],['道具成本',money(f.toolCost)+' USDT'],['擊殺／首領擊殺',first?'6 / 1':'0 / 0']]))+
       section('子彈等級與費用',miniTable(['等級','炮倍','單發費率 USDT','來源','發數','實扣成本 USDT','參考面值 USDT'],f.levels.map(g=>[g.level,g.rate+'×',money(g.unit),g.source,g.count,money(g.cost),money(g.reference)])))+
       '<p class="detail-note">單發費率＝基礎面額 × 炮倍。免費彈實扣為 0；參考面值不計入投注。雷射炮僅在購買時收費，啟用期間不重複收取道具費。費率為示範設定。</p>'+
       section('等級切換',miniTable(['時間','原等級','新等級','生效單價 USDT','首發射擊 ID'],f.changes.map(c=>[c.time,c.from,c.to,money(c.unit),c.shot])))+
@@ -337,21 +352,29 @@ function applyColumnFilter({close=true}={}){
   current().page=1;current().scroll.y=0;if(close)closeDialog();render();return true;
 }
 function scheduleColumnFilter(){const s=dialogState,id=activeId;clearTimeout(columnTimer);columnTimer=setTimeout(()=>{if(dialogState===s&&activeId===id)applyColumnFilter({close:false});},350);}
-const datePresets=[['today','今天'],['yesterday','昨天'],['week','近一週'],['month','近一月'],['last-month','上個月'],['demo','模擬資料日 · 10/15']];
-function datePresetButtons(filters){
-  const now=new Date();
-  return datePresets.map(([key,label])=>{const range=datePresetRange(key,now);return '<button type="button" class="button small" data-action="date-'+key+'" data-date-preset="'+key+'" aria-pressed="'+(filters.start===range.start&&filters.end===range.end)+'" title="'+range.start.replaceAll('-','/')+' — '+range.end.replaceAll('-','/')+'">'+e(label)+'</button>';}).join('');
+const datePresets=[['today','今天'],['yesterday','昨天'],['week','近一週'],['month','近一月'],['last-month','上個月'],['demo','模擬資料日']];
+function dateToolbar(f){
+ const now=new Date(),selected=datePresets.find(([key])=>{const r=datePresetRange(key,now);return r.start===f.start&&r.end===f.end;})?.[0]||'custom';
+ return '<div class="date-toolbar"><span class="date-toolbar-label">'+uiIcon('calendar')+'日期區間</span><select id="date-preset" aria-label="日期快捷">'+option('custom','自訂區間',selected)+datePresets.map(([key,label])=>option(key,label,selected)).join('')+'</select><button type="button" class="date-button" data-action="date" aria-haspopup="dialog" aria-expanded="'+Boolean(datePanel)+'"><span>'+e(f.start.replaceAll('-','/'))+' — '+e(f.end.replaceAll('-','/'))+'</span>'+uiIcon('calendar')+'</button><small class="date-timezone">UTC+8</small></div>';
 }
-function updateDatePresets(start,end){
-  const now=new Date();
-  for(const button of document.querySelectorAll('[data-date-preset]')){const range=datePresetRange(button.dataset.datePreset,now);button.setAttribute('aria-pressed',String(start===range.start&&end===range.end));}
+function closeDate(){const wasOpen=Boolean(datePanel);$('#date-popover')?.remove();datePanel=null;$('[data-action=date]')?.setAttribute('aria-expanded','false');return wasOpen;}
+function renderDatePicker(){
+ const popup=$('#date-popover');if(!popup||!datePanel)return;
+ popup.innerHTML=datePickerHtml({...current().draft,...datePanel});localized(popup);
+ const anchor=$('[data-action=date]').getBoundingClientRect(),width=Math.min(680,innerWidth-24);
+ popup.style.width=width+'px';popup.style.left=Math.max(12,Math.min(anchor.left,innerWidth-width-12))+'px';popup.style.top=Math.max(12,Math.min(anchor.bottom+8,innerHeight-Math.min(popup.scrollHeight,innerHeight-24)-12))+'px';
 }
 function showDate(){
-  const f=current().draft;
-  dialogState={type:'date'};
-  showDialog('日期區間','<div class="dates"><label>開始日期<input type="date" id="date-start" value="'+e(f.start)+'"></label><label>結束日期<input type="date" id="date-end" value="'+e(f.end)+'"></label></div><div class="date-presets" role="group" aria-label="快速選擇時間區間">'+datePresetButtons(f)+'</div><p class="notice">今天與昨天依 UTC+8 計算；近一週含今天共 7 天，近一月含今天共 30 天，上個月為完整曆月。</p><p class="notice">選擇有效日期後自動篩選。模擬資料日期為 2026/10/15，時間採 UTC+8。</p><p class="date-error" id="date-error" role="alert"></p>',{footer:button('完成','date-apply','primary')});
+ if(datePanel){closeDate();return;}
+ datePanel={month:current().draft.start.slice(0,7),anchor:null};
+ document.body.insertAdjacentHTML('beforeend','<section id="date-popover" class="date-popover" role="dialog" aria-label="日期區間"></section>');
+ $('[data-action=date]')?.setAttribute('aria-expanded','true');renderDatePicker();animateRegion($('#date-popover'),'popover');
 }
-function applyDate({close=false,notify=false}={}){const start=$('#date-start')?.value,end=$('#date-end')?.value;if(!start||!end||start>end){if($('#date-error'))$('#date-error').textContent=tr('請確認開始日期不晚於結束日期');if(notify)toast('請確認開始日期不晚於結束日期');return false;}if($('#date-error'))$('#date-error').textContent='';updateDatePresets(start,end);current().draft.start=start;current().draft.end=end;if(close)closeDialog();queryForm();return true;}
+function applyDate({close=false,notify=false}={}){
+ const start=$('#date-start')?.value,end=$('#date-end')?.value;
+ if(!start||!end||start>end){if($('#date-error'))$('#date-error').textContent=tr('請確認開始日期不晚於結束日期');if(notify)toast('請確認開始日期不晚於結束日期');return false;}
+ current().draft.start=start;current().draft.end=end;if(datePanel)datePanel.anchor=null;if(close)closeDate();queryForm();if(datePanel)renderDatePicker();return true;
+}
 function showSearch(query=''){
   const matches=DATA.reports.filter(d=>d.title.includes(query));
   const players=[...new Set(DATA.records.map(r=>r.player))].filter(n=>query&&(n.includes(query)||playerId(n).toLowerCase().includes(query.toLowerCase())));
@@ -381,6 +404,7 @@ document.addEventListener('input',event=>{
 document.addEventListener('compositionstart',()=>{composing=true;});
 document.addEventListener('compositionend',event=>{composing=false;if(event.target.closest('#query-form')&&event.target.name){current().draft[event.target.name]=event.target.value;scheduleQuery();}if(event.target.id==='column-query'){dialogState.query=event.target.value;renderColumnValues();scheduleColumnFilter();}});
 document.addEventListener('change',event=>{
+  if(event.target.id==='date-preset'){if(event.target.value!=='custom'){Object.assign(current().draft,datePresetRange(event.target.value));closeDate();queryForm();}else showDate();return;}
   if(event.target.id==='page-size'){saveView();current().pageSize=Number(event.target.value);current().page=1;current().scroll.y=0;render();}
   if(event.target.matches('[data-show-column]')){
     const i=Number(event.target.dataset.showColumn),s=dialogState;
@@ -403,9 +427,13 @@ document.addEventListener('click',event=>{
   if(target.closest('form')&&target.type!=='submit')event.preventDefault();
   if(target.dataset.report){openReport(target.dataset.report,{duplicate:event.metaKey||event.ctrlKey||event.shiftKey});return;}
   if(target.dataset.tab){activate(target.dataset.tab);return;}
+  if(target.hasAttribute('data-calendar-month')){datePanel.month=shiftMonth(datePanel.month,Number(target.dataset.calendarMonth));renderDatePicker();return;}
+  if(target.dataset.dateDay){const day=target.dataset.dateDay;if(!datePanel.anchor){datePanel.anchor=day;renderDatePicker();}else{const start=datePanel.anchor<day?datePanel.anchor:day,end=datePanel.anchor<day?day:datePanel.anchor;current().draft.start=start;current().draft.end=end;datePanel.anchor=null;queryForm();renderDatePicker();}return;}
+  if(target.dataset.statsView){saveView();current().statsView=target.dataset.statsView;render();animateRegion($('#content'));return;}
+  if(target.dataset.shareMetric){saveView();current().shareMetric=target.dataset.shareMetric;render();return;}
   if(target.dataset.closeTab){closeTab(target.dataset.closeTab);return;}
   if(target.dataset.category){
-    const key=target.dataset.category;submenuOpen=category===key?!submenuOpen:true;category=key;languageOpen=false;renderRail();renderMenu();$('#app').classList.toggle('submenu-closed',!submenuOpen);persist();return;
+    const key=target.dataset.category;submenuOpen=category===key?!submenuOpen:true;category=key;languageOpen=false;renderRail();renderMenu();$('#app').classList.toggle('submenu-closed',!submenuOpen);if(submenuOpen)animateRegion($('#submenu'),'submenu');persist();return;
   }
   if(target.dataset.org){openOrganization(target.dataset.org);return;}
   if(target.dataset.game){openGame(target.dataset.game);return;}
@@ -438,9 +466,9 @@ document.addEventListener('click',event=>{
     case 'organizations':openOrganization();break;
     case 'detail-back':{const v=detailTrail.pop();if(v)restoreDetail(v);break;}
     case 'collapse':submenuOpen=false;$('#app').classList.remove('mobile-open');render();break;
-    case 'mobile-menu':$('#app').classList.toggle('mobile-open');submenuOpen=true;$('#app').classList.remove('submenu-closed');renderMenu();break;
+    case 'mobile-menu':$('#app').classList.toggle('mobile-open');submenuOpen=true;$('#app').classList.remove('submenu-closed');renderMenu();if($('#app').classList.contains('mobile-open'))animateRegion($('#submenu'),'submenu');break;
     case 'new-tab':newTab();break;
-    case 'language':languageOpen=!languageOpen;renderRail();break;
+    case 'language':languageOpen=!languageOpen;renderRail();if(languageOpen)animateRegion($('.language-menu'),'popover');break;
     case 'theme':document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'dark':'light';persist();break;
     case 'reset':clearTimeout(queryTimers.get(activeId));queryTimers.delete(activeId);current().filters=defaultFilters();current().draft=defaultFilters();current().columnFilters={};current().sort=null;current().page=1;current().scroll={x:0,y:0,main:0};render();break;
     case 'column-select-all':dialogState.values=null;renderColumnValues();applyColumnFilter({close:false});break;
@@ -452,7 +480,7 @@ document.addEventListener('click',event=>{
     case 'close-dialog':finishDialog();break;
     case 'date':showDate();break;
     case 'date-today':case 'date-yesterday':case 'date-week':case 'date-month':case 'date-last-month':case 'date-demo':{const range=datePresetRange(target.dataset.action.slice(5));$('#date-start').value=range.start;$('#date-end').value=range.end;applyDate();break;}
-    case 'date-apply':applyDate({close:true,notify:true});break;
+    case 'date-apply':closeDate();$('[data-action=date]')?.focus({preventScroll:true});break;
     case 'columns':showColumns();break;
     case 'columns-default':{const d=defs.get(current().key);dialogState={type:'columns',order:d.headers.map((_,i)=>i),shown:d.headers.map((_,i)=>i),freeze:3};showColumns();break;}
     case 'columns-apply':{
@@ -472,7 +500,7 @@ document.addEventListener('click',event=>{
     case 'profile':showDialog('平台管理員',kv([['使用者','平台管理員'],['環境','互動 Demo'],['資料來源','USDT 模擬資料']])+'<p class="notice">操作與分頁設定儲存在目前瀏覽器。此示範未連接正式帳號與資金系統。</p>');break;
   }
 });
-document.addEventListener('click',event=>{if(languageOpen&&!event.target.closest('.language-menu,.language-trigger')){languageOpen=false;renderRail();}});
+document.addEventListener('click',event=>{if(datePanel&&!event.composedPath().some(n=>n.id==='date-popover'||n.id==='date-preset'||n.dataset?.action==='date'))closeDate();if(languageOpen&&!event.target.closest('.language-menu,.language-trigger')){languageOpen=false;renderRail();}});
 document.addEventListener('contextmenu',event=>{
   const th=event.target.closest('.report-table th');if(!th)return;event.preventDefault();
   showColumnMenu(Number(th.dataset.column),th);
@@ -482,7 +510,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('keydown',event=>{
   if(dialogState?.type==='column'&&event.key==='Enter'&&event.target.matches('#column-query,#column-min,#column-max')){event.preventDefault();applyColumnFilter();return;}
-  if(event.key==='Escape'){languageOpen=false;renderRail();$('#app').classList.remove('mobile-open');}
+  if(event.key==='Escape'){if(closeDate()){$('[data-action=date]')?.focus({preventScroll:true});return;}languageOpen=false;renderRail();$('#app').classList.remove('mobile-open');}
   const button=event.target.closest('[role=tab]');
   if(button&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
     event.preventDefault();let index=tabs.findIndex(t=>t.id===activeId);

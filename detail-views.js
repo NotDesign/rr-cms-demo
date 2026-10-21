@@ -1,11 +1,12 @@
-import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=9';
+import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=11.2';
 import {gameCatalog} from './game-catalog.js?v=9';
+import {uiIcon} from './ui-icons.js?v=11.2';
 export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));
 export function gameIdentity(name,size=48){const g=games[name];return '<span class="game-identity"><img class="game-cover" width="'+size+'" height="'+size+'" src="assets/games/'+g.cover+'.jpg" alt="'+e(name)+'" loading="lazy"><span><strong>'+e(name)+'</strong><small>'+g.type+'</small></span></span>';}
 export function gameCards(records){
  const total=totals(records).bet;
  return '<div class="game-cards">'+Object.keys(games).map(name=>({name,t:totals(records.filter(r=>r.game===name)),jackpot:records.filter(r=>r.game===name).reduce((n,r)=>n+r.jackpotAward,0)})).filter(g=>g.t.count).sort((a,b)=>b.t.bet-a.t.bet).map(({name,t,jackpot},i)=>
- '<button class="game-card" data-game="'+e(name)+'"><div class="game-card-top">'+gameIdentity(name,72)+'<span class="rank">'+(i+1)+'</span></div><div class="game-card-metrics"><span><small>投注 USDT</small><strong>'+money(t.bet)+'</strong></span><span><small>玩家淨盈虧</small><strong class="'+tone(t.net)+'">'+signed(t.net)+'</strong></span></div><div class="share-track"><span style="width:'+(total?t.bet/total*100:0)+'%"></span></div><div class="card-foot"><small>'+t.count+' 筆記錄</small><small>投注佔比 '+(total?t.bet/total*100:0).toFixed(1)+'%</small>'+(jackpot?'<small class="positive">獎池 '+money(jackpot)+' USDT</small>':'')+'<span aria-hidden="true">→</span></div></button>').join('')+'</div>';
+ '<button class="game-card" data-game="'+e(name)+'"><div class="game-card-top">'+gameIdentity(name,72)+'<span class="rank">'+(i+1)+'</span></div><div class="game-card-metrics"><span><small>'+uiIcon('coins')+'投注 USDT</small><strong>'+money(t.bet)+'</strong></span><span><small>'+uiIcon('profit')+'玩家淨盈虧</small><strong class="'+tone(t.net)+'">'+signed(t.net)+'</strong></span></div><div class="share-track"><span style="width:'+(total?t.bet/total*100:0)+'%"></span></div><div class="card-foot"><small>'+t.count+' 筆記錄</small><small>投注佔比 '+(total?t.bet/total*100:0).toFixed(1)+'%</small>'+(jackpot?'<small class="positive">獎池 '+money(jackpot)+' USDT</small>':'')+'<span class="game-card-arrow" aria-hidden="true">'+uiIcon('arrow')+'</span></div></button>').join('')+'</div>';
 }
 export function trendChart(records,dateLabel="2026/10/15"){
  const buckets=Array.from({length:24},(_,hour)=>({hour,bet:0,net:0,count:0}));

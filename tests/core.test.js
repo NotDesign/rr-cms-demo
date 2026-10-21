@@ -136,14 +136,14 @@ test('mixed bullet levels reconcile free references, debit counts and kill-shot 
  for(const r of d.records.filter(r=>r.kind==='捕魚')){
   const f=fishingDetail(r);assert.equal(f.levels.reduce((s,g)=>s+g.count,0),f.shots.length);
   assert.equal(f.levels.reduce((s,g)=>s+g.cost,0),f.bulletCost);
-  assert.equal(new Set(f.shots.map(s=>s.level)).size,3);
+  assert.equal(new Set(f.shots.map(s=>s.level)).size,5);
   for(const shot of f.shots){assert.equal(shot.unit,shot.denomination*shot.rate);assert.equal(shot.cost,shot.source==='付費'?shot.unit:0);}
   assert.equal(f.shots.filter(x=>x.debitId==='免扣款').length,f.free);
   for(const row of f.fish.filter(row=>row[4]==='子彈擊殺'))assert.equal(number(row[13])*number(row[5]),number(row[6]));
   assert.ok(f.changes.every(c=>f.shots.find(s=>s.id===c.shot).unit===c.unit));
  }
  const f=fishingDetail(d.records.find(r=>r.id==='DEMO-F001'));
- assert.deepEqual(f.levels.map(g=>[g.level,g.count,g.cost]),[['Lv.1',30,30],['Lv.2',45,90],['Lv.3',15,60],['Lv.3',10,0]]);
+ assert.deepEqual(f.levels.map(g=>[g.level,g.count,g.cost]),[['Lv.1',30,30],['Lv.2',20,30],['Lv.3',10,20],['Lv.4',20,60],['Lv.5',10,40],['Lv.5',10,0]]);
  assert.equal(f.freeReference,40);assert.equal(f.bulletCost+f.toolCost,200);
 });
 test('income colors cover unsigned prizes without treating stakes and balances as losses',()=>{
