@@ -36,3 +36,9 @@ test('range calendar uses full leap months and safe month/year navigation',()=>{
  assert.equal(monthDays('2026-06')[0],'2026-06-01');
  assert.equal(shiftMonth('2026-12',1),'2027-01');assert.equal(shiftMonth('2027-01',-1),'2026-12');
 });
+test('default freezing includes Player ID while preserving customized freezing',async()=>{
+ const {migrateWorkspace,defaultFreezeCount}=await import('../core.js');const defs=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url))).reports;
+ for(const d of defs)assert.equal(defaultFreezeCount(d),d.headers.indexOf('玩家 ID')+1);
+ const old={schemaVersion:3,tabs:[{key:'electronic',freeze:3},{key:'electronic',freeze:3,freezeCustomized:true},{key:'electronic',freeze:0}]};
+ const result=migrateWorkspace(old,defs);assert.equal(result.schemaVersion,4);assert.deepEqual(result.tabs.map(t=>t.freeze),[4,3,0]);assert.deepEqual(migrateWorkspace(result,defs),result);
+});

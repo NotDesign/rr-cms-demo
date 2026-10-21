@@ -158,15 +158,17 @@ export function migrateWorkspace(saved, definitions) {
    return {...tab,columns:columns||definitions.find(d=>d.key===tab.key)?.headers.map((_,i)=>i),sort:tab.sort?{...tab.sort,index:tab.sort.index>=at?tab.sort.index+1:tab.sort.index}:null};
   })};
  }
- if(next.schemaVersion>=3)return next;
- return {...next,schemaVersion:3,tabs:next.tabs?.map(tab=>{
+ if(!(next.schemaVersion>=3))next={...next,schemaVersion:3,tabs:next.tabs?.map(tab=>{
   if(!['all','electronic','chess','player'].includes(tab.key))return tab;
   const at=definitions.find(d=>d.key===tab.key).headers.indexOf('獎池派彩');
   const columns=tab.columns?.map(i=>i>=at?i+1:i);
   if(columns){const pos=columns.indexOf(at+1);columns.splice(pos<0?columns.length:pos,0,at);}
   return {...tab,columns,sort:tab.sort?{...tab.sort,index:tab.sort.index>=at?tab.sort.index+1:tab.sort.index}:null};
  })};
+ if(next.schemaVersion>=4)return next;
+ return {...next,schemaVersion:4,tabs:next.tabs?.map(tab=>{const def=definitions.find(d=>d.key===tab.key);return def&&(tab.freeze===undefined||tab.freeze===3&&!tab.freezeCustomized)?{...tab,freeze:defaultFreezeCount(def,tab.columns)}:tab;})};
 }
+export function defaultFreezeCount(def,columns=def.headers.map((_,i)=>i)){const i=columns.indexOf(def.headers.indexOf('玩家 ID'));return i<0?0:i+1;}
 export function sortedRows(rows, sort) {
   if(!sort)return rows;
   return [...rows].sort((a,b)=>{

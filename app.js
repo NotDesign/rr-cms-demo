@@ -1,12 +1,12 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals} from './core.js?v=11.2';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=11.2';
-import {localize,translate,languageNames} from './i18n.js?v=11.2';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount} from './core.js?v=12.1';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.1';
+import {localize,translate,languageNames} from './i18n.js?v=12.1';
 
-import {uiIcon,metricIcon} from './ui-icons.js?v=11.2';
-import {playerProfitLoss} from './analytics.js?v=11.2';
-import {statisticsDashboard} from './statistics-view.js?v=11.2';
-import {datePickerHtml,shiftMonth} from './date-picker.js?v=11.2';
-import {animateRegion} from './motion.js?v=11.2';
+import {uiIcon,metricIcon} from './ui-icons.js?v=12.1';
+import {playerProfitLoss} from './analytics.js?v=12.1';
+import {statisticsDashboard} from './statistics-view.js?v=12.1';
+import {datePickerHtml,shiftMonth} from './date-picker.js?v=12.1';
+import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.1';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -25,7 +25,7 @@ const img=(file,alt='')=>'<img src="assets/figma/'+file+'" alt="'+e(alt)+'" load
 const icon=file=>'<span class="icon" aria-hidden="true">'+img(file)+'</span>';
 const button=(label,action,cls='',attrs='')=>'<button class="button '+cls+'" data-action="'+action+'" '+attrs+'>'+label+'</button>';
 const storageKey='rr-cms-workspace-v1';
-function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,statsView:'visual',shareMetric:'count',columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:3,scroll:{x:0,y:0,main:0}};}
+function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,statsView:'visual',shareMetric:'count',columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:defs.has(key)?defaultFreezeCount(defs.get(key)):0,scroll:{x:0,y:0,main:0}};}
 let saved;
 try{saved=JSON.parse(localStorage.getItem(storageKey));}catch{}
 saved=migrateWorkspace(saved,DATA.reports);
@@ -41,7 +41,7 @@ let category='reports',submenuOpen=saved?.submenuOpen??true,languageOpen=false,d
 const queryTimers=new Map();let columnTimer,composing=false,datePanel=null;
 if(saved?.theme==='light')document.documentElement.dataset.theme='light';
 const current=()=>tabs.find(t=>t.id===activeId)||tabs[0];
-function persist(){try{localStorage.setItem(storageKey,JSON.stringify({schemaVersion:3,tabs,activeId,submenuOpen,locale,theme:document.documentElement.dataset.theme||'dark'}));}catch{}}
+function persist(){try{localStorage.setItem(storageKey,JSON.stringify({schemaVersion:4,tabs,activeId,submenuOpen,locale,theme:document.documentElement.dataset.theme||'dark'}));}catch{}}
 function toast(text){$('#toast').textContent=tr(text);$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600);}
 function saveView(){const t=current(),v=$('.table-viewport');if(v)t.scroll={x:v.scrollLeft,y:v.scrollTop,main:$('#content').scrollTop};else t.scroll.main=$('#content').scrollTop;persist();}
 function activate(id){saveView();activeId=id;if(defs.has(current().key))category='reports';closeDialog();render();animateRegion($('#content'));}
@@ -69,6 +69,8 @@ function renderRail(){
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
   localized($('#rail'));
 }
+function closeMenu(){submenuOpen=false;persist();renderRail();const mobile=$('#app').classList.contains('mobile-open');if(mobile)animateExit($('#rail'),'rail');animateExit($('#submenu'),'submenu',()=>{if(submenuOpen)return;$('#app').classList.add('submenu-closed');$('#app').classList.remove('mobile-open');});}
+function closeLanguage(){languageOpen=false;$('.language-trigger')?.setAttribute('aria-expanded','false');const menu=$('.language-menu');if(menu)animateExit(menu,'popover',()=>menu.remove());}
 function renderMenu(){
   const menu=menus.find(m=>m[0]===category);
   $('#submenu').innerHTML='<div class="submenu-head"><span>'+menu[1]+'</span><button class="icon-button close" data-action="collapse" aria-label="收合子選單">×</button></div><nav>'+menu[2].map((label,i)=>{
@@ -130,13 +132,15 @@ const filterIcon='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14l-
 function columnFilterDescription(d,index,rule){
   return [rule.query?'包含「'+rule.query+'」':'',Array.isArray(rule.values)?'已選 '+rule.values.length+' 項':'',rule.min!==undefined&&rule.min!==''?'≥ '+rule.min:'',rule.max!==undefined&&rule.max!==''?'≤ '+rule.max:''].filter(Boolean).join('；');
 }
+const widthCache=new Map(),measureContext=document.createElement('canvas').getContext('2d');
+function reportColumnWidth(d,col,rows){const font=getComputedStyle(document.body).fontFamily,measure=(value,size)=>{const text=tr(value),key=locale+'|'+size+'|'+font+'|'+text;if(!widthCache.has(key)){measureContext.font=size+'px '+font;widthCache.set(key,measureContext.measureText(text).width);}return widthCache.get(key);};return Math.ceil(Math.max(d.widths[col],measure(d.headers[col],12)+106,...rows.map(row=>measure(row[col],13)+40)));}
 function tableHtml(d,rs,rows){
   const t=current(),visible=t.columns.filter(i=>i>=0&&i<d.headers.length);
   if(!visible.length)t.columns=[0];
   const cols=visible.length?visible:[0],viewportWidth=Math.max(0,($('#content').clientWidth||innerWidth)-(innerWidth<760?64:232));
-  const freeze=visibleFreezeCount(cols.map(i=>d.widths[i]),t.freeze,viewportWidth);
+  const freeze=visibleFreezeCount(cols.map(i=>reportColumnWidth(d,i,rows)),t.freeze,viewportWidth);
   let left=0;
-  const style=cols.map((col,i)=>{const x={width:d.widths[col],left:i<freeze?left:null,last:i===freeze-1};left+=d.widths[col];return x;});
+  const style=cols.map((col,i)=>{const width=reportColumnWidth(d,col,rows),x={width,left:i<freeze?left:null,last:i===freeze-1};left+=width;return x;});
   const tableWidth=style.reduce((n,c)=>n+c.width,0);
   const pageCount=Math.max(1,Math.ceil(rows.length/t.pageSize));t.page=Math.max(1,Math.min(t.page,pageCount));
   const pageRows=rows.slice((t.page-1)*t.pageSize,t.page*t.pageSize);
@@ -163,6 +167,8 @@ function renderContent(){
   $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
 }
 function render(){
+  document.documentElement.lang=locale;
+  if(submenuOpen){cancelRegion($('#submenu'));cancelRegion($('#rail'));}
   $('#app').classList.toggle('submenu-closed',!submenuOpen);renderRail();renderMenu();renderHeader();renderContent();persist();
   document.documentElement.lang=locale;localized($('#app'));
   document.title=tr(current().title||'遊戲報表')+' · R&R CMS Demo';
@@ -191,19 +197,21 @@ function updateFrozenColumns(){
   for(const row of table.rows){let left=0;Array.from(row.cells).forEach((cell,i)=>{cell.classList.toggle('frozen',i<count);cell.classList.toggle('freeze-end',i===count-1);cell.style.left=i<count?left+'px':'';left+=widths[i];});}
   const status=$('[data-freeze-status]');if(status)status.textContent=tr(freezeDescription(t.freeze,count));
 }
+function fitReportColumns(){const table=$('.report-table');if(!table||!defs.has(current().key))return;widthCache.clear();const {d,rows}=getReport(),cols=current().columns.filter(i=>i>=0&&i<d.headers.length),widths=cols.map(i=>reportColumnWidth(d,i,rows));table.style.width=widths.reduce((s,v)=>s+v,0)+'px';for(const row of table.rows)if(row.cells.length===widths.length)Array.from(row.cells).forEach((cell,i)=>{cell.style.width=widths[i]+'px';cell.style.minWidth=widths[i]+'px';});updateFrozenColumns();}
+document.fonts.addEventListener('loadingdone',fitReportColumns);
 new ResizeObserver(()=>{alignHeader();updateFrozenColumns();if(datePanel)renderDatePicker();}).observe($('#content'));
 document.fonts.ready.then(()=>{alignHeader();updateFrozenColumns();});
 function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   closeDate();
-  const dialog=$('#modal'),drilling=dialog.open&&dialog.classList.contains('drawer')&&drawer;if(dialog.open)dialog.close();
+  const dialog=$('#modal'),drilling=dialog.open&&dialog.classList.contains('drawer')&&drawer;cancelRegion(dialog);if(dialog.open)dialog.close();
   dialog.style.cssText='';
   dialog.className=drawer?'drawer':'';
   dialog.innerHTML='<div class="dialog-header"><div><h2 id="dialog-title">'+title+'</h2>'+(subtitle?'<small>'+subtitle+'</small>':'')+'</div><button class="icon-button close" data-action="close-dialog" aria-label="關閉視窗">×</button></div><div class="dialog-body">'+html+'</div>'+(footer?'<div class="dialog-footer">'+footer+'</div>':'');
   localized(dialog);
   dialog.showModal();animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
-function closeDialog(){closeDate();clearTimeout(columnTimer);if($('#modal').open)$('#modal').close();dialogState=null;detailTrail=[];}
-function finishDialog(){if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog();}
+function closeDialog({animated=false}={}){closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
+function finishDialog(){if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog({animated:true});}
 function miniTable(headers,rows,rich={},totalValues=null){
   totalValues??=detailTableTotals(headers,rows);
   const numeric=h=>/USDT|投注|派彩|盈虧|獎金|成本|本金|金額|倍率|倍數|發數|筆數|數量/.test(h)&&!/單號|記錄時間|投注時間|等級/.test(h);
@@ -217,9 +225,9 @@ function detailDateLabel(){return detailRange.start.replaceAll('-','/')+(detailR
 function detailBaseRecords(){const f=$('#modal').open&&['org','player','game','record'].includes(dialogState?.type)?detailRange:current().filters;return DATA.records.filter(r=>r.date>=f.start&&r.date<=f.end);}
 function rememberDetail(replace=false){const isDetail=$('#modal').open&&['org','player','game','record'].includes(dialogState?.type);if(!replace&&isDetail)detailTrail.push({...dialogState,scroll:$('.dialog-body')?.scrollTop||0});else if(!replace){detailTrail=[];detailRange={start:current().filters.start,end:current().filters.end};}}
 function restoreDetail(view){if(view.type==='org')openOrganization(view.id,view.mode,true);else if(view.type==='player')openPlayer(view.name,view.mode,true);else if(view.type==='game')openGame(view.game,view.context,true);else openRecord(view.id,true);if($('.dialog-body'))$('.dialog-body').scrollTop=view.scroll||0;}
-function detailNavigation(){return '<nav class="detail-path" aria-label="詳情路徑">'+(detailTrail.length?'<button data-action="detail-back">← 返回上一層</button><span>／</span>':'')+detailTrail.map((v,i)=>'<button data-detail-index="'+i+'">'+e(v.type==='org'?DATA.organizations.find(o=>o.id===v.id).name:v.type==='player'?v.name:v.type==='game'?v.game:v.id)+'</button><span>›</span>').join('')+'<span>'+e(dialogState.type==='org'?DATA.organizations.find(o=>o.id===dialogState.id).level:dialogState.type==='player'?'玩家':dialogState.type==='game'?'遊戲':'投注明細')+'</span></nav>';}
+function detailNavigation(){return detailTrail.length?'<div class="detail-return"><button data-action="detail-back">'+uiIcon('arrow')+'返回上一層</button><small>'+e(detailTrail.at(-1).type==='org'?DATA.organizations.find(o=>o.id===detailTrail.at(-1).id).name:detailTrail.at(-1).type==='player'?detailTrail.at(-1).name:detailTrail.at(-1).type==='game'?detailTrail.at(-1).game:detailTrail.at(-1).id)+'</small></div>':'';}
 function viewToggle(mode){return '<div class="view-controls"><small>'+e(detailDateLabel())+' · USDT · 模擬資料</small><div class="view-toggle" role="group" aria-label="呈現方式">'+['visual','table'].map((v,i)=>'<button data-detail-mode="'+v+'" aria-pressed="'+(mode===v)+'">'+(i?'傳統表格':'視覺摘要')+'</button>').join('')+'</div></div>';}
-function organizationPath(id){const path=[];let n=DATA.organizations.find(o=>o.id===id);while(n){path.unshift(n);n=DATA.organizations.find(o=>o.id===n.parent);}return '<nav class="org-path" aria-label="所屬機構">'+path.map(o=>'<button class="text-link" data-org="'+o.id+'">'+e(o.level+' · '+o.name)+'</button>').join('<span> / </span>')+'</nav>';}
+function organizationPath(id){const path=[];let n=DATA.organizations.find(o=>o.id===id);while(n){path.unshift(n);n=DATA.organizations.find(o=>o.id===n.parent);}return '<nav class="hierarchy-context" aria-label="所屬機構">'+path.map((o,i)=>'<button class="hierarchy-node" data-org="'+o.id+'" title="'+e(o.level+' · '+o.name)+'"><span class="hierarchy-icon">'+uiIcon(i===0?'games':o.level==='現金網'?'wallet':'channels')+'</span><span class="hierarchy-copy"><small>'+e(o.level)+'</small><strong>'+e(o.name)+'</strong></span></button>').join('')+'</nav>';}
 function financialSummary(records){const t=totals(records);return detailSummary(t)+'<div class="detail-counts"><span>玩家 '+t.players+'</span><span>遊戲 '+t.games+'</span><span>記錄 '+t.count+'</span><span>獎池派彩 <strong class="'+tone(records.reduce((n,r)=>n+r.jackpotAward,0))+'">'+money(records.reduce((n,r)=>n+r.jackpotAward,0))+' USDT</strong></span><span>投注派彩差額 <strong class="'+tone(-t.net)+'">'+signed(-t.net)+' USDT</strong></span></div>';}
 function gameTable(records){const rows=rowsFor(defs.get('player'),records),groups=new Map();for(const row of rows){if(!groups.has(row[4]))groups.set(row[4],[]);groups.get(row[4]).push(row);}return miniTable(['遊戲','類型','記錄筆數','投注 USDT','派彩 USDT','玩家淨盈虧'],[...groups].map(([game])=>{const t=totals(records.filter(r=>r.game===game));return [game,DATA.records.find(r=>r.game===game).kind,t.count,money(t.bet),money(t.payout),signed(t.net)];}),{0:v=>'<button class="text-link" data-game="'+e(v)+'">'+e(v)+'</button>'},['合計','',records.length,money(totals(records).bet),money(totals(records).payout),signed(totals(records).net)]);}
 function recordList(records,visual=false){return miniTable(['時間','玩家帳號','玩家 ID','遊戲','投注單號','投注 USDT','派彩 USDT','玩家淨盈虧'],[...records].sort((a,b)=>b.time.localeCompare(a.time)).map(r=>[r.time,r.player,playerId(r.player),r.game,r.id,money(r.bet),money(r.payout),signed(r.net)]),{1:v=>'<button class="text-link" data-player="'+e(v)+'">'+e(v)+'</button>',2:(v,i)=>'<button class="text-link" data-player="'+e([...records].sort((a,b)=>b.time.localeCompare(a.time))[i].player)+'">'+e(v)+'</button>',3:v=>visual?gameIdentity(v):e(v),4:v=>'<button class="text-link" data-record="'+e(v)+'">'+e(v)+'</button>'},['合計','',totals(records).players+' 位玩家','','',money(totals(records).bet),money(totals(records).payout),signed(totals(records).net)]);}
@@ -355,9 +363,9 @@ function scheduleColumnFilter(){const s=dialogState,id=activeId;clearTimeout(col
 const datePresets=[['today','今天'],['yesterday','昨天'],['week','近一週'],['month','近一月'],['last-month','上個月'],['demo','模擬資料日']];
 function dateToolbar(f){
  const now=new Date(),selected=datePresets.find(([key])=>{const r=datePresetRange(key,now);return r.start===f.start&&r.end===f.end;})?.[0]||'custom';
- return '<div class="date-toolbar"><span class="date-toolbar-label">'+uiIcon('calendar')+'日期區間</span><select id="date-preset" aria-label="日期快捷">'+option('custom','自訂區間',selected)+datePresets.map(([key,label])=>option(key,label,selected)).join('')+'</select><button type="button" class="date-button" data-action="date" aria-haspopup="dialog" aria-expanded="'+Boolean(datePanel)+'"><span>'+e(f.start.replaceAll('-','/'))+' — '+e(f.end.replaceAll('-','/'))+'</span>'+uiIcon('calendar')+'</button><small class="date-timezone">UTC+8</small></div>';
+ return '<div class="date-toolbar"><div class="field"><label for="date-preset">日期快捷</label><select id="date-preset">'+option('custom','自訂區間',selected)+datePresets.map(([key,label])=>option(key,label,selected)).join('')+'</select></div><div class="field date-range-field"><label for="date-range-trigger">日期區間 <small>UTC+8</small></label><button id="date-range-trigger" type="button" class="date-button" data-action="date" aria-haspopup="dialog" aria-expanded="'+Boolean(datePanel)+'"><span>'+e(f.start.replaceAll('-','/'))+' — '+e(f.end.replaceAll('-','/'))+'</span>'+uiIcon('calendar')+'</button></div></div>';
 }
-function closeDate(){const wasOpen=Boolean(datePanel);$('#date-popover')?.remove();datePanel=null;$('[data-action=date]')?.setAttribute('aria-expanded','false');return wasOpen;}
+function closeDate({animated=false}={}){const wasOpen=Boolean(datePanel),popup=$('#date-popover');datePanel=null;$('[data-action=date]')?.setAttribute('aria-expanded','false');if(popup){if(animated)animateExit(popup,'popover',()=>popup.remove());else{cancelRegion(popup);popup.remove();}}return wasOpen;}
 function renderDatePicker(){
  const popup=$('#date-popover');if(!popup||!datePanel)return;
  popup.innerHTML=datePickerHtml({...current().draft,...datePanel});localized(popup);
@@ -365,8 +373,8 @@ function renderDatePicker(){
  popup.style.width=width+'px';popup.style.left=Math.max(12,Math.min(anchor.left,innerWidth-width-12))+'px';popup.style.top=Math.max(12,Math.min(anchor.bottom+8,innerHeight-Math.min(popup.scrollHeight,innerHeight-24)-12))+'px';
 }
 function showDate(){
- if(datePanel){closeDate();return;}
- datePanel={month:current().draft.start.slice(0,7),anchor:null};
+ if(datePanel){closeDate({animated:true});return;}
+ closeDate();datePanel={month:current().draft.start.slice(0,7),anchor:null};
  document.body.insertAdjacentHTML('beforeend','<section id="date-popover" class="date-popover" role="dialog" aria-label="日期區間"></section>');
  $('[data-action=date]')?.setAttribute('aria-expanded','true');renderDatePicker();animateRegion($('#date-popover'),'popover');
 }
@@ -433,7 +441,7 @@ document.addEventListener('click',event=>{
   if(target.dataset.shareMetric){saveView();current().shareMetric=target.dataset.shareMetric;render();return;}
   if(target.dataset.closeTab){closeTab(target.dataset.closeTab);return;}
   if(target.dataset.category){
-    const key=target.dataset.category;submenuOpen=category===key?!submenuOpen:true;category=key;languageOpen=false;renderRail();renderMenu();$('#app').classList.toggle('submenu-closed',!submenuOpen);if(submenuOpen)animateRegion($('#submenu'),'submenu');persist();return;
+    const key=target.dataset.category;if(category===key&&submenuOpen){closeMenu();return;}submenuOpen=true;category=key;languageOpen=false;renderRail();renderMenu();$('#app').classList.remove('submenu-closed');cancelRegion($('#rail'));animateRegion($('#submenu'),'submenu');persist();return;
   }
   if(target.dataset.org){openOrganization(target.dataset.org);return;}
   if(target.dataset.game){openGame(target.dataset.game);return;}
@@ -457,7 +465,7 @@ document.addEventListener('click',event=>{
   if(target.hasAttribute('data-column-menu')){showColumnMenu(Number(target.dataset.columnMenu),target);return;}
   if(target.hasAttribute('data-clear-column')){saveView();delete current().columnFilters[target.dataset.clearColumn];current().page=1;current().scroll.y=0;render();return;}
   if(target.hasAttribute('data-page')){saveView();current().page=Number(target.dataset.page);current().scroll.y=0;render();return;}
-  if(target.dataset.lang){saveView();locale=target.dataset.lang;languageOpen=false;render();return;}
+  if(target.dataset.lang){saveView();const selected=target.dataset.lang;languageOpen=false;animateExit($('.language-menu'),'popover',()=>{locale=selected;render();});return;}
   if(target.hasAttribute('data-move-column')){
     const i=Number(target.dataset.moveColumn),j=i+Number(target.dataset.direction),s=dialogState;
     [s.order[i],s.order[j]]=[s.order[j],s.order[i]];showColumns();return;
@@ -465,10 +473,10 @@ document.addEventListener('click',event=>{
   switch(target.dataset.action){
     case 'organizations':openOrganization();break;
     case 'detail-back':{const v=detailTrail.pop();if(v)restoreDetail(v);break;}
-    case 'collapse':submenuOpen=false;$('#app').classList.remove('mobile-open');render();break;
-    case 'mobile-menu':$('#app').classList.toggle('mobile-open');submenuOpen=true;$('#app').classList.remove('submenu-closed');renderMenu();if($('#app').classList.contains('mobile-open'))animateRegion($('#submenu'),'submenu');break;
+    case 'collapse':closeMenu();break;
+    case 'mobile-menu':if($('#app').classList.contains('mobile-open'))closeMenu();else{$('#app').classList.add('mobile-open');submenuOpen=true;$('#app').classList.remove('submenu-closed');renderRail();renderMenu();animateRegion($('#rail'),'rail');animateRegion($('#submenu'),'submenu');}break;
     case 'new-tab':newTab();break;
-    case 'language':languageOpen=!languageOpen;renderRail();if(languageOpen)animateRegion($('.language-menu'),'popover');break;
+    case 'language':if(languageOpen)closeLanguage();else{languageOpen=true;renderRail();animateRegion($('.language-menu'),'popover');}break;
     case 'theme':document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'dark':'light';persist();break;
     case 'reset':clearTimeout(queryTimers.get(activeId));queryTimers.delete(activeId);current().filters=defaultFilters();current().draft=defaultFilters();current().columnFilters={};current().sort=null;current().page=1;current().scroll={x:0,y:0,main:0};render();break;
     case 'column-select-all':dialogState.values=null;renderColumnValues();applyColumnFilter({close:false});break;
@@ -480,12 +488,12 @@ document.addEventListener('click',event=>{
     case 'close-dialog':finishDialog();break;
     case 'date':showDate();break;
     case 'date-today':case 'date-yesterday':case 'date-week':case 'date-month':case 'date-last-month':case 'date-demo':{const range=datePresetRange(target.dataset.action.slice(5));$('#date-start').value=range.start;$('#date-end').value=range.end;applyDate();break;}
-    case 'date-apply':closeDate();$('[data-action=date]')?.focus({preventScroll:true});break;
+    case 'date-apply':closeDate({animated:true});$('[data-action=date]')?.focus({preventScroll:true});break;
     case 'columns':showColumns();break;
-    case 'columns-default':{const d=defs.get(current().key);dialogState={type:'columns',order:d.headers.map((_,i)=>i),shown:d.headers.map((_,i)=>i),freeze:3};showColumns();break;}
+    case 'columns-default':{const d=defs.get(current().key);dialogState={type:'columns',order:d.headers.map((_,i)=>i),shown:d.headers.map((_,i)=>i),freeze:defaultFreezeCount(d)};showColumns();break;}
     case 'columns-apply':{
       if(!dialogState.shown.length){toast('請至少保留一個欄位');return;}
-      saveView();current().columns=dialogState.order.filter(i=>dialogState.shown.includes(i));current().freeze=Math.min(dialogState.freeze,current().columns.length);current().scroll.x=0;closeDialog();render();toast('已套用目前分頁的欄位設定');break;
+      saveView();current().columns=dialogState.order.filter(i=>dialogState.shown.includes(i));current().freeze=Math.min(dialogState.freeze,current().columns.length);current().freezeCustomized=true;current().scroll.x=0;closeDialog();render();toast('已套用目前分頁的欄位設定');break;
     }
     case 'export':{
       const {d,rows}=getReport(),cols=current().columns;
@@ -500,17 +508,17 @@ document.addEventListener('click',event=>{
     case 'profile':showDialog('平台管理員',kv([['使用者','平台管理員'],['環境','互動 Demo'],['資料來源','USDT 模擬資料']])+'<p class="notice">操作與分頁設定儲存在目前瀏覽器。此示範未連接正式帳號與資金系統。</p>');break;
   }
 });
-document.addEventListener('click',event=>{if(datePanel&&!event.composedPath().some(n=>n.id==='date-popover'||n.id==='date-preset'||n.dataset?.action==='date'))closeDate();if(languageOpen&&!event.target.closest('.language-menu,.language-trigger')){languageOpen=false;renderRail();}});
+document.addEventListener('click',event=>{if(datePanel&&!event.composedPath().some(n=>n.id==='date-popover'||n.id==='date-preset'||n.dataset?.action==='date'))closeDate({animated:true});if(languageOpen&&!event.target.closest('.language-menu,.language-trigger')){closeLanguage();}});
 document.addEventListener('contextmenu',event=>{
   const th=event.target.closest('.report-table th');if(!th)return;event.preventDefault();
   showColumnMenu(Number(th.dataset.column),th);
 });
 document.addEventListener('click',event=>{
-  const b=event.target.closest('[data-freeze]');if(!b)return;saveView();current().freeze=Number(b.dataset.freeze);closeDialog();render();toast(current().freeze?'已凍結左側 '+current().freeze+' 欄':'已取消凍結');
+  const b=event.target.closest('[data-freeze]');if(!b)return;saveView();current().freeze=Number(b.dataset.freeze);current().freezeCustomized=true;closeDialog();render();toast(current().freeze?'已凍結左側 '+current().freeze+' 欄':'已取消凍結');
 });
 document.addEventListener('keydown',event=>{
   if(dialogState?.type==='column'&&event.key==='Enter'&&event.target.matches('#column-query,#column-min,#column-max')){event.preventDefault();applyColumnFilter();return;}
-  if(event.key==='Escape'){if(closeDate()){$('[data-action=date]')?.focus({preventScroll:true});return;}languageOpen=false;renderRail();$('#app').classList.remove('mobile-open');}
+  if(event.key==='Escape'){if(closeDate({animated:true})){event.preventDefault();$('[data-action=date]')?.focus({preventScroll:true});return;}if($('#modal').open){event.preventDefault();finishDialog();return;}if(languageOpen)closeLanguage();if($('#app').classList.contains('mobile-open'))closeMenu();}
   const button=event.target.closest('[role=tab]');
   if(button&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
     event.preventDefault();let index=tabs.findIndex(t=>t.id===activeId);
@@ -519,7 +527,7 @@ document.addEventListener('keydown',event=>{
   }
 });
 $('#modal').addEventListener('click',event=>{if(event.target===$('#modal')){const r=$('#modal').getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)finishDialog();}});
-$('#modal').addEventListener('cancel',()=>{if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();clearTimeout(columnTimer);dialogState=null;detailTrail=[];});
+$('#modal').addEventListener('cancel',event=>{event.preventDefault();finishDialog();});
 window.addEventListener('beforeunload',saveView);
 const requested=location.hash.slice(1);if(defs.has(requested)){let t=tabs.find(t=>t.key===requested);if(!t){t=tab(requested);tabs.push(t);}activeId=t.id;}
 render();
