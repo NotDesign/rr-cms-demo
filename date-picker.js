@@ -1,5 +1,15 @@
-import {escape as e} from './core.js?v=12.2';
-import {uiIcon} from './ui-icons.js?v=12.2';
+import {escape as e} from './core.js?v=12.3';
+import {uiIcon} from './ui-icons.js?v=12.3';
+// Keep the full range available while avoiding repeated dates in a narrow control.
+export function dateRangeLabel(start,end){
+ const first=start.replaceAll('-','/'),last=end.replaceAll('-','/'),sameDay=start===end;
+ const startYear=start.slice(0,4),endYear=end.slice(0,4);
+ return {
+  full:sameDay?first:first+' — '+last,
+  compact:sameDay?first:first.slice(5)+' — '+last.slice(5),
+  years:sameDay?'':startYear===endYear?startYear:startYear+'–'+endYear
+ };
+}
 export function shiftMonth(month,offset){const d=new Date(month+'-01T00:00:00Z');d.setUTCMonth(d.getUTCMonth()+offset);return d.toISOString().slice(0,7);}
 export function monthDays(month){
  const start=new Date(month+'-01T00:00:00Z'),offset=(start.getUTCDay()+6)%7,count=new Date(Date.UTC(start.getUTCFullYear(),start.getUTCMonth()+1,0)).getUTCDate();

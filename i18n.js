@@ -2,7 +2,7 @@ export const languageNames={'zh-Hant':'繁體中文',vi:'Tiếng Việt',th:'ไ
 export function parseDictionary(terms){
   return Object.fromEntries(terms.split('\n').filter(Boolean).map(line=>{const [zh,vi,th]=line.split('|');return [zh,{vi,th}];}));
 }
-const terms=typeof document==='undefined'?'':await fetch('./data/locales.tsv?v=12.2').then(r=>{if(!r.ok)throw Error('語系資料載入失敗');return r.text();});
+const terms=typeof document==='undefined'?'':await fetch('./data/locales.tsv?v=12.3').then(r=>{if(!r.ok)throw Error('語系資料載入失敗');return r.text();});
 export const dictionary=parseDictionary(terms);
 const keys=Object.keys(dictionary).sort((a,b)=>b.length-a.length);
 const escapeRegex=s=>s.replace(/[.*+?^{}()|[\]\\$]/g,'\\$&');
@@ -19,6 +19,6 @@ export function localize(root,locale){
   }
   for(const select of root.querySelectorAll('.field select'))select.title=select.selectedOptions[0]?.textContent||'';
   for(const input of root.querySelectorAll('.field input'))input.title=input.value||input.placeholder;
-  for(const button of root.querySelectorAll('.date-button'))button.title=button.textContent;
+  for(const button of root.querySelectorAll('.date-button'))button.title=button.dataset.rangeFull?button.dataset.rangeFull+' · UTC+8':button.textContent;
   for(const button of root.querySelectorAll('.category'))button.title=button.getAttribute('aria-label')||'';
 }

@@ -1,14 +1,14 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.2';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.2';
-import {localize,translate,languageNames} from './i18n.js?v=12.2';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.3';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.3';
+import {localize,translate,languageNames} from './i18n.js?v=12.3';
 
-import {uiIcon,metricIcon} from './ui-icons.js?v=12.2';
-import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.2';
-import {statisticsDashboard} from './statistics-view.js?v=12.2';
-import {datePickerHtml,shiftMonth} from './date-picker.js?v=12.2';
-import {answerQuestion} from './assistant.js?v=12.2';
-import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.2';
-import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.2';
+import {uiIcon,metricIcon} from './ui-icons.js?v=12.3';
+import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.3';
+import {statisticsDashboard} from './statistics-view.js?v=12.3';
+import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.3';
+import {answerQuestion} from './assistant.js?v=12.3';
+import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.3';
+import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.3';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -372,7 +372,8 @@ function scheduleColumnFilter(){const s=dialogState,id=activeId;clearTimeout(col
 const datePresets=[['today','今天'],['yesterday','昨天'],['week','近一週'],['month','近一月'],['last-month','上個月'],['demo','模擬資料日']];
 function dateToolbar(f){
  const now=new Date(),selected=datePresets.find(([key])=>{const r=datePresetRange(key,now);return r.start===f.start&&r.end===f.end;})?.[0]||'custom';
- return '<div class="date-toolbar"><div class="field"><label for="date-preset">日期快捷</label><select id="date-preset">'+option('custom','自訂區間',selected)+datePresets.map(([key,label])=>option(key,label,selected)).join('')+'</select></div><div class="field date-range-field"><label for="date-range-trigger">日期區間 <small>UTC+8</small></label><button id="date-range-trigger" type="button" class="date-button" data-action="date" aria-haspopup="dialog" aria-expanded="'+Boolean(datePanel)+'"><span>'+e(f.start.replaceAll('-','/'))+' — '+e(f.end.replaceAll('-','/'))+'</span>'+uiIcon('calendar')+'</button></div></div>';
+ const range=dateRangeLabel(f.start,f.end),full=e(range.full);
+ return '<div class="date-toolbar"><div class="field"><label for="date-preset">日期快捷</label><select id="date-preset">'+option('custom','自訂區間',selected)+datePresets.map(([key,label])=>option(key,label,selected)).join('')+'</select></div><div class="field date-range-field"><label for="date-range-trigger"><span>日期區間</span><small>'+(range.years?'<span class="date-caption-years">'+range.years+' · </span>':'')+'UTC+8</small></label><button id="date-range-trigger" type="button" class="date-button" data-action="date" data-range-full="'+full+'" title="'+full+' · UTC+8" aria-label="日期區間：'+full+' · UTC+8" aria-haspopup="dialog" aria-expanded="'+Boolean(datePanel)+'"><span><span class="date-full">'+full+'</span><span class="date-compact">'+e(range.compact)+'</span></span>'+uiIcon('calendar')+'</button></div></div>';
 }
 function closeDate({animated=false}={}){const wasOpen=Boolean(datePanel),popup=$('#date-popover');datePanel=null;$('[data-action=date]')?.setAttribute('aria-expanded','false');if(popup){if(animated)animateExit(popup,'popover',()=>popup.remove());else{cancelRegion(popup);popup.remove();}}return wasOpen;}
 function renderDatePicker(){
