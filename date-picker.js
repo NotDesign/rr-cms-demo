@@ -1,5 +1,5 @@
-import {escape as e} from './core.js?v=12.3';
-import {uiIcon} from './ui-icons.js?v=12.3';
+import {escape as e} from './core.js?v=12.4';
+import {uiIcon} from './ui-icons.js?v=12.4';
 // Keep the full range available while avoiding repeated dates in a narrow control.
 export function dateRangeLabel(start,end){
  const first=start.replaceAll('-','/'),last=end.replaceAll('-','/'),sameDay=start===end;

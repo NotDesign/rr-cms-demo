@@ -118,7 +118,7 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .operation-metrics>div{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:18px}
 .operation-metrics .ui-icon{color:var(--action)}.operation-metrics span{display:flex;flex-direction:column;gap:4px}
 .operation-metrics small{font-size:12px;color:var(--muted)}.operation-metrics strong{font:600 22px "Urbanist","Noto Sans TC",sans-serif}
-.analytics-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(360px,1fr);gap:20px}
+.analytics-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(360px,1fr);gap:20px;align-items:start}.analytics-column{display:flex;flex-direction:column;gap:20px;min-width:0}
 .analytics-card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:22px;min-width:0}
 .analytics-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:20px}
 .analytics-card h2{display:flex;align-items:center;gap:8px;font-size:16px;line-height:24px;margin:0}
@@ -132,7 +132,7 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .chart-insight{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 0;font-size:12px;color:var(--muted)}
 .chart-insight strong{color:var(--text);margin-left:5px;font-variant-numeric:tabular-nums}.chart-insight .positive{color:var(--positive)}.chart-insight .negative{color:var(--negative)}
 .chart-data{font-size:11px;color:var(--muted);margin-top:4px}.chart-data>summary{cursor:pointer;padding:8px 0}.chart-data .mini-scroll{margin-top:8px}
-.donut-layout{display:grid;grid-template-columns:minmax(140px,200px) minmax(0,1fr);align-items:center;gap:16px;min-height:218px}
+.donut-layout{display:grid;grid-template-columns:minmax(140px,200px) minmax(0,1fr);align-items:center;gap:24px;padding:12px 0;min-height:0}.analytics-popular .analytics-card-head{margin-bottom:12px}
 .donut-chart{width:100%;height:auto}.donut-total{fill:var(--text);font:700 32px "Urbanist",sans-serif}
 .donut-legend{display:flex;flex-direction:column;gap:14px;font-size:12px}.donut-legend>div{display:flex;align-items:center;gap:8px}
 .donut-legend span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.donut-legend strong{font:600 13px "Urbanist",sans-serif}
@@ -214,3 +214,5 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 @container report-shell (min-width:968px){.filters{--filter-columns:5}}
 @container report-shell (min-width:1152px){.filters{--filter-columns:6}}
 @container report-shell (min-width:1336px){.filters{--filter-columns:7}}
+
+@media(max-width:1150px){.analytics-column{display:contents}.analytics-popular{order:1}.analytics-column:first-child>.analytics-card:last-child{order:2}.analytics-column:last-child>.analytics-card:last-child{order:3}}

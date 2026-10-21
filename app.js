@@ -1,14 +1,14 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.3';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.3';
-import {localize,translate,languageNames} from './i18n.js?v=12.3';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.4';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.4';
+import {localize,translate,languageNames} from './i18n.js?v=12.4';
 
-import {uiIcon,metricIcon} from './ui-icons.js?v=12.3';
-import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.3';
-import {statisticsDashboard} from './statistics-view.js?v=12.3';
-import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.3';
-import {answerQuestion} from './assistant.js?v=12.3';
-import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.3';
-import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.3';
+import {uiIcon,metricIcon} from './ui-icons.js?v=12.4';
+import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.4';
+import {statisticsDashboard} from './statistics-view.js?v=12.4';
+import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.4';
+import {answerQuestion} from './assistant.js?v=12.4';
+import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.4';
+import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.4';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -158,7 +158,7 @@ function tableHtml(d,rs,rows){
   const note=rows.length?'顯示 '+((t.page-1)*t.pageSize+1)+'–'+Math.min(rows.length,t.page*t.pageSize)+' 筆，共 '+rows.length+' 筆 · USDT · 表頭漏斗可搜尋、篩選與凍結欄位':'符合條件的記錄為 0 筆';
   const chips=Object.entries(t.columnFilters).filter(([,r])=>hasColumnFilter(r)).map(([col,r])=>'<button class="filter-chip" data-column-menu="'+col+'" title="'+e(tr(columnFilterDescription(d,Number(col),r)))+'">'+e(d.headers[col])+' · '+e(columnFilterDescription(d,Number(col),r))+'</button><button class="chip-remove" data-clear-column="'+col+'" aria-label="'+e(tr('清除此欄篩選：'+d.headers[col]))+'">×</button>').join('');
   const filterBar='<div class="column-filter-bar"><span class="freeze-status" data-freeze-status>'+freezeDescription(t.freeze,freeze)+'</span>'+(chips?'<div class="active-column-filters">'+chips+'</div>'+button('清除欄位篩選','column-clear-all','text-button'):'<span class="muted">表頭漏斗可搜尋、篩選與凍結欄位</span>')+'</div>';
-  return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('機構總覽','organizations','small')+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div>'+filterBar+'<div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表"><table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr>'+total+'</thead><tbody>'+body+'</tbody></table>'+(rows.length?'':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><p class="table-note">'+note+'<br>合計涵蓋全部篩選結果；玩家與遊戲數去重，倍率、餘額及累積盈虧不相加。獎池派彩已含在結算派彩內。</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
+  return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('機構總覽','organizations','small')+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div>'+filterBar+'<div class="table-frame"><div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表"><table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr>'+total+'</thead><tbody>'+body+'</tbody></table>'+(rows.length?'':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><span class="freeze-divider" aria-hidden="true" hidden></span></div><p class="table-note">'+note+'<br>合計涵蓋全部篩選結果；玩家與遊戲數去重，倍率、餘額及累積盈虧不相加。獎池派彩已含在結算派彩內。</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
 }
 function distribution(rs){
   const types=['電子遊戲','老虎機','捕魚','棋牌'],values=types.map(k=>totals(rs.filter(r=>r.kind===k)).bet),max=Math.max(...values,1);
@@ -201,7 +201,10 @@ function freezeDescription(requested,visible){return requested?'凍結左側 '+r
 const frozenSignatures=new WeakMap();
 function updateFrozenColumns(){
   const viewport=$('.table-viewport'),table=$('.report-table');if(!viewport||!table)return;
-  const t=current(),widths=Array.from(table.tHead.rows[0].cells,cell=>cell.getBoundingClientRect().width),count=visibleFreezeCount(widths,t.freeze,viewport.clientWidth),signature=t.freeze+'|'+count+'|'+widths.join('|');if(frozenSignatures.get(table)===signature)return;frozenSignatures.set(table,signature);
+  const t=current(),widths=Array.from(table.tHead.rows[0].cells,cell=>cell.getBoundingClientRect().width),count=visibleFreezeCount(widths,t.freeze,viewport.clientWidth),signature=t.freeze+'|'+count+'|'+widths.join('|');
+  const divider=viewport.parentElement.querySelector('.freeze-divider');
+  if(divider){divider.hidden=!count||count===widths.length||table.scrollWidth<=viewport.clientWidth+1||!table.tBodies[0]?.rows.length;divider.style.left=widths.slice(0,count).reduce((sum,width)=>sum+width,0)+'px';divider.style.height=Math.min(viewport.clientHeight,table.offsetHeight)+'px';}
+  if(frozenSignatures.get(table)===signature)return;frozenSignatures.set(table,signature);
   for(const row of table.rows){let left=0;Array.from(row.cells).forEach((cell,i)=>{cell.classList.toggle('frozen',i<count);cell.classList.toggle('freeze-end',i===count-1);cell.style.left=i<count?left+'px':'';left+=widths[i];});}
   const status=$('[data-freeze-status]');if(status)status.textContent=tr(freezeDescription(t.freeze,count));
 }

@@ -1,4 +1,4 @@
-import {escape as e,selectionValues} from './core.js?v=12.3';
+import {escape as e,selectionValues} from './core.js?v=12.4';
 
 export const multiNames=new Set(['wrapper','merchant','type','game']);
 export const choicePairs=choices=>choices.map(x=>Array.isArray(x)?x:[x,x]);
