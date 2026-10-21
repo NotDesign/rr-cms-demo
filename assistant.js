@@ -1,5 +1,5 @@
-import {totals,money,signed,playerId,datePresetRange} from './core.js?v=12.4';
-import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.4';
+import {totals,money,signed,playerId,datePresetRange} from './core.js?v=12.5';
+import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.5';
 
 const summary=records=>{const t=totals(records);return [['記錄筆數',String(t.count)],['不重複玩家數',String(t.players)],['實扣投注',money(t.bet)+' USDT'],['結算派彩',money(t.payout)+' USDT'],['玩家淨盈虧',signed(t.net)+' USDT']];};
 export function answerQuestion(question,{records,scope=records,organizations=[],games=[],display=x=>x,now=new Date()}={}){

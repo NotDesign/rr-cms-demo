@@ -1,5 +1,9 @@
 // Original 24px line icons. Decorative icons always accompany a readable label.
 export const paths={
+ customerService:'<path d="M4 13v-2a8 8 0 0 1 16 0v6a4 4 0 0 1-4 4h-3"/><rect x="2" y="10" width="5" height="8" rx="2"/><rect x="17" y="10" width="5" height="8" rx="2"/><path d="M10 21h3"/>',
+ chevronDown:'<path d="m6 9 6 6 6-6"/>',
+ check:'<path d="m5 12 4 4L19 6"/>',
+ closeTabs:'<path d="M5 6V4a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-2"/><rect x="2" y="6" width="16" height="16" rx="3"/><path d="m7 11 6 6m0-6-6 6"/>',
  chat:'<path d="M21 11a8 8 0 0 1-8 8H7l-5 3 1.5-6A8 8 0 1 1 21 11Z"/><path d="M7 10h.01M12 10h.01M17 10h.01"/>',
  device:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 5h4m-3 14h2"/>',
  pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
