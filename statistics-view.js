@@ -7,7 +7,7 @@ import {chartTipAttrs} from './chart-interactions.js?v=12.10';
 const palette=['var(--chart-green)','var(--chart-cyan)','var(--chart-purple)','var(--chart-amber)','var(--chart-pink)','var(--chart-gray)'];
 const sharePalette=[palette[3],palette[0],palette[1],palette[2],palette[4],palette[5]];
 const counter=(key,value,decimals=0,suffix='')=>' data-chart-number="'+e(key)+'" data-chart-value="'+value+'" data-chart-decimals="'+decimals+'" data-chart-suffix="'+e(suffix)+'"';
-function chartData(headers,rows,total){return '<details class="chart-data"><summary>查看圖表數據</summary><div class="mini-scroll"><table class="mini-table"><thead><tr>'+headers.map(h=>'<th>'+e(h)+'</th>').join('')+'</tr><tr class="mini-totals">'+total.map(v=>'<th>'+e(v)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map(v=>'<td>'+e(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';}
+function chartData(headers,rows,total){return '<details class="chart-data"><summary>查看圖表數據</summary><div class="mini-scroll"><table class="mini-table"><thead><tr>'+headers.map((h,i)=>'<th scope="col"'+(i?' class="num"':'')+'>'+e(h)+'</th>').join('')+'</tr><tr class="mini-totals">'+total.map((v,i)=>i?'<td class="num">'+e(v)+'</td>':'<th scope="row">'+e(v)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map((v,i)=>'<td'+(i?' class="num"':'')+'>'+e(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';}
 function lineChart(series,lines,label,id,hidden=[]){
  const visible=lines.filter(l=>!hidden.includes(l.key));
  const left=48,right=700,top=20,bottom=200,max=Math.max(1,...series.flatMap(b=>visible.map(l=>b[l.key]))),x=i=>left+i*(right-left)/Math.max(1,series.length-1),y=v=>bottom-v/max*(bottom-top);

@@ -4,7 +4,7 @@ import {localize,translate,languageNames} from './i18n.js?v=12.13';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=12.6';
 import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.13';
-import {statisticsDashboard} from './statistics-view.js?v=12.13';
+import {statisticsDashboard} from './statistics-view.js?v=12.14';
 import {captureChartState,animateCharts,cancelChartMotion} from './chart-motion.js?v=12.13';
 import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=12.10';
 import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
