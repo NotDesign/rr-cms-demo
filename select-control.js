@@ -1,5 +1,5 @@
-import {uiIcon} from './ui-icons.js?v=12.5';
-import {animateRegion,animateExit} from './motion.js?v=12.5';
+import {uiIcon} from './ui-icons.js?v=12.6';
+import {animateRegion,animateExit} from './motion.js?v=12.6';
 
 // Keep the form's native value/change contract while presenting one shared menu.
 export function installSelectControls({onOpen=()=>{}}={}){

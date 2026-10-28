@@ -1,15 +1,15 @@
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.5';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.5';
-import {localize,translate,languageNames} from './i18n.js?v=12.5';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.6';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.6';
+import {localize,translate,languageNames} from './i18n.js?v=12.6';
 
-import {uiIcon,metricIcon} from './ui-icons.js?v=12.5';
-import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.5';
-import {statisticsDashboard} from './statistics-view.js?v=12.5';
-import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.5';
-import {answerQuestion} from './assistant.js?v=12.5';
-import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.5';
-import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.5';
-import {installSelectControls} from './select-control.js?v=12.5';
+import {uiIcon,metricIcon} from './ui-icons.js?v=12.6';
+import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.6';
+import {statisticsDashboard} from './statistics-view.js?v=12.6';
+import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
+import {answerQuestion} from './assistant.js?v=12.6';
+import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.6';
+import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.6';
+import {installSelectControls} from './select-control.js?v=12.6';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -75,7 +75,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="120" height="91">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · 2026.10.21</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · 2026.10.21</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -91,6 +91,7 @@ function renderMenu(){
     return '<button title="'+e(label)+'" class="submenu-link '+(d&&current().key===d.key||category==='dashboard'&&label==='總覽'&&current().key==='dashboard'?'active':'')+'" '+(d?'data-report="'+d.key+'"':category==='dashboard'?(i===0?'data-action="home"':'data-report="'+(i===1?'stats':'all')+'"'):'data-draft="'+e(label)+'"')+'>'+submenuIcon(label,d)+'<span>'+label+'</span></button>';
   }).join('')+'</nav>';
   localized($('#submenu'));
+  updateNavigationWidths();
 }
 function renderHeader(){
   $('#header').innerHTML='<button class="icon-button mobile-menu" data-action="mobile-menu" aria-label="開啟主選單">☰</button><div class="work-tabs" role="tablist" aria-label="工作分頁">'+tabs.map(t=>'<div class="work-tab '+(t.id===activeId?'active':'')+'" role="presentation"><button role="tab" class="work-tab-label" aria-selected="'+(t.id===activeId)+'" tabindex="'+(t.id===activeId?0:-1)+'" data-tab="'+t.id+'" title="'+e(t.title)+'">'+e(t.title)+'</button><button class="tab-close" data-close-tab="'+t.id+'" aria-label="關閉 '+e(t.title)+'">×</button></div>').join('')+'</div><button class="icon-button close-tabs" data-action="close-tabs" aria-label="關閉所有分頁" title="關閉所有分頁">'+uiIcon('closeTabs')+'</button><button class="add-tab" data-action="new-tab" aria-label="新增工作分頁" title="新增工作分頁">＋</button><div class="utilities"><button class="icon-button optional" data-action="search" aria-label="快速搜尋">'+icon('24459.svg')+'</button><button class="icon-button optional-small" data-action="apps" aria-label="頁面捷徑">'+icon('f04ae.svg')+'</button><button class="icon-button optional-small" data-action="notifications" aria-label="通知">'+icon('cac57.svg')+'<span class="notification-count">2</span></button><button class="icon-button" data-action="theme" aria-label="切換明暗外觀" title="切換明暗外觀">'+icon('7e997.svg')+'</button><button class="avatar" data-action="profile" aria-label="平台管理員帳號"><span>平台管理員</span>'+img('fbeb1.png','平台管理員')+'</button></div>';
@@ -186,7 +187,7 @@ function render({keepMulti=false}={}){
   document.documentElement.lang=locale;
   if(submenuOpen){$('#app').classList.remove('nav-closing');cancelRegion($('#submenu'));cancelRegion($('#rail'));}
   $('#app').classList.toggle('submenu-closed',!submenuOpen);renderRail();renderMenu();renderHeader();renderContent();persist();
-  document.documentElement.lang=locale;localized($('#app'));
+  document.documentElement.lang=locale;localized($('#app'));updateNavigationWidths();
   selectControls.enhance();document.title=tr(current().title||'遊戲報表')+' · R&R CMS Demo';renderAssistant();
   if(defs.has(current().key)||current().key==='dashboard')history.replaceState(null,'','#'+current().key);
   requestAnimationFrame(()=>{
@@ -198,6 +199,22 @@ function render({keepMulti=false}={}){
   });
 }
 function alignHeader(){const page=$('.page');if(page)$('#header').style.width=page.getBoundingClientRect().width+'px';updateReportHeight();}
+// Measure localized labels at their rendered font size, including fonts loaded later.
+function updateNavigationWidths(){
+  const shell=$('#app'),rail=$('#rail'),submenu=$('#submenu');if(!rail?.children.length||!submenu?.children.length)return;
+  const context=document.createElement('canvas').getContext('2d');
+  const textWidth=node=>{if(!node)return 0;context.font=getComputedStyle(node).font;return context.measureText(node.textContent.trim()).width;};
+  const widest=Math.max(0,...$$('.category>span').map(textWidth));
+  const primary=Math.max(120,Math.ceil(widest+26));
+  const longest=Math.max(0,...$$('.submenu-link>span').map(textWidth));
+  const heading=textWidth($('.submenu-head>span'))+40+12;
+  const desired=Math.max(200,Math.ceil(Math.max(longest+62,heading)+12));
+  const available=innerWidth<=760?innerWidth-primary-16:Math.max(200,innerWidth-primary-400);
+  const secondary=Math.max(120,Math.min(desired,320,available));
+  for(const [name,value]of [['--rail',primary],['--submenu',secondary]])if(shell.style.getPropertyValue(name)!==value+'px')shell.style.setProperty(name,value+'px');
+}
+window.addEventListener('resize',updateNavigationWidths);
+document.fonts.addEventListener('loadingdone',updateNavigationWidths);
 function updateReportHeight(){
   const content=$('#content'),page=$('.page'),card=$('.report-card'),viewport=$('.table-viewport');
   if(!page||!card||!viewport)return;
@@ -220,7 +237,7 @@ function updateFrozenColumns(){
 function fitReportColumns(){const table=$('.report-table');if(!table||!defs.has(current().key))return;widthCache.clear();const {d,rows}=getReport(),cols=current().columns.filter(i=>i>=0&&i<d.headers.length),widths=cols.map(i=>reportColumnWidth(d,i,rows));table.style.width=widths.reduce((s,v)=>s+v,0)+'px';for(const row of table.rows)if(row.cells.length===widths.length)Array.from(row.cells).forEach((cell,i)=>{cell.style.width=widths[i]+'px';cell.style.minWidth=widths[i]+'px';});updateFrozenColumns();}
 document.fonts.addEventListener('loadingdone',fitReportColumns);
 new ResizeObserver(()=>{alignHeader();updateFrozenColumns();if(datePanel)renderDatePicker();if(multiPanel)positionMulti();}).observe($('#content'));
-document.fonts.ready.then(()=>{alignHeader();updateFrozenColumns();});
+document.fonts.ready.then(()=>{updateNavigationWidths();alignHeader();updateFrozenColumns();});
 function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   selectControls.close();closeDate();closeMulti();
   const dialog=$('#modal'),drilling=dialog.open&&dialog.classList.contains('drawer')&&drawer;cancelRegion(dialog);if(dialog.open)dialog.close();

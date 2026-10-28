@@ -1,7 +1,7 @@
-import {money,signed,tone,escape as e} from './core.js?v=12.5';
-import {statisticsModel} from './analytics.js?v=12.5';
-import {uiIcon} from './ui-icons.js?v=12.5';
-import {gameIdentity} from './detail-views.js?v=12.5';
+import {money,signed,tone,escape as e} from './core.js?v=12.6';
+import {statisticsModel} from './analytics.js?v=12.6';
+import {uiIcon} from './ui-icons.js?v=12.6';
+import {gameIdentity} from './detail-views.js?v=12.6';
 const palette=['var(--chart-green)','var(--chart-cyan)','var(--chart-purple)','var(--chart-amber)','var(--chart-pink)','var(--chart-gray)'];
 function chartData(headers,rows,total){return '<details class="chart-data"><summary>查看圖表數據</summary><div class="mini-scroll"><table class="mini-table"><thead><tr>'+headers.map(h=>'<th>'+e(h)+'</th>').join('')+'</tr><tr class="mini-totals">'+total.map(v=>'<th>'+e(v)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map(v=>'<td>'+e(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';}
 function lineChart(series,lines,label){
