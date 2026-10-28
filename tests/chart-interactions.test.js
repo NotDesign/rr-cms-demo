@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 import {chartTipAttrs,chartTipPosition} from '../chart-interactions.js';
 import {statisticsDashboard} from '../statistics-view.js';
 import {trendChart} from '../detail-views.js';
+import {popularitySelection,statisticsModel} from '../analytics.js';
+import {donutArc,chartEase,captureChartState,animateCharts} from '../chart-motion.js';
 const records=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url))).records;
 const range={start:'2026-10-15',end:'2026-10-15'};
 const decode=html=>[...html.matchAll(/data-chart-tip="([^"]+)"/g)].map(m=>JSON.parse(m[1].replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')));
@@ -47,11 +49,28 @@ test('curve legends can hide individual or all series without changing underlyin
  assert.match(html,/149,210\.00/);assert.match(html,/132 位玩家/);
  assert.doesNotMatch(statisticsDashboard(records,range,'count',{players:['players'],activity:['bet','payout']}),/class="chart-hit"/);
 });
-test('donut legends hide only selected segments and preserve the full-interval share denominator',()=>{
+test('donut legends recalculate visible shares and selected game totals',()=>{
  const html=statisticsDashboard(records,range,'count',{popular:['深海獵場']});
- assert.equal((html.match(/class="donut-segment"/g)||[]).length,5);
+ assert.equal((html.match(/class="donut-motion-segment donut-segment"/g)||[]).length,5);
  assert.match(html,/data-chart-key="深海獵場"[^>]+aria-pressed="false"/);
- const tip=decode(html).find(t=>t.title==='深海獵場');assert.equal(tip.rows[1].value,'13.9%');
+ const tip=decode(html).find(t=>t.title==='深海獵場');assert.equal(tip.rows[1].value,'—');
  const all=['深海獵場','星際闖關','翡翠金礦','經典 21 點','搶莊牛牛','其他遊戲'];
- const empty=statisticsDashboard(records,range,'count',{popular:all});assert.doesNotMatch(empty,/class="donut-segment"/);assert.doesNotMatch(empty,/NaN|Infinity/);
+ const empty=statisticsDashboard(records,range,'count',{popular:all});assert.doesNotMatch(empty,/class="donut-motion-segment donut-segment"/);assert.doesNotMatch(empty,/NaN|Infinity/);
+ const games=statisticsModel(records,range).games,shown=popularitySelection(games,'count',all.slice(0,4));
+ assert.equal(shown.games,14);assert.equal(shown.total,673);assert.equal(shown.slices.filter(s=>s.enabled).reduce((n,s)=>n+s.percent,0),100);
+ assert.equal(shown.slices.find(s=>s.name==='搶莊牛牛').percent,67/673*100);
+ const only=popularitySelection(games,'count',all.filter(n=>n!=='搶莊牛牛'));assert.equal(only.games,1);assert.equal(only.total,67);assert.equal(only.slices.find(s=>s.enabled).percent,100);
+ const none=popularitySelection(games,'count',all);assert.equal(none.total,0);assert.equal(none.games,0);assert.ok(none.slices.every(s=>s.percent===0));
+ const cash=popularitySelection(games,'bet',['深海獵場']);assert.equal(cash.total,291350-46640);assert.ok(Math.abs(cash.slices.reduce((n,s)=>n+s.percent,0)-100)<1e-10);
+});
+test('donut motion handles zero, full circles and monotonic easing without invalid geometry',()=>{
+ assert.doesNotMatch(donutArc(0,0),/ A /);assert.equal((donutArc(0,1).match(/ A /g)||[]).length,2);
+ for(let i=0;i<=20;i++){const t=i/20;assert.doesNotMatch(donutArc(t/4,t/4+t*.75),/NaN|Infinity/);if(i)assert.ok(chartEase(t)>=chartEase(t-.05));}
+ assert.equal(chartEase(0),0);assert.equal(chartEase(1),1);
+});
+test('rapid chart updates capture the current intermediate state and reduced motion skips animation',()=>{
+ const arc={dataset:{donutKey:'game',arcStart:'.2',arcEnd:'.8',currentStart:'.1',currentEnd:'.4'},getAttribute:()=>'.6'},number={dataset:{chartNumber:'total',chartValue:'18',currentValue:'4'}};
+ const root={querySelectorAll:s=>s==='[data-donut-key]'?[arc]:s==='[data-chart-number]'?[number]:[]};const state=captureChartState(root);
+ assert.deepEqual(state.arcs.get('game'),{start:.1,end:.4,opacity:.6});assert.equal(state.numbers.get('total'),4);
+ globalThis.matchMedia=()=>({matches:true});assert.doesNotThrow(()=>animateCharts({}));delete globalThis.matchMedia;
 });

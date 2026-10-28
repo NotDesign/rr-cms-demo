@@ -167,6 +167,8 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .donut-legend{display:flex;flex-direction:column;gap:8px;font-size:12px}.donut-legend>button{display:flex;align-items:center;gap:8px;width:100%;border-radius:6px;text-align:left;font-size:12px}
 .chart-legend button,.donut-legend>button{padding:6px 12px;min-height:32px}
 .donut-legend span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.donut-legend strong{font:600 13px "Urbanist",sans-serif}
+.donut-summary{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.donut-summary strong{color:var(--text);font-variant-numeric:tabular-nums}.donut-scope{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:18px}.donut-placeholder{pointer-events:none}
+.chart-is-animating .ranking-track i,.chart-is-animating .share-track>span,.chart-is-animating .bar-space>span,.chart-is-animating .distribution .bar{transition:none}
 .share-toggle button{min-height:36px;font-size:11px;padding:5px 10px}
 .operations-ranking{display:flex;flex-direction:column;gap:12px;justify-content:space-between;flex:1}
 .operations-ranking>button{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;text-align:left;align-items:center;padding:6px 0}

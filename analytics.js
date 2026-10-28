@@ -1,5 +1,15 @@
 // Calculated from selected wager records, never invented telemetry.
 const dayMs=86400000;
+// Legend selection changes the chart's visible population, not the report's global filters.
+export function popularitySelection(games,metric='count',hidden=[]){
+ const ranked=[...games].sort((a,b)=>b[metric]-a[metric]);
+ const slices=ranked.slice(0,5).map(g=>({...g,games:1}));
+ const rest=ranked.slice(5);
+ if(rest.length)slices.push({name:'其他遊戲',games:rest.length,count:rest.reduce((n,g)=>n+g.count,0),bet:rest.reduce((n,g)=>n+g.bet,0)});
+ const shown=slices.filter(s=>!hidden.includes(s.name)),total=shown.reduce((n,s)=>n+s[metric],0);
+ let offset=0;
+ return {total,games:shown.reduce((n,s)=>n+s.games,0),allGames:games.length,count:shown.reduce((n,s)=>n+s.count,0),bet:shown.reduce((n,s)=>n+s.bet,0),slices:slices.map((s,i)=>{const enabled=!hidden.includes(s.name),fraction=enabled&&total?s[metric]/total:0,start=offset;offset+=fraction;return {...s,index:i,enabled,fraction,start,end:offset,percent:fraction*100};})};
+}
 export function playerProfitLoss(records){
  const profit=records.reduce((n,r)=>n+Math.max(0,r.net),0),loss=records.reduce((n,r)=>n+Math.min(0,r.net),0);
  return {profit,loss,net:profit+loss};
