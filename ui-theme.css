@@ -255,6 +255,8 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .button:not(.primary):not([data-action=reset]),.add-tab{color:var(--accent-gold-ink);border-color:#e6c06670;background:linear-gradient(140deg,#e6c06612,transparent 75%),var(--nav-glass);box-shadow:inset 0 1px 1px #ffffff13,0 7px 20px -13px #e6c06638}
 .button:not(.primary):not([data-action=reset]):hover,.add-tab:hover{color:var(--accent-gold-ink);border-color:#e6c066a0;background-color:#e6c06614;box-shadow:inset 0 1px 1px #ffffff20,0 7px 22px -10px #e6c06645}
 .button[data-action=export]{background:linear-gradient(140deg,#e6c0662b,#e6c06616),var(--nav-glass);border-color:#e6c066a0}
+.button[data-action=reset]{color:var(--text);border-color:#e6c06670;background:linear-gradient(140deg,#e6c06618,#e6c06608),var(--nav-glass);box-shadow:inset 0 1px 1px #ffffff13,0 7px 20px -13px #e6c06638}
+.button[data-action=reset]:hover{color:var(--text);border-color:#e6c066a0;background-color:#e6c06614;box-shadow:inset 0 1px 1px #ffffff20,0 7px 22px -10px #e6c06645}
 .summary-card:nth-child(4n+1) .metric-icon{color:var(--accent-gold-ink);background:#e6c06614;border-color:#e6c06640}
 .operation-metrics .ui-icon,.analytics-card h2 .ui-icon,.date-button>.ui-icon,.chart-data summary{color:var(--accent-gold-ink)}
 .ranking-place{color:var(--text)}
