@@ -1,10 +1,11 @@
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.6';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.6';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.9';
 import {localize,translate,languageNames} from './i18n.js?v=12.6';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=12.6';
 import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.6';
-import {statisticsDashboard} from './statistics-view.js?v=12.8';
+import {statisticsDashboard} from './statistics-view.js?v=12.9';
+import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=12.9';
 import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
 import {answerQuestion} from './assistant.js?v=12.6';
 import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.6';
@@ -170,8 +171,8 @@ function tableHtml(d,rs,rows){
   return '<section class="report-card" aria-label="報表資料"><div class="table-toolbar"><h2>'+e(d.title.replace('記錄','明細'))+' · USDT</h2><div class="table-actions">'+button('機構總覽','organizations','small')+button('欄位設定','columns','small')+button('匯出 CSV','export','small','title="匯出目前篩選結果的所有頁與可見欄位"')+'</div></div>'+filterBar+'<div class="table-frame"><div class="table-viewport" tabindex="0" aria-label="可橫向與縱向捲動的報表"><table class="report-table" style="width:'+tableWidth+'px"><colgroup>'+cols.map((col,i)=>'<col style="width:'+style[i].width+'px">').join('')+'</colgroup><thead><tr>'+heads+'</tr>'+total+'</thead><tbody>'+body+'</tbody></table>'+(rows.length?'':'<div class="empty-state"><h2>沒有符合條件的記錄</h2><p>請調整日期、玩家或其他篩選條件。</p>'+button('重設篩選','reset','primary')+'</div>')+'</div><span class="freeze-divider" aria-hidden="true" hidden></span></div><p class="table-note">'+note+'<br>合計涵蓋全部篩選結果；玩家與遊戲數去重，倍率、餘額及累積盈虧不相加。獎池派彩已含在結算派彩內。</p><div class="pagination"><label class="page-size">每頁 <select id="page-size" aria-label="每頁筆數">'+[10,20,50,100].map(n=>option(String(n),n,t.pageSize+'')).join('')+'</select> 筆</label><div class="page-controls"><button data-page="'+(t.page-1)+'" '+(t.page===1?'disabled':'')+'>上一頁</button>'+Array.from({length:pageCount},(_,i)=>'<button class="'+(t.page===i+1?'current':'')+'" data-page="'+(i+1)+'" aria-label="第 '+(i+1)+' 頁" '+(t.page===i+1?'aria-current="page"':'')+'>'+(i+1)+'</button>').join('')+'<button data-page="'+(t.page+1)+'" '+(t.page===pageCount?'disabled':'')+'>下一頁</button></div></div></section>';
 }
 function distribution(rs){
-  const types=['電子遊戲','老虎機','捕魚','棋牌'],values=types.map(k=>totals(rs.filter(r=>r.kind===k)).bet),max=Math.max(...values,1);
-  return '<section class="distribution"><h2>投注額分布（USDT）</h2><div class="distribution-grid">'+types.map((k,i)=>'<div class="distribution-item"><span>'+k+' '+money(values[i])+'</span><div class="track"><div class="bar" style="width:'+values[i]/max*100+'%"></div></div></div>').join('')+'</div></section>';
+  const types=['電子遊戲','老虎機','捕魚','棋牌'],values=types.map(k=>totals(rs.filter(r=>r.kind===k)).bet),max=Math.max(...values,1),total=values.reduce((a,b)=>a+b,0);
+  return '<section class="distribution"><h2>投注額分布（USDT）</h2><div class="distribution-grid" data-chart-scope>'+types.map((k,i)=>'<div class="distribution-item"'+chartTipAttrs(k,[{label:'實扣投注',value:money(values[i])+' USDT'},{label:'投注佔比',value:(total?values[i]/total*100:0).toFixed(1)+'%'}],{focusable:true})+'><span>'+k+' '+money(values[i])+'</span><div class="track"><div class="bar" style="width:'+values[i]/max*100+'%"></div></div></div>').join('')+'</div></section>';
 }
 function chooser(){return '<div class="page"><div class="page-heading"><div><h1>新增工作分頁</h1><p class="breadcrumb">選擇報表，開始新的查詢</p></div><span class="badge">USDT · 模擬資料</span></div><div class="chooser-grid">'+DATA.reports.map(d=>'<button class="chooser-card" data-report="'+d.key+'">'+icon(d.icon)+'<span>'+d.title+'<small>獨立保存篩選、排序、頁碼及欄位</small></span></button>').join('')+'</div></div>';}
 function renderContent(){
@@ -183,6 +184,7 @@ function renderContent(){
   $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
 }
 function render({keepMulti=false}={}){
+  chartInteractions.hide();
   if(!keepMulti)closeMulti();
   document.documentElement.lang=locale;
   if(submenuOpen){$('#app').classList.remove('nav-closing');cancelRegion($('#submenu'));cancelRegion($('#rail'));}
@@ -240,6 +242,7 @@ document.fonts.addEventListener('loadingdone',fitReportColumns);
 new ResizeObserver(()=>{alignHeader();updateFrozenColumns();if(datePanel)renderDatePicker();if(multiPanel)positionMulti();}).observe($('#content'));
 document.fonts.ready.then(()=>{updateNavigationWidths();alignHeader();updateFrozenColumns();});
 function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
+  chartInteractions.hide();
   selectControls.close();closeDate();closeMulti();
   const dialog=$('#modal'),drilling=dialog.open&&dialog.classList.contains('drawer')&&drawer;cancelRegion(dialog);if(dialog.open)dialog.close();
   dialog.style.cssText='';
@@ -248,7 +251,7 @@ function showDialog(title,html,{drawer=false,subtitle='',footer=''}={}){
   localized(dialog);
   selectControls.enhance();dialog.showModal();animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
-function closeDialog({animated=false}={}){selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
+function closeDialog({animated=false}={}){chartInteractions.hide();selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
 function finishDialog(){if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog({animated:true});}
 function miniTable(headers,rows,rich={},totalValues=null){
   totalValues??=detailTableTotals(headers,rows);
@@ -583,6 +586,7 @@ $('#modal').addEventListener('click',event=>{if(event.target===$('#modal')){cons
 $('#modal').addEventListener('cancel',event=>{event.preventDefault();finishDialog();});
 window.addEventListener('beforeunload',saveView);
 const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti();closeLanguage();}});
+const chartInteractions=installChartInteractions({translate:tr});
 const requested=location.hash.slice(1);if(defs.has(requested)||requested==='dashboard'){let t=tabs.find(t=>t.key===requested);if(!t){t=tab(requested,requested==='dashboard'?'儀表板':'新增分頁');tabs.push(t);}activeId=t.id;}
 category=currentKeyCategory();
 render();

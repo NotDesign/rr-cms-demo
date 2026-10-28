@@ -145,7 +145,7 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .operation-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .operation-metrics>div{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:18px}
 .operation-metrics .ui-icon{color:var(--action)}.operation-metrics span{display:flex;flex-direction:column;gap:4px}
-.operation-metrics small{font-size:12px;color:var(--muted)}.operation-metrics strong{font:600 22px "Urbanist","Noto Sans TC",sans-serif}
+.operation-metrics small{font-size:12px;color:var(--muted)}.operation-metrics strong{font:600 22px "Urbanist","Noto Sans TC",sans-serif;color:var(--text)}
 .analytics-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(360px,1fr);gap:20px;align-items:start}.analytics-column{display:flex;flex-direction:column;gap:20px;min-width:0}
 .analytics-card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:22px;min-width:0}
 .analytics-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:20px}
@@ -255,7 +255,15 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .button[data-action=export]{background:linear-gradient(140deg,#e6c0662b,#e6c06616),var(--nav-glass);border-color:#e6c066a0}
 .summary-card:nth-child(4n+1) .metric-icon{color:var(--accent-gold-ink);background:#e6c06614;border-color:#e6c06640}
 .operation-metrics .ui-icon,.analytics-card h2 .ui-icon,.date-button>.ui-icon,.chart-data summary{color:var(--accent-gold-ink)}
-.operation-metrics>div:nth-child(n+3) strong,.chart-insight>span:last-child>strong,.ranking-place{color:var(--accent-gold-ink)}
+.ranking-place{color:var(--text)}
 .game-card .card-foot .game-card-arrow{color:var(--accent-gold-ink);background:#e6c06618;border:1px solid #e6c06645}
 .hierarchy-icon{color:var(--accent-gold-ink);background:#e6c06614;border-color:#e6c06638}
 .key-values small .ui-icon,.game-card-metrics small .ui-icon,.entity-values small .ui-icon{color:var(--accent-gold-ink)}
+
+/* Chart details appear immediately, using the same readable glass as other overlays. */
+.chart-tooltip{position:fixed;inset:auto;margin:0;padding:14px 16px;z-index:1000;width:260px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;pointer-events:none;color:var(--text);font-size:12px;border:1px solid var(--glass-line);border-radius:16px;background:radial-gradient(ellipse at 0 0,#ffffff13,transparent 65%),var(--overlay-glass);backdrop-filter:blur(28px) saturate(140%);-webkit-backdrop-filter:blur(28px) saturate(140%);box-shadow:inset 0 1px 1px #ffffff18,0 12px 32px -12px #0009}
+.chart-tooltip[hidden]{display:none!important}.chart-tooltip-title{display:block;font-size:14px;line-height:21px;overflow-wrap:anywhere}.chart-tooltip>small{display:block;color:var(--muted);margin-top:2px;font-size:11px}
+.chart-tooltip dl{display:grid;gap:9px;margin:12px 0 0}.chart-tooltip dl>div{display:flex;align-items:baseline;justify-content:space-between;gap:16px}.chart-tooltip dt{display:flex;align-items:center;gap:6px;color:var(--muted)}.chart-tooltip dt>i{width:7px;height:7px;flex:none;border-radius:50%}.chart-tooltip dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}.chart-tooltip dd.positive{color:var(--positive)}.chart-tooltip dd.negative{color:var(--negative)}
+.chart-hit{fill:transparent;cursor:crosshair;outline:none}.chart-hit:focus-visible{fill:color-mix(in srgb,var(--brand) 7%,transparent)}.chart-crosshair{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4;pointer-events:none}
+.chart-dot.chart-highlight{r:6;stroke:var(--paper);stroke-width:2}.donut-segment{cursor:help;outline:none}.donut-segment.chart-highlight,.donut-segment:focus-visible{stroke-width:28;filter:drop-shadow(0 0 3px #ffffff18)}
+.donut-legend [data-chart-tip]{cursor:help;border-radius:5px}.donut-legend .chart-highlight{background:var(--hover-fill)}.hour-column[data-chart-tip]{cursor:help;outline:none;border-radius:6px}.hour-column.chart-highlight,.hour-column:focus-visible{background:var(--hover-fill);box-shadow:0 0 0 1px var(--action-line)}
