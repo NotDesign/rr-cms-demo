@@ -4,7 +4,7 @@ import {localize,translate,languageNames} from './i18n.js?v=12.6';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=12.6';
 import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.6';
-import {statisticsDashboard} from './statistics-view.js?v=12.6';
+import {statisticsDashboard} from './statistics-view.js?v=12.8';
 import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
 import {answerQuestion} from './assistant.js?v=12.6';
 import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.6';

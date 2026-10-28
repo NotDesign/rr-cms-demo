@@ -248,3 +248,14 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 /* Brand gold distinguishes secondary export actions from green selections. */
 .button[data-action=export]{color:var(--accent-gold-ink);border-color:rgba(230,192,102,.5);background:linear-gradient(140deg,#e6c06612,transparent),var(--nav-glass);box-shadow:inset 0 1px 1px #ffffff13,0 7px 20px -13px #e6c06640}
 .button[data-action=export]:hover{background-color:#e6c06618;box-shadow:inset 0 1px 1px #ffffff20,0 7px 22px -10px #e6c06640}
+
+/* Gold supports discovery and secondary actions; financial and selection states keep their semantics. */
+.button:not(.primary):not([data-action=reset]),.add-tab{color:var(--accent-gold-ink);border-color:#e6c06670;background:linear-gradient(140deg,#e6c06612,transparent 75%),var(--nav-glass);box-shadow:inset 0 1px 1px #ffffff13,0 7px 20px -13px #e6c06638}
+.button:not(.primary):not([data-action=reset]):hover,.add-tab:hover{color:var(--accent-gold-ink);border-color:#e6c066a0;background-color:#e6c06614;box-shadow:inset 0 1px 1px #ffffff20,0 7px 22px -10px #e6c06645}
+.button[data-action=export]{background:linear-gradient(140deg,#e6c0662b,#e6c06616),var(--nav-glass);border-color:#e6c066a0}
+.summary-card:nth-child(4n+1) .metric-icon{color:var(--accent-gold-ink);background:#e6c06614;border-color:#e6c06640}
+.operation-metrics .ui-icon,.analytics-card h2 .ui-icon,.date-button>.ui-icon,.chart-data summary{color:var(--accent-gold-ink)}
+.operation-metrics>div:nth-child(n+3) strong,.chart-insight>span:last-child>strong,.ranking-place{color:var(--accent-gold-ink)}
+.game-card .card-foot .game-card-arrow{color:var(--accent-gold-ink);background:#e6c06618;border:1px solid #e6c06645}
+.hierarchy-icon{color:var(--accent-gold-ink);background:#e6c06614;border-color:#e6c06638}
+.key-values small .ui-icon,.game-card-metrics small .ui-icon,.entity-values small .ui-icon{color:var(--accent-gold-ink)}
