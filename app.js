@@ -1,11 +1,11 @@
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.6';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.9';
-import {localize,translate,languageNames} from './i18n.js?v=12.6';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.10';
+import {localize,translate,languageNames} from './i18n.js?v=12.10';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=12.6';
 import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.6';
-import {statisticsDashboard} from './statistics-view.js?v=12.9';
-import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=12.9';
+import {statisticsDashboard} from './statistics-view.js?v=12.10';
+import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=12.10';
 import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
 import {answerQuestion} from './assistant.js?v=12.6';
 import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=12.6';
@@ -29,7 +29,7 @@ const img=(file,alt='')=>'<img src="assets/figma/'+file+'" alt="'+e(alt)+'" load
 const icon=file=>'<span class="icon" aria-hidden="true">'+img(file)+'</span>';
 const button=(label,action,cls='',attrs='')=>'<button class="button '+cls+'" data-action="'+action+'" '+attrs+'>'+label+'</button>';
 const storageKey='rr-cms-workspace-v1';
-function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,statsView:'visual',shareMetric:'count',columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:defs.has(key)?defaultFreezeCount(defs.get(key)):0,scroll:{x:0,y:0,main:0}};}
+function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,statsView:'visual',shareMetric:'count',chartHidden:{},columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:defs.has(key)?defaultFreezeCount(defs.get(key)):0,scroll:{x:0,y:0,main:0}};}
 let saved;
 try{saved=JSON.parse(localStorage.getItem(storageKey));}catch{}
 saved=migrateWorkspace(saved,DATA.reports);
@@ -177,11 +177,11 @@ function distribution(rs){
 function chooser(){return '<div class="page"><div class="page-heading"><div><h1>新增工作分頁</h1><p class="breadcrumb">選擇報表，開始新的查詢</p></div><span class="badge">USDT · 模擬資料</span></div><div class="chooser-grid">'+DATA.reports.map(d=>'<button class="chooser-card" data-report="'+d.key+'">'+icon(d.icon)+'<span>'+d.title+'<small>獨立保存篩選、排序、頁碼及欄位</small></span></button>').join('')+'</div></div>';}
 function renderContent(){
   const t=current();
-  if(t.key==='dashboard'){const rs=DATA.records;$('#content').innerHTML='<div class="page dashboard-page"><div class="page-heading"><div><h1>營運總覽</h1><p class="breadcrumb">2026/10/15 · USDT · UTC+8</p></div><span class="badge">模擬資料</span></div><div class="dashboard-shortcuts">'+button(uiIcon('receipt')+'所有遊戲投注記錄','open-all')+'<button class="button" data-report="stats">'+uiIcon('reports')+'遊戲統計</button></div>'+summaryHtml(defs.get('all'),rs)+statisticsDashboard(rs,t.filters,t.shareMetric)+'</div>';return;}
+  if(t.key==='dashboard'){const rs=DATA.records;$('#content').innerHTML='<div class="page dashboard-page"><div class="page-heading"><div><h1>營運總覽</h1><p class="breadcrumb">2026/10/15 · USDT · UTC+8</p></div><span class="badge">模擬資料</span></div><div class="dashboard-shortcuts">'+button(uiIcon('receipt')+'所有遊戲投注記錄','open-all')+'<button class="button" data-report="stats">'+uiIcon('reports')+'遊戲統計</button></div>'+summaryHtml(defs.get('all'),rs)+statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden)+'</div>';return;}
     if(t.key==='new'){$('#content').innerHTML=chooser();return;}
   if(!defs.has(t.key)){$('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(t.title)+'</h1><p class="breadcrumb">'+menus.find(m=>m[0]===category)?.[1]+' / '+e(t.title)+'</p></div><span class="badge">導覽示意</span></div><section class="generic-page"><h2>此頁內容待後續規劃</h2><p class="muted">目前 Demo 優先提供完整的遊戲報表與模擬明細。</p>'+button('開啟所有遊戲投注記錄','open-all','primary')+'</section></div>';return;}
   const {d,rs,rows}=getReport();
-  $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
+  $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
 }
 function render({keepMulti=false}={}){
   chartInteractions.hide();
@@ -491,6 +491,11 @@ document.addEventListener('click',event=>{
   if(target.hasAttribute('data-calendar-month')){datePanel.month=shiftMonth(datePanel.month,Number(target.dataset.calendarMonth));renderDatePicker();return;}
   if(target.dataset.dateDay){const day=target.dataset.dateDay;if(!datePanel.anchor){datePanel.anchor=day;renderDatePicker();}else{const start=datePanel.anchor<day?datePanel.anchor:day,end=datePanel.anchor<day?day:datePanel.anchor;current().draft.start=start;current().draft.end=end;datePanel.anchor=null;queryForm();renderDatePicker();}return;}
   if(target.dataset.statsView){saveView();current().statsView=target.dataset.statsView;render();animateRegion($('#content'));return;}
+  if(target.dataset.chartLegend&&['players','activity','popular'].includes(target.dataset.chartLegend)){
+    saveView();const t=current(),id=target.dataset.chartLegend,key=target.dataset.chartKey,selected=Array.isArray(t.chartHidden?.[id])?t.chartHidden[id]:[];
+    t.chartHidden={...t.chartHidden,[id]:selected.includes(key)?selected.filter(v=>v!==key):[...selected,key]};render();
+    $$('[data-chart-legend]').find(b=>b.dataset.chartLegend===id&&b.dataset.chartKey===key)?.focus({preventScroll:true});return;
+  }
   if(target.dataset.shareMetric){saveView();current().shareMetric=target.dataset.shareMetric;render();return;}
   if(target.dataset.closeTab){closeTab(target.dataset.closeTab);return;}
   if(target.dataset.category){

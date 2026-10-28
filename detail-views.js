@@ -1,7 +1,7 @@
 import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=12.6';
 import {gameCatalog} from './game-catalog.js?v=9';
 import {uiIcon} from './ui-icons.js?v=12.6';
-import {chartTipAttrs} from './chart-interactions.js?v=12.9';
+import {chartTipAttrs} from './chart-interactions.js?v=12.10';
 export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));
 export function gameIdentity(name,size=48){const g=games[name];return '<span class="game-identity"><img class="game-cover" width="'+size+'" height="'+size+'" src="assets/games/'+g.cover+'.jpg" alt="'+e(name)+'" loading="lazy"><span><strong>'+e(name)+'</strong><small>'+g.type+'</small></span></span>';}
 export function gameCards(records){

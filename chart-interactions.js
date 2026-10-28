@@ -29,6 +29,7 @@ export function installChartInteractions({translate=value=>value}={}){
   tooltip.style.left=at.left+'px';tooltip.style.top=at.top+'px';
  }
  function show(next,point){
+  if(!next.isConnected)return;
   keyboard=!point;
   if(next!==anchor||tooltip.hidden){
    hide();let data;try{data=JSON.parse(next.dataset.chartTip);}catch{return;}

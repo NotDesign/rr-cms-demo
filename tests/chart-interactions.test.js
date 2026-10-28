@@ -38,3 +38,20 @@ test('chart tooltip flips and stays inside desktop and narrow viewport edges',()
   assert.ok(at.left>=12&&at.top>=12);assert.ok(at.left+size.width<=viewport.width-12);assert.ok(at.top+size.height<=viewport.height-12);
  }
 });
+test('curve legends can hide individual or all series without changing underlying totals',()=>{
+ const html=statisticsDashboard(records,range,'count',{players:['players'],activity:['bet']}),tips=decode(html);
+ assert.doesNotMatch(html,/data-chart-series="players"|data-chart-series="bet"/);
+ assert.match(html,/data-chart-series="payout"/);assert.match(html,/點擊圖例以顯示資料/);
+ const amounts=tips.filter(t=>t.note==='UTC+8');assert.equal(amounts.length,24);
+ assert.ok(amounts.every(t=>t.rows[0].label==='結算派彩'&&!t.rows.some(r=>r.label==='實扣投注')));
+ assert.match(html,/149,210\.00/);assert.match(html,/132 位玩家/);
+ assert.doesNotMatch(statisticsDashboard(records,range,'count',{players:['players'],activity:['bet','payout']}),/class="chart-hit"/);
+});
+test('donut legends hide only selected segments and preserve the full-interval share denominator',()=>{
+ const html=statisticsDashboard(records,range,'count',{popular:['深海獵場']});
+ assert.equal((html.match(/class="donut-segment"/g)||[]).length,5);
+ assert.match(html,/data-chart-key="深海獵場"[^>]+aria-pressed="false"/);
+ const tip=decode(html).find(t=>t.title==='深海獵場');assert.equal(tip.rows[1].value,'13.9%');
+ const all=['深海獵場','星際闖關','翡翠金礦','經典 21 點','搶莊牛牛','其他遊戲'];
+ const empty=statisticsDashboard(records,range,'count',{popular:all});assert.doesNotMatch(empty,/class="donut-segment"/);assert.doesNotMatch(empty,/NaN|Infinity/);
+});
