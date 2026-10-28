@@ -157,14 +157,15 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .chart-grid-line{stroke:var(--line);stroke-width:1;stroke-dasharray:3 5}.chart-axis{fill:var(--muted);font:11px "Urbanist","Noto Sans TC",sans-serif}
 .chart-dot{outline:none}.chart-dot:hover,.chart-dot:focus{r:6;stroke:var(--text);stroke-width:2}
 .chart-legend{display:flex;align-items:center;flex-wrap:wrap;gap:16px;font-size:11px;color:var(--muted);margin-bottom:8px}
-.chart-legend button{display:inline-flex;align-items:center;gap:8px;padding:6px 4px;min-height:32px;border-radius:6px;color:var(--muted);font-size:11px}.chart-legend i,.donut-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.chart-legend button{display:inline-flex;align-items:center;gap:8px;border-radius:6px;color:var(--muted);font-size:11px}.chart-legend i,.donut-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
 .chart-legend button:hover,.donut-legend button:hover{background:var(--hover-fill)}.chart-legend button[aria-pressed=false],.donut-legend button[aria-pressed=false]{opacity:.45}.chart-legend button[aria-pressed=false] span,.donut-legend button[aria-pressed=false] span{text-decoration:line-through}.chart-empty{font-size:13px}
 .chart-insight{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 0;font-size:12px;color:var(--muted)}
 .chart-insight strong{color:var(--text);margin-left:5px;font-variant-numeric:tabular-nums}.chart-insight .positive{color:var(--positive)}.chart-insight .negative{color:var(--negative)}
 .chart-data{font-size:11px;color:var(--muted);margin-top:4px}.chart-data>summary{cursor:pointer;padding:8px 0}.chart-data .mini-scroll{margin-top:8px}
 .donut-layout{display:grid;grid-template-columns:minmax(140px,200px) minmax(0,1fr);align-items:center;gap:24px;padding:12px 0;min-height:0;flex:1}.analytics-popular .analytics-card-head{margin-bottom:12px}
 .donut-chart{width:100%;height:auto}.donut-total{fill:var(--text);font:700 32px "Urbanist",sans-serif}
-.donut-legend{display:flex;flex-direction:column;gap:8px;font-size:12px}.donut-legend>button{display:flex;align-items:center;gap:8px;width:100%;min-height:30px;padding:4px 0;border-radius:6px;text-align:left;font-size:12px}
+.donut-legend{display:flex;flex-direction:column;gap:8px;font-size:12px}.donut-legend>button{display:flex;align-items:center;gap:8px;width:100%;border-radius:6px;text-align:left;font-size:12px}
+.chart-legend button,.donut-legend>button{padding:6px 12px;min-height:32px}
 .donut-legend span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.donut-legend strong{font:600 13px "Urbanist",sans-serif}
 .share-toggle button{min-height:36px;font-size:11px;padding:5px 10px}
 .operations-ranking{display:flex;flex-direction:column;gap:12px;justify-content:space-between;flex:1}
