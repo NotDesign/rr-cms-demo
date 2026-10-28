@@ -208,9 +208,10 @@ function updateNavigationWidths(){
   const primary=Math.max(120,Math.ceil(widest+26));
   const longest=Math.max(0,...$$('.submenu-link>span').map(textWidth));
   const heading=textWidth($('.submenu-head>span'))+40+12;
-  const desired=Math.max(200,Math.ceil(Math.max(longest+62,heading)+12));
-  const available=innerWidth<=760?innerWidth-primary-16:Math.max(200,innerWidth-primary-400);
-  const secondary=Math.max(120,Math.min(desired,320,available));
+  const padding=(parseFloat(getComputedStyle(submenu).getPropertyValue('--submenu-side-padding'))||16)*2;
+  const desired=Math.max(188+padding,Math.ceil(Math.max(longest+62,heading)+padding));
+  const available=innerWidth<=760?innerWidth-primary-16:Math.max(188+padding,innerWidth-primary-400);
+  const secondary=Math.max(120,Math.min(desired,308+padding,available));
   for(const [name,value]of [['--rail',primary],['--submenu',secondary]])if(shell.style.getPropertyValue(name)!==value+'px')shell.style.setProperty(name,value+'px');
 }
 window.addEventListener('resize',updateNavigationWidths);
