@@ -1,0 +1,13 @@
+.summary.net-win-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dialog-body .summary.net-win-detail{grid-template-columns:repeat(2,minmax(0,1fr))}
+.summary-caption{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:3px}
+.net-win-summary .summary-label{min-height:0;padding-right:0}
+.net-win-summary .summary-card{min-width:0}
+.pm-financials .mg-metric small{display:block}
+.pm-financials .net-win-caption{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:6px}
+.accounting-page .acct-metrics,.acct-detail-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+.player-management-page .pm-financials{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(min-width:1800px){.summary.net-win-summary,.accounting-page .acct-metrics,.player-management-page .pm-financials{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:1100px){.accounting-page .acct-metrics,.acct-detail-summary,.player-management-page .pm-financials,.summary.net-win-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.summary.net-win-summary,.dialog-body .summary.net-win-detail,.dialog-body .summary.player-summary,.accounting-page .acct-metrics,.acct-detail-summary,.player-management-page .pm-financials{grid-template-columns:1fr}.acct-detail-summary .acct-metric:first-child{grid-column:auto}.net-win-summary .summary-card{padding:16px 12px}.net-win-summary .summary-number{font-size:20px}.net-win-summary .metric-icon{flex-shrink:0}}
+@media(max-width:380px){.summary.net-win-summary,.accounting-page .acct-metrics,.acct-detail-summary,.player-management-page .pm-financials{grid-template-columns:1fr}}

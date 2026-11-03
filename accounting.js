@@ -1,10 +1,11 @@
+import {netWinCents} from './net-win.js?v=14.3.2';
 import {fishingDetail,selectionValues,matchesSelection} from './core.js?v=12.6';
 export const ACCOUNTING_ITEMS=[
  ['regular','一般投注','coins','charge'],['progression','闖關／加碼投注','reports','charge'],['chess','棋牌／籌碼投注','cards','charge'],['bullet','捕魚子彈','target','charge'],['tool','道具／技能','tools','charge'],['bonus-buy','購買獎勵','slot','charge'],['free-spin','免費旋轉','slot','payout'],['spin-bonus','旋轉獎勵','payout','payout'],['big-prize','大獎','jackpot','payout'],['jackpot','累積獎池','jackpot','fund']
 ];
 export const ACCOUNTING_FIELDS=['charge','generalPayout','jackpotPayout','contribution','refund','serviceGross','serviceCost'];
 export const accountingCents=n=>Math.round((Number(n)||0)*100);
-export function accountingTotals(rows){if(new Set(rows.map(r=>r.currency)).size>1)throw Error('不同幣別不可直接合計');const t=Object.fromEntries(ACCOUNTING_FIELDS.map(k=>[k,rows.reduce((n,r)=>n+r[k],0)]));return {...t,payout:t.generalPayout+t.jackpotPayout,ggr:t.charge-t.refund-t.generalPayout-t.jackpotPayout,serviceNet:t.serviceGross-t.serviceCost,records:new Set(rows.map(r=>r.recordId)).size,players:new Set(rows.map(r=>r.cashId+'|'+r.playerId)).size,sites:new Set(rows.map(r=>r.cashId)).size};}
+export function accountingTotals(rows){if(new Set(rows.map(r=>r.currency)).size>1)throw Error('不同幣別不可直接合計');const t=Object.fromEntries(ACCOUNTING_FIELDS.map(k=>[k,rows.reduce((n,r)=>n+r[k],0)]));const wins=netWinCents(t.charge,t.refund,t.generalPayout+t.jackpotPayout);return {...t,payout:t.generalPayout+t.jackpotPayout,...wins,ggr:wins.operatorNetWin,serviceNet:t.serviceGross-t.serviceCost,records:new Set(rows.map(r=>r.recordId)).size,players:new Set(rows.map(r=>r.cashId+'|'+r.playerId)).size,sites:new Set(rows.map(r=>r.cashId)).size};}
 // Integer cents. Each original wager is partitioned once; jackpot transfers are informational, not additional charges.
 export function accountingLines(records,pricing=[]){
  const result=[];
