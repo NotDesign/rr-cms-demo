@@ -9,7 +9,7 @@ export function createGameOperations(games,sites,saved=null,now=new Date()){
   const old=saved?.games?.[g.id],overrides={};
   for(const [id,value] of Object.entries(old?.overrides||{}))if(sites.some(s=>s.id===id)&&profile(value?.rtp)&&(value.mode==='permanent'||value.mode==='scheduled'&&validDate(value.start)&&validDate(value.end)&&Date.parse(value.end)>Date.parse(value.start)))overrides[id]={...value,rtp:profile(value.rtp)};
   const version='1.'+(1+i%4)+'.'+i%3,releases=gameReleases(version),enabledSites=sites.filter((s,j)=>(j+i)%6!==5);
-  state.games[g.id]={listed:typeof old?.listed==='boolean'?old.listed:![3,17].includes(i),maintenance:typeof old?.maintenance==='boolean'?old.maintenance:i===8,defaultRtp:profile(old?.defaultRtp)||[96,97,98][i%3],version,releases,sites:Object.fromEntries(sites.map((s,j)=>{const enabled=(j+i)%6!==5,index=(enabledSites.findIndex(v=>v.id===s.id)+i)%enabledSites.length,seeded=releases[index<8+i%3?0:index<enabledSites.length-2?1:2],savedVersion=old?.sites?.[s.id]?.version;return [s.id,{enabled,maintenance:(j+i)%13===12,version:enabled?(releases.includes(savedVersion)?savedVersion:seeded):null}];})),overrides};
+  state.games[g.id]={listed:typeof old?.listed==='boolean'?old.listed:![3,17].includes(i),maintenance:typeof old?.maintenance==='boolean'?old.maintenance:i===8,defaultRtp:profile(old?.defaultRtp)||[96,97,98][i%3],version,releases,sites:Object.fromEntries(sites.map((s,j)=>{const seededEnabled=(j+i)%6!==5,savedSite=old?.sites?.[s.id],enabled=typeof savedSite?.enabled==='boolean'?savedSite.enabled:seededEnabled,index=(enabledSites.findIndex(v=>v.id===s.id)+i)%enabledSites.length,seeded=releases[index<8+i%3?0:index<enabledSites.length-2?1:2],savedVersion=old?.sites?.[s.id]?.version;return [s.id,{enabled,maintenance:typeof savedSite?.maintenance==='boolean'?savedSite.maintenance:(j+i)%13===12,version:releases.includes(savedVersion)?savedVersion:enabled?(seededEnabled?seeded:version):null}];})),overrides};
  });
  if(!saved&&games[0]&&sites.length>=3){const g=state.games[games[0].id];g.overrides[sites[0].id]={mode:'scheduled',rtp:98,start:new Date(+now-3600000).toISOString(),end:new Date(+now+21600000).toISOString()};g.overrides[sites[1].id]={mode:'scheduled',rtp:95,start:new Date(+now+86400000).toISOString(),end:new Date(+now+172800000).toISOString()};g.overrides[sites[2].id]={mode:'scheduled',rtp:97,start:new Date(+now-172800000).toISOString(),end:new Date(+now-86400000).toISOString()};}
  return state;
@@ -41,6 +41,12 @@ export function setGameAvailability(state,gameId,listed,reason,at=new Date()){
  if(state.games[gameId].listed===listed)return state;
  const next=record(state,gameId,'availability',state.games[gameId].listed,listed,reason.trim(),at);
  return {...next,games:{...next.games,[gameId]:{...next.games[gameId],listed}}};
+}
+export function setGameSiteAvailability(state,gameId,siteId,enabled,reason,at=new Date()){
+ const game=state.games[gameId],site=game?.sites[siteId];if(!site||typeof enabled!=='boolean'||!reason?.trim())throw Error('請選擇現金網並填寫異動原因');
+ if(site.enabled===enabled)return state;
+ const after={...site,enabled,version:site.version||(enabled?game.version:null)},next=record(state,gameId,'site-availability',{enabled:site.enabled,version:site.version},{enabled:after.enabled,version:after.version},reason.trim(),at,siteId);
+ return {...next,games:{...next.games,[gameId]:{...game,sites:{...game.sites,[siteId]:after}}}};
 }
 export function setGameMaintenance(state,gameId,maintenance,reason,at=new Date()){
  if(!state.games[gameId]||!reason?.trim())throw Error('請填寫異動原因');

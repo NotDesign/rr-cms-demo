@@ -1,4 +1,5 @@
-import {RTP_PROFILES,gameAccess} from './game-operations.js?v=14.0';
+import {gameFunding,validateFunding} from './jackpot-partnership.js?v=14.1';
+import {RTP_PROFILES,gameAccess} from './game-operations.js?v=14.1';
 import {cents} from './jackpot-analytics.js?v=13.1';
 
 const copy=value=>JSON.parse(JSON.stringify(value));
@@ -10,7 +11,7 @@ export function defaultRuleSettings(data,state,gameId,kind){
  const game=data.games.find(g=>g.id===gameId);
  if(kind==='game')return {rtp:null,minBet:1,maxBet:10000,maxWin:0,allowFreeRounds:true,params:game.type==='電子遊戲'?{maxStages:10}:game.type==='老虎機'?{paylines:20}:game.type==='捕魚'?{bullets:[1,1.5,2,3,4],maxBullets:1000}:{turnSeconds:30,maxMultiplier:16}};
  const pool=data.jackpotPools.find(p=>p.game===game.name);
- return {enabled:true,basis:'paid',rate:(pool?.contributionRate||.02)*100,cap:0,triggerType:'gameEvent',event:gameEvent(game)[0],eventCount:game.type==='電子遊戲'?3:1,minBet:0,minPool:0,cooldown:0,allowFreeRounds:true,payoutMode:'game',payoutValue:100,maxAward:0,retain:0,insufficient:'cap'};
+ return {funding:gameFunding(data,gameId),enabled:true,basis:'paid',rate:(pool?.contributionRate||.02)*100,cap:0,triggerType:'gameEvent',event:gameEvent(game)[0],eventCount:game.type==='電子遊戲'?3:1,minBet:0,minPool:0,cooldown:0,allowFreeRounds:true,payoutMode:'game',payoutValue:100,maxAward:0,retain:0,insufficient:'cap'};
 }
 export function validateRule(data,gameId,kind,name,settings){
  const errors=[],game=data.games.find(g=>g.id===gameId);
@@ -28,6 +29,7 @@ export function validateRule(data,gameId,kind,name,settings){
   if(game.type==='捕魚'&&(!Array.isArray(p.bullets)||p.bullets.length!==5||p.bullets.some((v,i)=>!finite(v,.01,1000)||i&&Number(v)<=Number(p.bullets[i-1]))||!Number.isInteger(p.maxBullets)||!finite(p.maxBullets,1,100000)))errors.push('捕魚須設定五個遞增的子彈等級及有效發數上限');
   if(game.type==='棋牌'&&(!finite(p.turnSeconds,5,120)||!finite(p.maxMultiplier,1,100)))errors.push('棋牌操作秒數或倍率無效');
  }else{
+  if(settings.funding!==undefined&&!validateFunding(settings.funding))errors.push('合資金額或合作比例無效');
   if(!data.jackpotPools.some(p=>p.game===game.name))errors.push('此遊戲未配置獎池');
   if(!['paid','valid'].includes(settings.basis)||!finite(settings.rate,0,100)||!finite(settings.cap,0,1000000))errors.push('提撥比例須為 0–100%，提撥上限不得為負數');
   if(!['gameEvent','stakeThreshold','poolThreshold'].includes(settings.triggerType)||settings.event!==gameEvent(game)[0]||!Number.isInteger(settings.eventCount)||!finite(settings.eventCount,1,100))errors.push('觸發條件無效');
@@ -50,7 +52,7 @@ function seededConfiguration(data,state){
   for(const site of sitesOf(data)){
    const gameBinding={ruleId:'CMS-GAME-'+game.id,version:1},jackpotBinding=game.hasJackpot&&state.games[game.id].sites[site.id].enabled?{ruleId:'CMS-JACKPOT-'+game.id,version:1,rate:null,contribute:true,canWin:true}:null;
    bindings[game.id][site.id]={game:gameBinding,jackpot:jackpotBinding};
-   applied[game.id][site.id]={game:{seq:0,binding:copy(gameBinding),snapshot:copy(rules[gameBinding.ruleId].versions[0]),at:null},jackpot:{seq:0,binding:copy(jackpotBinding),snapshot:jackpotBinding?copy(rules[jackpotBinding.ruleId].versions[0]):null,at:null},rtp:{seq:0,snapshot:{defaultRtp:state.games[game.id].defaultRtp,override:copy(state.games[game.id].overrides[site.id]||null)},at:null},control:{seq:0,snapshot:{listed:state.games[game.id].listed,maintenance:state.games[game.id].maintenance},at:null}};
+   applied[game.id][site.id]={'site-control':{seq:0,snapshot:copy(state.games[game.id].sites[site.id]),at:null},game:{seq:0,binding:copy(gameBinding),snapshot:copy(rules[gameBinding.ruleId].versions[0]),at:null},jackpot:{seq:0,binding:copy(jackpotBinding),snapshot:jackpotBinding?copy(rules[jackpotBinding.ruleId].versions[0]):null,at:null},rtp:{seq:0,snapshot:{defaultRtp:state.games[game.id].defaultRtp,override:copy(state.games[game.id].overrides[site.id]||null)},at:null},control:{seq:0,snapshot:{listed:state.games[game.id].listed,maintenance:state.games[game.id].maintenance},at:null}};
   }
  }
  return {schema:1,seq:0,syncRevision:0,rules,bindings,applied,desired:{},batches:[],history:[]};
@@ -60,7 +62,7 @@ export function hydrateConfiguration(data,state,saved=state.configuration){
  const config=copy(saved);config.seq=Number.isInteger(config.seq)?config.seq:0;config.syncRevision=Number.isInteger(config.syncRevision)?config.syncRevision:0;config.rules={...seed.rules,...config.rules};config.bindings={...seed.bindings,...config.bindings};config.applied={...seed.applied,...config.applied};config.desired||={};config.batches=Array.isArray(config.batches)?config.batches.slice(0,50):[];config.history=Array.isArray(config.history)?config.history.slice(0,200):[];
  for(const rule of Object.values(config.rules)){const original=seed.rules[rule.id];if(original){if(rule.draft.systemName===undefined)rule.draft.systemName=rule.draft.name===original.name;for(const v of rule.versions)if(v.systemName===undefined)v.systemName=v.name===original.name;}}
  for(const g of data.games)for(const site of sitesOf(data))for(const kind of ['game','jackpot']){const a=config.applied[g.id]?.[site.id]?.[kind],original=seed.rules[a?.binding?.ruleId];if(a?.snapshot&&a.snapshot.systemName===undefined)a.snapshot.systemName=Boolean(original&&a.snapshot.name===original.name);}
- for(const g of data.games){config.bindings[g.id]={...seed.bindings[g.id],...config.bindings[g.id]};config.applied[g.id]={...seed.applied[g.id],...config.applied[g.id]};}
+ for(const g of data.games){config.bindings[g.id]={...seed.bindings[g.id],...config.bindings[g.id]};config.applied[g.id]={...seed.applied[g.id],...config.applied[g.id]};for(const site of sitesOf(data))config.applied[g.id][site.id]={...seed.applied[g.id][site.id],...config.applied[g.id][site.id]};}
  return {...state,configuration:config};
 }
 export function assignedRule(state,gameId,siteId,kind,source='cms'){
@@ -92,9 +94,9 @@ export function publishRule(data,state,id,assignments,reason,at=new Date()){
  return enqueue({...state,revision:state.revision+1,configuration:c},rule.gameId,rule.kind,targets,rule.draft.name,reason.trim(),{ruleId:id,version:version.version},at);
 }
 export function queueLegacyChange(data,state,operation,reason,at=new Date()){
- const sites=operation.siteId?[operation.siteId]:sitesOf(data).map(s=>s.id),game=state.games[operation.gameId],domain=['availability','maintenance'].includes(operation.kind)?'control':'rtp';
- const targets=sites.map(siteId=>({siteId,snapshot:domain==='control'?{listed:game.listed,maintenance:game.maintenance}:{defaultRtp:game.defaultRtp,override:copy(game.overrides[siteId]||null)}}));
- const title={availability:'遊戲全域上下架',maintenance:'遊戲維護',rtp:'現金網 RTP','default-rtp':'遊戲預設 RTP'}[operation.kind];return enqueue(state,operation.gameId,domain,targets,title,reason,{kind:operation.kind},at);
+ const sites=operation.siteId?[operation.siteId]:sitesOf(data).map(s=>s.id),game=state.games[operation.gameId],domain=operation.kind==='site-availability'?'site-control':['availability','maintenance'].includes(operation.kind)?'control':'rtp';
+ const targets=sites.map(siteId=>({siteId,snapshot:domain==='site-control'?copy(game.sites[siteId]):domain==='control'?{listed:game.listed,maintenance:game.maintenance}:{defaultRtp:game.defaultRtp,override:copy(game.overrides[siteId]||null)}}));
+ const title={'site-availability':'單站遊戲上下架',availability:'遊戲全域上下架',maintenance:'遊戲維護',rtp:'現金網 RTP','default-rtp':'遊戲預設 RTP'}[operation.kind];return enqueue(state,operation.gameId,domain,targets,title,reason,{kind:operation.kind},at);
 }
 export function advanceSync(state,id,phase,at=new Date(),simulateFailure=true){
  const c=copy(state.configuration),batch=c.batches.find(b=>b.id===id);if(!batch)return state;

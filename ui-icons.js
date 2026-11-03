@@ -1,5 +1,21 @@
 // Original 24px line icons. Decorative icons always accompany a readable label.
 export const paths={
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ minus:'<path d="M5 12h14"/>',
+ key:'<circle cx="8" cy="8" r="5"/><path d="m12 12 9 9m-4-4 3-3m-7-1 3-3"/>',
+ roles:'<path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4Z"/><circle cx="12" cy="9" r="2"/><path d="M8 16c0-4 8-4 8 0"/>',
+ network:'<rect x="3" y="14" width="6" height="6" rx="1"/><rect x="15" y="14" width="6" height="6" rx="1"/><rect x="9" y="3" width="6" height="5" rx="1"/><path d="M12 8v3M6 14v-3h12v3"/>',
+ api:'<path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-14-2 18"/>',
+ audit:'<rect x="4" y="3" width="13" height="18" rx="2"/><path d="M8 7h5M8 11h3"/><circle cx="16" cy="15" r="4"/><path d="m19 18 3 3"/>',
+ sync:'<path d="M20 7A8 8 0 0 0 6 5L3 8m0-5v5h5M4 17a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/>',
+ server:'<rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M15 6.5h3M15 17.5h3"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/>',
+ layers:'<path d="m12 2 10 6-10 6L2 8l10-6Zm-10 10 10 6 10-6M2 16l10 6 10-6"/>',
+ power:'<path d="M12 2v10M6.3 5a9 9 0 1 0 11.4 0"/>',
+ version:'<circle cx="6" cy="5" r="3"/><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M6 8v8M18 8c0 6-12 0-12 8"/>',
+ tools:'<path d="m14 6 4 4 3-3a7 7 0 0 1-9 9l-6 6-4-4 6-6a7 7 0 0 1 9-9l-3 3Z"/>',
+ sliders:'<path d="M4 3v6m0 4v8M12 3v12m0 4v2M20 3v2m0 4v12M1 9h6M9 15h6M17 5h6"/>',
+
  customerService:'<path d="M4 13v-2a8 8 0 0 1 16 0v6a4 4 0 0 1-4 4h-3"/><rect x="2" y="10" width="5" height="8" rx="2"/><rect x="17" y="10" width="5" height="8" rx="2"/><path d="M10 21h3"/>',
  chevronDown:'<path d="m6 9 6 6 6-6"/>',
  check:'<path d="m5 12 4 4L19 6"/>',

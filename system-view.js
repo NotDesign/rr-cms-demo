@@ -1,0 +1,50 @@
+import {escape as e,money} from './core.js?v=12.6';
+import {uiIcon} from './ui-icons.js?v=14.1';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.1';
+import {operationsTime} from './game-operations.js?v=14.1';
+import {PERMISSIONS,systemLabels,SYSTEM_SECTIONS,apiLogFixtures,systemAuditEvents} from './system-management.js?v=14.1';
+import {syncView} from './cms-rule-view.js?v=14.1';
+import {syncCounts} from './cms-configuration.js?v=14.1';
+const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
+const status=value=>'<span class="mg-status '+(value==='active'?'good':value==='disabled'||value==='revoked'?'off':'gold')+'">'+(systemLabels[value]||value)+'</span>';
+const select=(id,options,value)=>'<select id="'+id+'">'+options.map(([key,label])=>'<option value="'+e(key)+'"'+(String(key)===String(value)?' selected':'')+'>'+e(label)+'</option>').join('')+'</select>';
+const field=(name,id,control)=>'<div class="field"><label for="'+id+'">'+name+'</label>'+control+'</div>';
+const custom=name=>'<span data-no-localize>'+e(name)+'</span>';
+export function systemPage(data,state,operations,section,ui={},preferences={}){
+ const title=SYSTEM_SECTIONS.find(([key])=>key===section)?.[1]||'系統管理',q=(ui.query||'').toLocaleLowerCase(),roles=new Map(state.roles.map(r=>[r.id,r.name])),sites=new Map(data.organizations.map(s=>[s.id,s.name]));let metrics='',body='',tools='';
+ if(['accounts','roles','keys','ips'].includes(section)){
+  const items=state[section],shown=items.filter(r=>JSON.stringify(r).toLocaleLowerCase().includes(q)),active=items.filter(r=>r.status==='active').length;
+  metrics=metric(section==='accounts'?'players':section==='keys'?'key':section==='roles'?'roles':'network','資料總數',items.length)+metric('check',section==='roles'?'權限項目':'啟用數量',section==='roles'?PERMISSIONS.length:active)+metric('layers',section==='accounts'?'可用角色':'符合搜尋',section==='accounts'?state.roles.length:shown.length)+metric('audit','系統異動',state.audit.length);
+  tools='<div class="sys-toolbar">'+field('搜尋','sys-query','<input id="sys-query" value="'+e(ui.query||'')+'" placeholder="搜尋名稱、帳號或設定">')+button(uiIcon('plus')+'新增','data-sys-new="'+section+'"','primary')+'</div>';
+  const edit=r=>button('編輯','data-sys-edit="'+r.id+'" data-sys-type="'+section+'"');
+  if(section==='accounts')body=table(['使用者','電子信箱','角色','狀態','操作'],shown.map(r=>'<tr><td>'+custom(r.name)+'</td><td>'+e(r.email)+'</td><td>'+custom(roles.get(r.roleId))+'</td><td>'+status(r.status)+'</td><td>'+edit(r)+'</td></tr>'),'管理帳號','沒有符合條件的帳號');
+  if(section==='roles')body=table(['角色','權限數量','使用帳號','操作'],shown.map(r=>'<tr><td>'+custom(r.name)+'</td><td>'+r.permissions.length+' / '+PERMISSIONS.length+'</td><td>'+state.accounts.filter(a=>a.roleId===r.id).length+'</td><td>'+edit(r)+'</td></tr>'),'角色權限','沒有符合條件的角色')+'<h2 class="sys-section-title">權限矩陣</h2><div class="sys-permission-matrix">'+table(['權限',...shown.map(r=>custom(r.name))],PERMISSIONS.map(([key,label])=>'<tr><td>'+label+'</td>'+shown.map(r=>'<td>'+uiIcon(r.permissions.includes(key)?'check':'minus')+'<span class="sr-only">'+(r.permissions.includes(key)?'允許':'不允許')+'</span></td>').join('')+'</tr>'),'角色權限矩陣')+'</div>';
+  if(section==='keys')body=table(['金鑰名稱','示例金鑰','現金網','權限','到期日 · UTC+8','狀態','操作'],shown.map(r=>'<tr><td>'+custom(r.name)+'</td><td><code>'+e(r.masked)+'</code></td><td>'+e(sites.get(r.siteId)||r.siteId)+'</td><td>'+r.permissions.length+' 項</td><td>'+e(r.expires)+'</td><td>'+status(r.status==='active'&&Date.parse(r.expires+'T23:59:59+08:00')<Date.now()?'expired':r.status)+'</td><td>'+edit(r)+'</td></tr>'),'API 金鑰','沒有符合條件的金鑰');
+  if(section==='ips')body=table(['名稱','IP／CIDR','狀態','操作'],shown.map(r=>'<tr><td>'+custom(r.label)+'</td><td><code>'+e(r.address)+'</code></td><td>'+status(r.status)+'</td><td>'+edit(r)+'</td></tr>'),'IP 白名單','沒有符合條件的 IP');
+ }else if(section==='logs'){
+  const all=apiLogFixtures(data),shown=all.filter(r=>(!q||JSON.stringify(r).toLocaleLowerCase().includes(q))&&(!ui.status||String(r.status).startsWith(ui.status))&&(!ui.method||r.method===ui.method));
+  metrics=metric('api','API 請求',all.length)+metric('check','成功請求',all.filter(r=>r.status<400).length)+metric('activity','異常請求',all.filter(r=>r.status>=400).length)+metric('clock','平均回應 · ms',Math.round(all.reduce((n,r)=>n+r.duration,0)/all.length));
+  tools='<div class="mg-filters">'+field('搜尋請求','sys-query','<input id="sys-query" value="'+e(ui.query||'')+'" placeholder="請求 ID、路徑或 IP">')+field('回應分類','sys-status',select('sys-status',[['','全部狀態'],['2','2xx 成功'],['4','4xx 請求錯誤'],['5','5xx 服務錯誤']],ui.status||''))+field('請求方法','sys-method',select('sys-method',[['','全部方法'],['GET','GET'],['POST','POST']],ui.method||''))+'</div>';
+  body=table(['時間 · UTC+8','請求 ID','方法／路徑','現金網','HTTP','回應 ms','操作'],shown.map(r=>'<tr><td>'+operationsTime(r.at)+'</td><td>'+e(r.id)+'</td><td><code>'+r.method+' '+e(r.path)+'</code></td><td>'+e(sites.get(r.siteId))+'</td><td><span class="mg-status '+(r.status<400?'good':'off')+'">'+r.status+'</span></td><td>'+r.duration+'</td><td>'+button('查看','data-sys-log="'+r.id+'"')+'</td></tr>'),'API 請求日誌','沒有符合條件的請求');
+ }else if(section==='audit'){
+  const all=systemAuditEvents(state,operations),shown=all.filter(r=>(!q||JSON.stringify(r).toLocaleLowerCase().includes(q))&&(!ui.module||r.module===ui.module));
+  metrics=metric('audit','異動紀錄',all.length)+metric('games','遊戲管理異動',all.filter(r=>r.module==='games').length)+metric('receipt','規則異動',all.filter(r=>r.module==='rules').length)+metric('settings','系統異動',all.filter(r=>r.module==='system').length);
+  tools='<div class="mg-filters">'+field('搜尋異動','sys-query','<input id="sys-query" value="'+e(ui.query||'')+'" placeholder="對象、操作人或原因">')+field('模組','sys-module',select('sys-module',[['','全部模組'],['games','遊戲管理'],['rules','遊戲規則'],['system','系統管理']],ui.module||''))+'</div>';
+  body=table(['時間 · UTC+8','操作人','操作','對象','異動原因','操作'],shown.map(r=>'<tr><td>'+operationsTime(r.at)+'</td><td>'+e(r.actor)+'</td><td>'+e(r.action)+'</td><td>'+custom(r.subject||'—')+'</td><td>'+custom(r.reason||'—')+'</td><td>'+button('查看','data-sys-event="'+r.source+':'+r.id+'"')+'</td></tr>'),'操作審計','沒有符合條件的異動');
+ }else if(section==='sync'){
+  const counts=syncCounts(operations.configuration);metrics=metric('sync','同步批次',operations.configuration.batches.length)+metric('clock','待同步',counts.pending+counts.applying)+metric('check','已套用',counts.success)+metric('activity','失敗',counts.failed);body=syncView(data,operations);
+ }else{
+  body='<div class="sys-preferences"><article>'+uiIcon('clock')+'<h2>時間與時區</h2><strong data-system-timezone>'+e(preferences.timeZone||'Asia/Taipei')+'</strong>'+button('設定時區','data-sys-clock="true"')+'</article><article>'+uiIcon('globe')+'<h2>介面語言</h2>'+field('語言','sys-language',select('sys-language',[['zh-Hant','繁體中文'],['vi','Tiếng Việt'],['th','ไทย']],preferences.locale||'zh-Hant'))+'</article><article>'+uiIcon('layers')+'<h2>顯示外觀</h2>'+field('外觀','sys-theme',select('sys-theme',[['dark','深色'],['light','淺色']],preferences.theme||'dark'))+'</article><article>'+uiIcon('server')+'<h2>工作環境</h2><strong>R&R CMS Demo</strong><span class="mg-status gold">示例設定</span>'+button('查看同步紀錄','data-cms-sync="all"')+'</article></div>';
+ }
+ return '<div class="page system-page"><div class="page-heading"><div><h1>'+title+'</h1>'+(section==='logs'?'<p class="mg-intro">'+e(data.date)+' · UTC+8</p>':'')+'</div><span class="badge">互動示範</span></div>'+(metrics?'<div class="mg-metrics">'+metrics+'</div>':'')+'<section class="mg-surface">'+tools+body+'</section></div>';
+}
+export function systemEditor(data,state,type,id=null){
+ const row=id?state[type].find(r=>r.id===id):null,sites=data.organizations.filter(o=>o.level==='現金網'),input=(name,value='',kind='text')=>'<input id="se-'+name+'" class="mg-input" type="'+kind+'" value="'+e(value)+'" required maxlength="100">',f=(label,name,value,kind)=>field(label,'se-'+name,input(name,value,kind)),permissions=selected=>'<fieldset class="sys-permissions"><legend>權限</legend>'+PERMISSIONS.map(([key,label])=>'<label class="cms-check"><input type="checkbox" name="se-permission" value="'+key+'"'+(selected.includes(key)?' checked':'')+'><span>'+label+'</span></label>').join('')+'</fieldset>';
+ let html='<div class="cms-form-grid">';
+ if(type==='accounts')html+=f('使用者名稱','name',row?.name)+f('電子信箱','email',row?.email,'email')+field('角色','se-role',select('se-role',state.roles.map(r=>[r.id,r.name]),row?.roleId||'ROLE-VIEW'))+field('狀態','se-status',select('se-status',['active','disabled','locked','invited'].map(k=>[k,systemLabels[k]]),row?.status||'active'));
+ if(type==='roles')html+=f('角色名稱','name',row?.name)+'</div>'+permissions(row?.permissions||['reports:read'])+'<div>';
+ if(type==='keys')html+=f('金鑰名稱','name',row?.name)+field('現金網','se-site',select('se-site',sites.map(s=>[s.id,s.name]),row?.siteId||sites[0].id))+f('到期日 · UTC+8','expires',row?.expires||new Date(Date.now()+90*86400000).toISOString().slice(0,10),'date')+field('狀態','se-status',select('se-status',[['active','啟用'],['revoked','已撤銷']],row?.status||'active'))+'</div>'+permissions(row?.permissions||['reports:read'])+'<div>';
+ if(type==='ips')html+=f('名稱','label',row?.label)+f('IP／CIDR','address',row?.address)+field('狀態','se-status',select('se-status',[['active','啟用'],['disabled','停用']],row?.status||'active'));
+ return html+'</div><label class="mg-label" for="se-reason">異動原因</label><textarea class="mg-input" id="se-reason" required maxlength="200" rows="2"></textarea><p class="mg-error" id="se-error" role="alert" hidden></p>';
+}
+export function systemEventView(event){return '<div class="sys-event-meta"><h3>'+e(event.action||event.method+' '+event.path)+'</h3><small>'+operationsTime(event.at)+' · UTC+8</small></div>'+(event.reason?'<p data-no-localize>'+e(event.reason)+'</p>':'')+'<h3 class="sys-section-title">詳細資料</h3><pre class="sys-json" data-no-localize>'+e(JSON.stringify(event,null,2))+'</pre>';}

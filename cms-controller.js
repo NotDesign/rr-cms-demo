@@ -1,8 +1,9 @@
+import {splitPoolFunding} from './jackpot-partnership.js?v=14.1';
 import {uiIcon} from './ui-icons.js?v=12.6';
 import {escape as e,money} from './core.js?v=12.6';
-import {gameAccess,effectiveRtp} from './game-operations.js?v=14.0';
-import {defaultRuleSettings,validateRule,saveRuleDraft,publishRule,assignedRule,jackpotTrial,advanceSync,retrySync,syncCounts} from './cms-configuration.js?v=14.0';
-import {ruleEditorHtml,ruleApplyHtml,syncView,siteConfigurationView,ruleAssignmentsView,cmsBanner} from './cms-rule-view.js?v=14.0';
+import {gameAccess,effectiveRtp} from './game-operations.js?v=14.1';
+import {defaultRuleSettings,validateRule,saveRuleDraft,publishRule,assignedRule,jackpotTrial,advanceSync,retrySync,syncCounts} from './cms-configuration.js?v=14.1';
+import {ruleEditorHtml,ruleApplyHtml,syncView,siteConfigurationView,ruleAssignmentsView,cmsBanner} from './cms-rule-view.js?v=14.1';
 
 export function installCmsController(options){
  const {data,getState,loadState,commitState,renderMain,showDialog,closeDialog,getDialog,setDialog,localize,translate,toast,enhance,currentTab,openManager}=options;
@@ -23,7 +24,7 @@ export function installCmsController(options){
    const params=game.type==='電子遊戲'?{maxStages:n('cr-max-stages')}:game.type==='老虎機'?{paylines:n('cr-paylines')}:game.type==='捕魚'?{bullets:[0,1,2,3,4].map(i=>n('cr-bullet-'+i)),maxBullets:n('cr-max-bullets')}:{turnSeconds:n('cr-turn-seconds'),maxMultiplier:n('cr-max-multiplier')};
    settings={rtp:v('cr-rtp')===''?null:n('cr-rtp'),minBet:n('cr-min-bet'),maxBet:n('cr-max-bet'),maxWin:n('cr-max-win'),allowFreeRounds:b('cr-free'),params};
   }else{
-   const base=defaultRuleSettings(data,getState(),context.gameId,'jackpot');settings={...base,enabled:b('cr-enabled'),basis:v('cr-basis'),rate:n('cr-rate'),cap:n('cr-cap'),triggerType:v('cr-trigger'),eventCount:n('cr-event-count'),minBet:n('cr-min-bet'),minPool:n('cr-min-pool'),cooldown:n('cr-cooldown'),allowFreeRounds:b('cr-free'),payoutMode:v('cr-payout-mode'),payoutValue:n('cr-payout-value'),maxAward:n('cr-max-award'),retain:n('cr-retain'),insufficient:v('cr-insufficient')};
+   const base=defaultRuleSettings(data,getState(),context.gameId,'jackpot');settings={...base,funding:{seedAmount:n('cr-seed-amount'),providerCapitalShare:n('cr-provider-capital'),providerNetShare:n('cr-provider-net')},enabled:b('cr-enabled'),basis:v('cr-basis'),rate:n('cr-rate'),cap:n('cr-cap'),triggerType:v('cr-trigger'),eventCount:n('cr-event-count'),minBet:n('cr-min-bet'),minPool:n('cr-min-pool'),cooldown:n('cr-cooldown'),allowFreeRounds:b('cr-free'),payoutMode:v('cr-payout-mode'),payoutValue:n('cr-payout-value'),maxAward:n('cr-max-award'),retain:n('cr-retain'),insufficient:v('cr-insufficient')};
   }
   return {id:context.id,gameId:context.gameId,kind:context.kind,name:$('#cr-name').value.trim(),settings};
  }
@@ -31,16 +32,18 @@ export function installCmsController(options){
   if(getDialog()?.type!=='cms-editor'||!$('[data-cms-editor]'))return;
   const c=getDialog(),row=readEditor();if(c.kind==='jackpot'){$('#cr-payout-value').disabled=row.settings.payoutMode==='game';$('#cr-event-count').disabled=row.settings.triggerType!=='gameEvent';enhance();}
   try{
-   const errors=validateRule(data,c.gameId,c.kind,'試算',row.settings);if(errors.length)throw Error(errors.join('；'));const siteId=$('#cr-trial-site').value,bet=Number($('#cr-trial-bet').value),state=getState();let html;
+   const errors=validateRule(data,c.gameId,c.kind,'試算',row.settings);if(errors.length)throw Error(errors.join('；'));const siteId=$('#cr-trial-site').value,bet=Number($('#cr-trial-bet').value),state=getState();let html,resultForFunding;
    if(c.kind==='jackpot'){
+    const funding=splitPoolFunding(row.settings.funding);$('#cr-cash-capital').textContent=translate('現金網')+' '+(100-funding.providerCapitalShare).toFixed(2)+'%';$('#cr-cash-net').textContent=translate('現金網')+' '+(100-funding.providerNetShare).toFixed(2)+'%';$('#cms-funding-preview').innerHTML=[['遊戲商投入',funding.provider.initial],['現金網投入',funding.cash.initial]].map(([label,value])=>'<div><dt>'+translate(label)+'</dt><dd>'+money(value)+' USDT</dd></div>').join('');
     const current=assignedRule(state,c.gameId,siteId,'jackpot'),binding=current?.binding||{rate:null,contribute:true,canWin:true};
     const result=jackpotTrial(data,state,c.gameId,row.settings,binding,{siteId,bet,balance:Number($('#cr-trial-balance').value),refund:Number($('#cr-trial-refund').value),eventCount:Number($('#cr-trial-count').value),elapsed:Number($('#cr-trial-elapsed').value),gameAward:Number($('#cr-trial-game-award').value),eventMatched:$('#cr-trial-event').checked,duplicate:$('#cr-trial-duplicate').checked});
-    html='<div class="cms-trial-metrics">'+[['coins','本次提撥',result.contribution],['payout','本次派彩',result.award],['wallet','派後獎池餘額',result.after]].map(([icon,label,value])=>'<div>'+uiIcon(icon)+'<small>'+label+'</small><strong>'+money(value)+'</strong></div>').join('')+'</div><p class="cms-trial-outcome '+(result.triggered?'good':'')+'">'+e(translate(result.reasons.join('；')))+'</p><p class="mg-note">'+(result.rate!==undefined?translate('本次使用提撥比例')+' '+result.rate.toFixed(2)+'% · ':'')+translate('套用此現金網目前的個別提撥及中獎設定。')+'</p>';
+    resultForFunding=result;html='<div class="cms-trial-metrics">'+[['coins','本次提撥',result.contribution],['payout','本次派彩',result.award],['wallet','派後獎池餘額',result.after]].map(([icon,label,value])=>'<div>'+uiIcon(icon)+'<small>'+label+'</small><strong>'+money(value)+'</strong></div>').join('')+'</div><p class="cms-trial-outcome '+(result.triggered?'good':'')+'">'+e(translate(result.reasons.join('；')))+'</p><p class="mg-note">'+(result.rate!==undefined?translate('本次使用提撥比例')+' '+result.rate.toFixed(2)+'% · ':'')+translate('套用此現金網目前的個別提撥及中獎設定。')+'</p>';
    }else{
     const reasons=[],access=gameAccess(state,c.gameId,siteId);if(!access.canPlay)reasons.push('此現金網目前不可遊玩此遊戲');if(!Number.isFinite(bet)||bet<0||bet>row.settings.maxBet||bet>0&&bet<row.settings.minBet)reasons.push('投注超出此規則範圍');if(!bet&&!row.settings.allowFreeRounds)reasons.push('此規則不允許免費回合');
     const override=effectiveRtp(state,c.gameId,siteId),rtp=override.status==='active'?override.value:row.settings.rtp??state.games[c.gameId].defaultRtp;
     html='<div class="cms-trial-metrics"><div>'+uiIcon('check')+'<small>投注資格</small><strong>'+(reasons.length?'不符合':'符合')+'</strong></div><div>'+uiIcon('percent')+'<small>套用後 CMS RTP</small><strong>'+rtp.toFixed(2)+'%</strong></div></div><p class="cms-trial-outcome">'+e(translate(reasons.join('；')||'投注符合規則範圍'))+'</p><p class="mg-note">'+translate('RTP 是長期數學基準，試算不預測單局輸贏。')+'</p>';
    }
+   if(c.kind==='jackpot'){const parts=splitPoolFunding(row.settings.funding,resultForFunding.contribution,resultForFunding.award);html+='<div class="cms-trial-metrics">'+[['遊戲商獎池盈虧',parts.provider.net],['現金網獎池盈虧',parts.cash.net]].map(([label,value])=>'<div>'+uiIcon('activity')+'<small>'+translate(label)+'</small><strong class="'+(value>0?'positive':value<0?'negative':'')+'">'+(value>0?'+':'')+money(value)+'</strong></div>').join('')+'</div>';}
    $('#cms-trial-result').innerHTML=html;localize($('#cms-trial-result'));
   }catch(error){$('#cms-trial-result').innerHTML='<p class="mg-error">'+e(translate(error.message))+'</p>';}
  }

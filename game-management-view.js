@@ -1,7 +1,7 @@
 import {escape as e} from './core.js?v=12.6';
-import {uiIcon} from './ui-icons.js?v=12.6';
-import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.0';
-import {GAME_SECTIONS,gameAccess,effectiveRtp,availabilityImpact,operationsTime,versionUsage} from './game-operations.js?v=14.0';
+import {uiIcon} from './ui-icons.js?v=14.1';
+import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.1';
+import {GAME_SECTIONS,gameAccess,effectiveRtp,availabilityImpact,operationsTime,versionUsage} from './game-operations.js?v=14.1';
 
 export const accessLabels={'playable':'可遊玩','global-off':'全域下架','game-maintenance':'遊戲維護中','site-off':'現金網未啟用','site-maintenance':'現金網維護中'};
 export const rtpLabels={inherited:'繼承規則基準',active:'生效中',pending:'待生效',expired:'已到期・恢復規則基準'};
@@ -48,7 +48,7 @@ export function gameAccessView(data,state,gameId,now=new Date(),filter='all'){
  const game=data.games.find(g=>g.id===gameId),sites=data.organizations.filter(o=>o.level==='現金網'),o=state.games[gameId],wrappers=new Map(data.organizations.map(o=>[o.id,o.name]));
  const playable=sites.filter(s=>gameAccess(state,gameId,s.id).canPlay),jackpot=sites.filter(s=>jackpotEligibility(state,gameId,s.id).participates),shown=filter==='jackpot'?jackpot:filter==='playable'?playable:filter==='blocked'?sites.filter(s=>!gameAccess(state,gameId,s.id).canPlay):sites;
  shown.sort((a,b)=>a.parent.localeCompare(b.parent)||a.id.localeCompare(b.id));
- return '<div class="mg-impact-heading">'+identity(game)+status(o)+'</div><div class="mg-detail-actions">'+action('全域上下架','data-gm-availability="'+gameId+'"')+action('現金網 RTP','data-gm-section="rtp" data-gm-game="'+gameId+'"')+action('版本使用分布','data-gm-versions="'+gameId+'"')+action('CMS 遊戲規則','data-cms-open="'+gameId+'" data-cms-kind="game"')+'</div><div class="mg-list-filters" role="group" aria-label="現金網篩選">'+[['playable','可遊玩',playable.length],['blocked','不可遊玩',sites.length-playable.length],['all','全部',sites.length],...(game.hasJackpot?[['jackpot','可參與獎池',jackpot.length]]:[])].map(([value,label,count])=>'<button aria-pressed="'+(filter===value)+'" data-gm-sites="'+gameId+'" data-gm-site-filter="'+value+'">'+label+'<strong>'+count+'</strong></button>').join('')+'</div>'+table(['現金網／包網商','可用狀態','使用版本','最終 RTP'],shown.map(s=>{const a=gameAccess(state,gameId,s.id);return '<tr><td><button class="text-link" data-org="'+s.id+'">'+e(s.name)+'</button><small class="mg-sub">'+e(wrappers.get(s.parent))+' · '+e(s.id)+'</small></td><td>'+badge(accessLabels[a.reason],a.canPlay?'good':'')+'</td><td>'+(o.sites[s.id].version?'v'+o.sites[s.id].version:'未部署')+'</td><td>'+effectiveRtp(state,gameId,s.id,now).value.toFixed(2)+'%</td></tr>';}),'各現金網遊戲可用狀態','目前沒有符合此狀態的現金網');
+ return '<div class="mg-impact-heading">'+identity(game)+status(o)+'</div><div class="mg-detail-actions">'+action('全域上下架','data-gm-availability="'+gameId+'"')+action('現金網 RTP','data-gm-section="rtp" data-gm-game="'+gameId+'"')+action('版本使用分布','data-gm-versions="'+gameId+'"')+action('CMS 遊戲規則','data-cms-open="'+gameId+'" data-cms-kind="game"')+'</div><div class="mg-list-filters" role="group" aria-label="現金網篩選">'+[['playable','可遊玩',playable.length],['blocked','不可遊玩',sites.length-playable.length],['all','全部',sites.length],...(game.hasJackpot?[['jackpot','可參與獎池',jackpot.length]]:[])].map(([value,label,count])=>'<button aria-pressed="'+(filter===value)+'" data-gm-sites="'+gameId+'" data-gm-site-filter="'+value+'">'+label+'<strong>'+count+'</strong></button>').join('')+'</div>'+table(['現金網／包網商','可用狀態','使用版本','最終 RTP','本站遊戲開關'],shown.map(s=>{const a=gameAccess(state,gameId,s.id);return '<tr><td><button class="text-link" data-org="'+s.id+'">'+e(s.name)+'</button><small class="mg-sub">'+e(wrappers.get(s.parent))+' · '+e(s.id)+'</small></td><td>'+badge(accessLabels[a.reason],a.canPlay?'good':'')+'</td><td>'+(o.sites[s.id].version?'v'+o.sites[s.id].version:'未部署')+'</td><td>'+effectiveRtp(state,gameId,s.id,now).value.toFixed(2)+'%</td><td>'+action(o.sites[s.id].enabled?'關閉':'啟動','data-gm-site-toggle="'+gameId+'" data-gm-site="'+s.id+'"',o.sites[s.id].enabled?'':'primary')+'</td></tr>';}),'各現金網遊戲可用狀態','目前沒有符合此狀態的現金網');
 }
 export function versionUsageView(data,state,gameId,selected=''){
  const game=data.games.find(g=>g.id===gameId),sites=data.organizations.filter(o=>o.level==='現金網'),usage=versionUsage(state,gameId,sites),wrappers=data.organizations.filter(o=>o.level==='包網商');
@@ -59,7 +59,7 @@ export function versionUsageView(data,state,gameId,selected=''){
 export {table as managementTable,metric as managementMetric};
 
 function auditPanel(data,state){
- const labels={availability:'全域上下架',maintenance:'遊戲維護',rtp:'現金網 RTP','default-rtp':'預設 RTP'};
- const describe=(v,kind)=>kind==='availability'?(v?'上架':'下架'):kind==='maintenance'?(v?'維護中':'正常'):kind==='default-rtp'?v+'%':!v?'繼承預設':v.rtp+'%'+(v.mode==='scheduled'?'（排程）':'');
+ const labels={'site-availability':'單站上下架',availability:'全域上下架',maintenance:'遊戲維護',rtp:'現金網 RTP','default-rtp':'預設 RTP'};
+ const describe=(v,kind)=>kind==='site-availability'?(v.enabled?'啟動':'關閉')+(v.version?' · v'+v.version:''):kind==='availability'?(v?'上架':'下架'):kind==='maintenance'?(v?'維護中':'正常'):kind==='default-rtp'?v+'%':!v?'繼承預設':v.rtp+'%'+(v.mode==='scheduled'?'（排程）':'');
  return '<section class="mg-audit"><div class="mg-card-title">'+uiIcon('receipt')+'<h2>最近異動紀錄</h2><small>時間 · UTC+8</small></div>'+(state.audit.length?table(['時間','遊戲／現金網','操作','變更','原因','操作人'],state.audit.slice(0,8).map(a=>'<tr><td>'+operationsTime(a.at)+'</td><td>'+e(data.games.find(g=>g.id===a.gameId)?.name||a.gameId)+(a.siteId?'<small class="mg-sub">'+e(data.organizations.find(s=>s.id===a.siteId)?.name||a.siteId)+'</small>':'')+'</td><td>'+labels[a.kind]+'</td><td>'+e(describe(a.before,a.kind))+' → '+e(describe(a.after,a.kind))+'</td><td data-no-localize>'+e(a.reason)+'</td><td>'+e(a.actor)+'</td></tr>'),'遊戲管理異動紀錄'):'<p class="mg-note">目前沒有操作紀錄。上下架、維護與 RTP 調整會顯示於此。</p>')+'</section>';
 }
