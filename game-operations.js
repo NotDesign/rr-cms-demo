@@ -2,12 +2,14 @@ export const RTP_PROFILES=[94,95,96,97,98];
 export const GAME_SECTIONS=[['catalog','遊戲列表'],['categories','遊戲分類'],['rtp','RTP 設定檔'],['availability','遊戲上下架'],['versions','版本管理'],['maintenance','維護管理']];
 const profile=value=>RTP_PROFILES.includes(Number(value))?Number(value):null;
 const validDate=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
+export function gameReleases(version){const [major,minor,patch]=version.split('.').map(Number);const previous=patch>0?[major,minor,patch-1]:[major,minor-1,2];const legacy=previous[2]>0?[...previous.slice(0,2),previous[2]-1]:[major,previous[1]-1,2];return [version,previous.join('.'),legacy.join('.')];}
 export function createGameOperations(games,sites,saved=null,now=new Date()){
  const state={revision:Number.isInteger(saved?.revision)?saved.revision:0,games:{},audit:Array.isArray(saved?.audit)?saved.audit.filter(a=>games.some(g=>g.id===a.gameId)&&validDate(a.at)).slice(0,200):[]};
  games.forEach((g,i)=>{
   const old=saved?.games?.[g.id],overrides={};
   for(const [id,value] of Object.entries(old?.overrides||{}))if(sites.some(s=>s.id===id)&&profile(value?.rtp)&&(value.mode==='permanent'||value.mode==='scheduled'&&validDate(value.start)&&validDate(value.end)&&Date.parse(value.end)>Date.parse(value.start)))overrides[id]={...value,rtp:profile(value.rtp)};
-  state.games[g.id]={listed:typeof old?.listed==='boolean'?old.listed:![3,17].includes(i),maintenance:typeof old?.maintenance==='boolean'?old.maintenance:i===8,defaultRtp:profile(old?.defaultRtp)||[96,97,98][i%3],version:'1.'+(1+i%4)+'.'+i%3,sites:Object.fromEntries(sites.map((s,j)=>[s.id,{enabled:(j+i)%6!==5,maintenance:(j+i)%13===12}])),overrides};
+  const version='1.'+(1+i%4)+'.'+i%3,releases=gameReleases(version),enabledSites=sites.filter((s,j)=>(j+i)%6!==5);
+  state.games[g.id]={listed:typeof old?.listed==='boolean'?old.listed:![3,17].includes(i),maintenance:typeof old?.maintenance==='boolean'?old.maintenance:i===8,defaultRtp:profile(old?.defaultRtp)||[96,97,98][i%3],version,releases,sites:Object.fromEntries(sites.map((s,j)=>{const enabled=(j+i)%6!==5,index=(enabledSites.findIndex(v=>v.id===s.id)+i)%enabledSites.length,seeded=releases[index<8+i%3?0:index<enabledSites.length-2?1:2],savedVersion=old?.sites?.[s.id]?.version;return [s.id,{enabled,maintenance:(j+i)%13===12,version:enabled?(releases.includes(savedVersion)?savedVersion:seeded):null}];})),overrides};
  });
  if(!saved&&games[0]&&sites.length>=3){const g=state.games[games[0].id];g.overrides[sites[0].id]={mode:'scheduled',rtp:98,start:new Date(+now-3600000).toISOString(),end:new Date(+now+21600000).toISOString()};g.overrides[sites[1].id]={mode:'scheduled',rtp:95,start:new Date(+now+86400000).toISOString(),end:new Date(+now+172800000).toISOString()};g.overrides[sites[2].id]={mode:'scheduled',rtp:97,start:new Date(+now-172800000).toISOString(),end:new Date(+now-86400000).toISOString()};}
  return state;
@@ -16,6 +18,11 @@ export function gameAccess(state,gameId,siteId){
  const game=state.games[gameId],site=game?.sites[siteId];
  const reason=!game?'unknown':!game.listed?'global-off':game.maintenance?'game-maintenance':!site?.enabled?'site-off':site.maintenance?'site-maintenance':'playable';
  return {canPlay:reason==='playable',reason};
+}
+export function versionUsage(state,gameId,sites){
+ const game=state.games[gameId];if(!game)return {groups:[],deployed:[],unassigned:[]};
+ const releases=game.releases||gameReleases(game.version),deployed=sites.filter(s=>releases.includes(game.sites[s.id]?.version));
+ return {groups:releases.map(version=>{const assigned=deployed.filter(s=>game.sites[s.id].version===version);return {version,recommended:version===game.version,sites:assigned,playable:assigned.filter(s=>gameAccess(state,gameId,s.id).canPlay)};}),deployed,unassigned:sites.filter(s=>!deployed.some(d=>d.id===s.id))};
 }
 export function effectiveRtp(state,gameId,siteId,now=new Date()){
  const game=state.games[gameId],override=game?.overrides[siteId];if(!game)return null;

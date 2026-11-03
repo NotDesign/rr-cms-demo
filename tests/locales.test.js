@@ -5,7 +5,7 @@ import {parseDictionary} from '../i18n.js';
 const dictionary=parseDictionary(readFileSync(new URL('../data/locales.tsv',import.meta.url),'utf8'));
 const data=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url)));
 test('clock and game-operation decisions have Vietnamese and Thai labels',()=>{
- const labels=['時區與時間設定','儲存設定','確認全域下架','本次將停止','全域控制範圍','現金網 RTP 調整','指定生效期間','已到期・恢復預設','此遊戲目前全域下架'];
+ const labels=['時區與時間設定','儲存設定','確認全域下架','本次將停止','全域控制範圍','現金網 RTP 調整','指定生效期間','已到期・恢復預設','此遊戲目前全域下架','版本使用分布','目前沒有符合此狀態的現金網','累積獎池詳情','獎池資金流向'];
  for(const label of labels)for(const locale of ['vi','th']){assert.ok(dictionary[label]?.[locale],locale+': '+label);assert.ok(!/[\u3400-\u9fff]/.test(dictionary[label][locale]));}
 });
 test('VN and Thai cover every report title, column and shared filter label',()=>{

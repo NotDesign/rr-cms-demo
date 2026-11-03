@@ -9,7 +9,7 @@ export function donutArc(start,end){
 }
 export const chartEase=t=>1-Math.pow(1-Math.max(0,Math.min(1,t)),3);
 const points=value=>value.trim().split(/\s+/).filter(Boolean).map(p=>p.split(',').map(Number));
-const bars=root=>[...root.querySelectorAll('.ranking-track i,.share-track>span,.bar-space>span,.distribution .bar')].map((el,i)=>{const prop=el.closest('.bar-space')?'height':'width',scope=el.closest('[data-game]')?.dataset.game||el.closest('.hour-column')?.getAttribute('aria-label')||i;return {el,prop,key:el.parentElement.className+':'+scope};});
+const bars=root=>[...root.querySelectorAll('.ranking-track i,.share-track>span,.bar-space>span,.distribution .bar')].map((el,i)=>{const prop=el.closest('.bar-space')?'height':'width',scope=el.closest('[data-chart-bar-key]')?.dataset.chartBarKey||el.closest('[data-game]')?.dataset.game||el.closest('.hour-column')?.getAttribute('aria-label')||i;return {el,prop,key:el.parentElement.className+':'+scope};});
 export function cancelChartMotion(root){const active=running.get(root);if(active){cancelAnimationFrame(active.frame);active.clean();running.delete(root);}}
 export function captureChartState(root){
  const state={lines:new Map(),arcs:new Map(),numbers:new Map(),bars:new Map()};if(!root)return state;

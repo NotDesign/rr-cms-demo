@@ -1,9 +1,19 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {createGameOperations,gameAccess,availabilityImpact,effectiveRtp,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime} from '../game-operations.js';
+import {createGameOperations,gameAccess,availabilityImpact,effectiveRtp,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,versionUsage,gameReleases} from '../game-operations.js';
 const data=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url))),sites=data.organizations.filter(o=>o.level==='現金網'),gameId=data.games[0].id,siteId=sites[0].id,now=new Date('2026-11-03T01:00:00Z');
 const fresh=()=>createGameOperations(data.games,sites,null,now);
+test('each game version group partitions deployed sites without duplicates or omissions',()=>{
+ const state=fresh();for(const game of data.games){const usage=versionUsage(state,game.id,sites),ids=usage.groups.flatMap(v=>v.sites.map(s=>s.id));assert.equal(new Set(ids).size,ids.length);assert.equal(ids.length,usage.deployed.length);assert.equal(ids.length+usage.unassigned.length,sites.length);assert.ok(usage.groups.filter(v=>v.sites.length).length>1);for(const v of usage.groups)assert.equal(v.playable.length,v.sites.filter(s=>gameAccess(state,game.id,s.id).canPlay).length);}
+ assert.deepEqual(gameReleases('1.1.0'),['1.1.0','1.0.2','1.0.1']);
+});
+test('global delisting preserves deployed versions but every version has zero playable sites',()=>{
+ const state=fresh(),before=versionUsage(state,gameId,sites),off=setGameAvailability(state,gameId,false,'測試',now),after=versionUsage(off,gameId,sites);assert.deepEqual(after.deployed,before.deployed);assert.ok(after.groups.every(v=>v.playable.length===0));
+});
+test('version migration preserves valid site versions, delisting and RTP overrides',()=>{
+ const state=setGameAvailability(fresh(),gameId,false,'測試',now),site=versionUsage(state,gameId,sites).deployed[0];state.games[gameId].sites[site.id].version=state.games[gameId].releases[2];const loaded=createGameOperations(data.games,sites,JSON.parse(JSON.stringify(state)),now);assert.equal(loaded.games[gameId].sites[site.id].version,state.games[gameId].releases[2]);assert.equal(loaded.games[gameId].listed,false);assert.deepEqual(loaded.games[gameId].overrides,state.games[gameId].overrides);
+});
 test('the global game switch blocks every site and overrides maintenance/site/RTP settings',()=>{
  const original=fresh(),off=setGameAvailability(original,gameId,false,'例行下架',now);
  assert.ok(sites.every(s=>!gameAccess(off,gameId,s.id).canPlay&&gameAccess(off,gameId,s.id).reason==='global-off'));
