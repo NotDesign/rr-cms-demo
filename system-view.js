@@ -2,7 +2,7 @@ import {escape as e,money} from './core.js?v=12.6';
 import {uiIcon} from './ui-icons.js?v=14.1';
 import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.1';
 import {operationsTime} from './game-operations.js?v=14.1';
-import {PERMISSIONS,systemLabels,SYSTEM_SECTIONS,apiLogFixtures,systemAuditEvents} from './system-management.js?v=14.1';
+import {PERMISSIONS,systemLabels,SYSTEM_SECTIONS,apiLogFixtures,systemAuditEvents} from './system-management.js?v=14.2';
 import {syncView} from './cms-rule-view.js?v=14.1';
 import {syncCounts} from './cms-configuration.js?v=14.1';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
@@ -10,7 +10,7 @@ const status=value=>'<span class="mg-status '+(value==='active'?'good':value==='
 const select=(id,options,value)=>'<select id="'+id+'">'+options.map(([key,label])=>'<option value="'+e(key)+'"'+(String(key)===String(value)?' selected':'')+'>'+e(label)+'</option>').join('')+'</select>';
 const field=(name,id,control)=>'<div class="field"><label for="'+id+'">'+name+'</label>'+control+'</div>';
 const custom=name=>'<span data-no-localize>'+e(name)+'</span>';
-export function systemPage(data,state,operations,section,ui={},preferences={}){
+export function systemPage(data,state,operations,section,ui={},preferences={},playerEvents=[]){
  const title=SYSTEM_SECTIONS.find(([key])=>key===section)?.[1]||'系統管理',q=(ui.query||'').toLocaleLowerCase(),roles=new Map(state.roles.map(r=>[r.id,r.name])),sites=new Map(data.organizations.map(s=>[s.id,s.name]));let metrics='',body='',tools='';
  if(['accounts','roles','keys','ips'].includes(section)){
   const items=state[section],shown=items.filter(r=>JSON.stringify(r).toLocaleLowerCase().includes(q)),active=items.filter(r=>r.status==='active').length;
@@ -27,9 +27,9 @@ export function systemPage(data,state,operations,section,ui={},preferences={}){
   tools='<div class="mg-filters">'+field('搜尋請求','sys-query','<input id="sys-query" value="'+e(ui.query||'')+'" placeholder="請求 ID、路徑或 IP">')+field('回應分類','sys-status',select('sys-status',[['','全部狀態'],['2','2xx 成功'],['4','4xx 請求錯誤'],['5','5xx 服務錯誤']],ui.status||''))+field('請求方法','sys-method',select('sys-method',[['','全部方法'],['GET','GET'],['POST','POST']],ui.method||''))+'</div>';
   body=table(['時間 · UTC+8','請求 ID','方法／路徑','現金網','HTTP','回應 ms','操作'],shown.map(r=>'<tr><td>'+operationsTime(r.at)+'</td><td>'+e(r.id)+'</td><td><code>'+r.method+' '+e(r.path)+'</code></td><td>'+e(sites.get(r.siteId))+'</td><td><span class="mg-status '+(r.status<400?'good':'off')+'">'+r.status+'</span></td><td>'+r.duration+'</td><td>'+button('查看','data-sys-log="'+r.id+'"')+'</td></tr>'),'API 請求日誌','沒有符合條件的請求');
  }else if(section==='audit'){
-  const all=systemAuditEvents(state,operations),shown=all.filter(r=>(!q||JSON.stringify(r).toLocaleLowerCase().includes(q))&&(!ui.module||r.module===ui.module));
-  metrics=metric('audit','異動紀錄',all.length)+metric('games','遊戲管理異動',all.filter(r=>r.module==='games').length)+metric('receipt','規則異動',all.filter(r=>r.module==='rules').length)+metric('settings','系統異動',all.filter(r=>r.module==='system').length);
-  tools='<div class="mg-filters">'+field('搜尋異動','sys-query','<input id="sys-query" value="'+e(ui.query||'')+'" placeholder="對象、操作人或原因">')+field('模組','sys-module',select('sys-module',[['','全部模組'],['games','遊戲管理'],['rules','遊戲規則'],['system','系統管理']],ui.module||''))+'</div>';
+  const all=systemAuditEvents(state,operations,playerEvents),shown=all.filter(r=>(!q||JSON.stringify(r).toLocaleLowerCase().includes(q))&&(!ui.module||r.module===ui.module));
+  metrics=metric('audit','異動紀錄',all.length)+metric('games','遊戲／規則異動',all.filter(r=>['games','rules'].includes(r.module)).length)+metric('players','玩家／營運異動',all.filter(r=>['players','promotion','merchant','settlement'].includes(r.module)).length)+metric('settings','系統異動',all.filter(r=>r.module==='system').length);
+  tools='<div class="mg-filters">'+field('搜尋異動','sys-query','<input id="sys-query" value="'+e(ui.query||'')+'" placeholder="對象、操作人或原因">')+field('模組','sys-module',select('sys-module',[['','全部模組'],['games','遊戲管理'],['rules','遊戲規則'],['players','玩家管理'],['promotion','營運活動'],['merchant','商戶與渠道'],['settlement','傭金與結算'],['system','系統管理']],ui.module||''))+'</div>';
   body=table(['時間 · UTC+8','操作人','操作','對象','異動原因','操作'],shown.map(r=>'<tr><td>'+operationsTime(r.at)+'</td><td>'+e(r.actor)+'</td><td>'+e(r.action)+'</td><td>'+custom(r.subject||'—')+'</td><td>'+custom(r.reason||'—')+'</td><td>'+button('查看','data-sys-event="'+r.source+':'+r.id+'"')+'</td></tr>'),'操作審計','沒有符合條件的異動');
  }else if(section==='sync'){
   const counts=syncCounts(operations.configuration);metrics=metric('sync','同步批次',operations.configuration.batches.length)+metric('clock','待同步',counts.pending+counts.applying)+metric('check','已套用',counts.success)+metric('activity','失敗',counts.failed);body=syncView(data,operations);

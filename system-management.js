@@ -41,7 +41,7 @@ export function apiLogFixtures(data,now=new Date()){
  const sites=data.organizations.filter(o=>o.level==='現金網'),day=data.date||now.toISOString().slice(0,10),routes=[['GET','/v1/games'],['POST','/v1/rounds/settle'],['GET','/v1/jackpots'],['GET','/v1/reports'],['POST','/v1/rules/sync']];
  return Array.from({length:48},(_,i)=>{const [method,path]=routes[i%routes.length],status=i%17===0?503:i%11===0?403:i%7===0?429:200;return {id:'REQ-DEMO-'+String(i+1).padStart(4,'0'),at:day+'T'+String(8+Math.floor(i/6)).padStart(2,'0')+':'+String(i%6*10).padStart(2,'0')+':00Z',method,path,status,duration:40+i*7%350,siteId:sites[i%sites.length].id,ip:'192.0.2.'+(i%200+1),response:{code:status,message:status===200?'OK':status===503?'Service unavailable':status===403?'Permission denied':'Rate limited',demo:true}};}).reverse();
 }
-export function systemAuditEvents(system,operations){
+export function systemAuditEvents(system,operations,playerEvents=[]){
  const local=system.audit.map(a=>({...a,source:'system'})),game=operations.audit.map(a=>({...a,source:'game',module:'games',action:({'site-availability':'單站上下架',availability:'全域上下架',maintenance:'遊戲維護',rtp:'現金網 RTP','default-rtp':'預設 RTP'})[a.kind]||a.kind,subject:a.gameId+(a.siteId?' / '+a.siteId:''),actor:a.actor||'平台管理員'})),rules=(operations.configuration?.history||[]).map((a,i)=>({...a,id:'CMS-AUDIT-'+i,source:'cms',module:'rules',actor:'平台管理員',action:({'edit-draft':'編輯草稿','create-rule':'新增規則','publish-rule':'發布規則'})[a.action]||a.action,subject:a.ruleId,before:null,after:{version:a.version,sites:a.sites}}));
- return [...local,...game,...rules].sort((a,b)=>b.at.localeCompare(a.at));
+ return [...local,...game,...rules,...playerEvents].sort((a,b)=>b.at.localeCompare(a.at));
 }
