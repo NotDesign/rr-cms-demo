@@ -2,7 +2,7 @@ export const languageNames={'zh-Hant':'繁體中文',vi:'Tiếng Việt',th:'ไ
 export function parseDictionary(terms){
   return Object.fromEntries(terms.split('\n').filter(Boolean).map(line=>{const [zh,vi,th]=line.split('|');return [zh,{vi,th}];}));
 }
-const terms=typeof document==='undefined'?'':await fetch('./data/locales.tsv?v=12.13').then(r=>{if(!r.ok)throw Error('語系資料載入失敗');return r.text();});
+const terms=typeof document==='undefined'?'':await fetch('./data/locales.tsv?v=13.0').then(r=>{if(!r.ok)throw Error('語系資料載入失敗');return r.text();});
 export const dictionary=parseDictionary(terms);
 const keys=Object.keys(dictionary).sort((a,b)=>b.length-a.length);
 const escapeRegex=s=>s.replace(/[.*+?^{}()|[\]\\$]/g,'\\$&');
@@ -13,8 +13,9 @@ export function translate(value,locale='zh-Hant'){
 }
 export function localize(root,locale){
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-  while(walker.nextNode()){const node=walker.currentNode;if(!node.parentElement?.closest('script,style'))node.nodeValue=translate(node.nodeValue,locale);}
+  while(walker.nextNode()){const node=walker.currentNode;if(!node.parentElement?.closest('script,style,[data-no-localize]'))node.nodeValue=translate(node.nodeValue,locale);}
   for(const element of [root,...root.querySelectorAll('[title],[placeholder],[aria-label]')]){
+    if(element.closest?.('[data-no-localize]'))continue;
     for(const attr of ['title','placeholder','aria-label'])if(element.hasAttribute?.(attr))element.setAttribute(attr,translate(element.getAttribute(attr),locale));
   }
   for(const select of root.querySelectorAll('.field select'))select.title=select.selectedOptions[0]?.textContent||'';
