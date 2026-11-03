@@ -1,10 +1,10 @@
 export const RTP_PROFILES=[94,95,96,97,98];
-export const GAME_SECTIONS=[['catalog','遊戲列表'],['categories','遊戲分類'],['rtp','RTP 設定檔'],['availability','遊戲上下架'],['versions','版本管理'],['maintenance','維護管理']];
+export const GAME_SECTIONS=[['catalog','遊戲列表'],['categories','遊戲分類'],['rules','遊戲規則'],['rtp','RTP 設定檔'],['availability','遊戲上下架'],['versions','版本管理'],['maintenance','維護管理']];
 const profile=value=>RTP_PROFILES.includes(Number(value))?Number(value):null;
 const validDate=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
 export function gameReleases(version){const [major,minor,patch]=version.split('.').map(Number);const previous=patch>0?[major,minor,patch-1]:[major,minor-1,2];const legacy=previous[2]>0?[...previous.slice(0,2),previous[2]-1]:[major,previous[1]-1,2];return [version,previous.join('.'),legacy.join('.')];}
 export function createGameOperations(games,sites,saved=null,now=new Date()){
- const state={revision:Number.isInteger(saved?.revision)?saved.revision:0,games:{},audit:Array.isArray(saved?.audit)?saved.audit.filter(a=>games.some(g=>g.id===a.gameId)&&validDate(a.at)).slice(0,200):[]};
+ const state={revision:Number.isInteger(saved?.revision)?saved.revision:0,games:{},configuration:saved?.configuration,audit:Array.isArray(saved?.audit)?saved.audit.filter(a=>games.some(g=>g.id===a.gameId)&&validDate(a.at)).slice(0,200):[]};
  games.forEach((g,i)=>{
   const old=saved?.games?.[g.id],overrides={};
   for(const [id,value] of Object.entries(old?.overrides||{}))if(sites.some(s=>s.id===id)&&profile(value?.rtp)&&(value.mode==='permanent'||value.mode==='scheduled'&&validDate(value.start)&&validDate(value.end)&&Date.parse(value.end)>Date.parse(value.start)))overrides[id]={...value,rtp:profile(value.rtp)};
@@ -26,9 +26,10 @@ export function versionUsage(state,gameId,sites){
 }
 export function effectiveRtp(state,gameId,siteId,now=new Date()){
  const game=state.games[gameId],override=game?.overrides[siteId];if(!game)return null;
- if(!override)return {value:game.defaultRtp,status:'inherited',override:null};
+ const binding=state.configuration?.bindings?.[gameId]?.[siteId]?.game,version=binding?state.configuration.rules[binding.ruleId]?.versions.find(v=>v.version===binding.version):null,baseline=version?.settings.rtp??game.defaultRtp;
+ if(!override)return {value:baseline,baseline,status:'inherited',override:null};
  const status=override.mode==='permanent'?'active':+now<Date.parse(override.start)?'pending':+now>=Date.parse(override.end)?'expired':'active';
- return {value:status==='active'?override.rtp:game.defaultRtp,status,override};
+ return {value:status==='active'?override.rtp:baseline,baseline,status,override};
 }
 export function availabilityImpact(state,gameId,sites,listed){
  const next={...state,games:{...state.games,[gameId]:{...state.games[gameId],listed}}};

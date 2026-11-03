@@ -1,6 +1,6 @@
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.6';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.10';
-import {localize,translate,languageNames} from './i18n.js?v=13.1';
+import {localize,translate,languageNames} from './i18n.js?v=14.0';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=12.6';
 import {playerProfitLoss,playerSourceProfile} from './analytics.js?v=12.13';
@@ -13,11 +13,15 @@ import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filt
 import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.6';
 import {installSelectControls} from './select-control.js?v=12.6';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=13.0';
-import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=13.1';
-import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=13.1';
+import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.0';
+import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.0';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=13.1';
-import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=13.1';
+import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.0';
+
+import {hydrateConfiguration,queueLegacyChange,deployedRtp} from './cms-configuration.js?v=14.0';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.0';
+import {installCmsController} from './cms-controller.js?v=14.0';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -26,10 +30,10 @@ const menus=[
  ['dashboard','儀表板',['總覽','遊戲表現','最近投注']],['reports','遊戲報表',DATA.reports.map(d=>d.title)],
  ['promotion','營運活動',['活動中心','RTP 活動','免費旋轉','紅利／獎勵','活動紀錄']],
  ['jackpot','累積獎池',['累積獎池列表','累積獎池規則','參與遊戲','中獎紀錄','累積獎池報表']],
- ['games','遊戲管理',['遊戲列表','遊戲分類','RTP 設定檔','遊戲上下架','版本管理','維護管理']],
+ ['games','遊戲管理',['遊戲列表','遊戲分類','遊戲規則','RTP 設定檔','遊戲上下架','版本管理','維護管理']],
  ['merchant','商戶與渠道',['全部機構','API 中介','包網商','現金網']],['players','玩家管理',[]],
  ['settlement','傭金與結算',['傭金規則','渠道價差','GGR 結算','週結／月結','結算報表']],
- ['system','系統管理',['帳號管理','API 金鑰','角色／權限','IP 白名單','API 日誌','系統設定','操作審計紀錄']]
+ ['system','系統管理',['帳號管理','API 金鑰','角色／權限','IP 白名單','API 日誌','系統設定','設定同步','操作審計紀錄']]
 ];
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const img=(file,alt='')=>'<img src="assets/figma/'+file+'" alt="'+e(alt)+'" loading="eager">';
@@ -44,7 +48,11 @@ let locale=languageNames[saved?.locale]?saved.locale:'zh-Hant';
 let timeZone=normalizeTimeZone(saved?.timeZone),clockDraft=null;
 const gameStorageKey='rr-cms-game-operations-v1',cashSites=DATA.organizations.filter(o=>o.level==='現金網');
 let savedGameOperations;try{savedGameOperations=JSON.parse(localStorage.getItem(gameStorageKey));}catch{}
-let gameOperations=createGameOperations(DATA.games,cashSites,savedGameOperations);
+function normalizeOperations(raw){return hydrateConfiguration(DATA,createGameOperations(DATA.games,cashSites,raw),raw?.configuration);}
+function readLatestOperations(){try{return normalizeOperations(JSON.parse(localStorage.getItem(gameStorageKey))||gameOperations);}catch{return gameOperations;}}
+function commitOperations(next){localStorage.setItem(gameStorageKey,JSON.stringify(next));gameOperations=next;updateClock();}
+let gameOperations=normalizeOperations(savedGameOperations);
+let cmsController=null;
 try{localStorage.setItem(gameStorageKey,JSON.stringify(gameOperations));}catch{}
 const tr=text=>translate(text,locale);
 const localized=root=>localize(root,locale);
@@ -86,7 +94,7 @@ const navIcon=key=>uiIcon(({merchant:'channels',settlement:'wallet',system:'sett
 function submenuIcon(label,def){
  const reportIcons={all:'receipt',electronic:'games',slots:'slot',fishing:'fish',chess:'cards',player:'players',stats:'reports'};
  if(category==='jackpot')return uiIcon(({'累積獎池列表':'jackpot','累積獎池規則':'shield','參與遊戲':'games','中獎紀錄':'receipt','累積獎池報表':'reports'})[label]);
- if(category==='games')return uiIcon(({'遊戲列表':'games','遊戲分類':'dashboard','RTP 設定檔':'percent','遊戲上下架':'shield','版本管理':'receipt','維護管理':'settings'})[label]);
+ if(category==='games')return uiIcon(({'遊戲列表':'games','遊戲分類':'dashboard','遊戲規則':'settings','RTP 設定檔':'percent','遊戲上下架':'shield','版本管理':'receipt','維護管理':'settings'})[label]);
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
@@ -194,8 +202,8 @@ function renderContent(){
   const t=current();
   if(t.key==='dashboard'){const rs=DATA.records;$('#content').innerHTML='<div class="page dashboard-page"><div class="page-heading"><div><h1>營運總覽</h1><p class="breadcrumb">2026/10/15 · USDT · UTC+8</p></div><span class="badge">模擬資料</span></div><div class="dashboard-shortcuts">'+button(uiIcon('receipt')+'所有遊戲投注記錄','open-all')+'<button class="button" data-report="stats">'+uiIcon('reports')+'遊戲統計</button></div>'+summaryHtml(defs.get('all'),rs)+statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden)+'</div>';return;}
     if(t.key==='new'){$('#content').innerHTML=chooser();return;}
-  if(t.key.startsWith('draft:jackpot:')){const label=t.key.slice('draft:jackpot:'.length),section=JACKPOT_SECTIONS.find(([,name])=>name===label)?.[0]||'pools';$('#content').innerHTML=jackpotPage(DATA,gameOperations,section,t.jackpotUI);return;}
-  if(t.key.startsWith('draft:games:')){const label=t.key.slice('draft:games:'.length),section=GAME_SECTIONS.find(([,name])=>name===label)?.[0]||'catalog';$('#content').innerHTML=managementPage(DATA,gameOperations,section,t.managementUI);return;}
+  if(t.key.startsWith('draft:jackpot:')){const label=t.key.slice('draft:jackpot:'.length),section=JACKPOT_SECTIONS.find(([,name])=>name===label)?.[0]||'pools';$('#content').innerHTML=section==='rules'?ruleManagerPage(DATA,gameOperations,'jackpot',t.ruleUI||{}):jackpotPage(DATA,gameOperations,section,t.jackpotUI);return;}
+  if(t.key.startsWith('draft:games:')){const label=t.key.slice('draft:games:'.length),section=GAME_SECTIONS.find(([,name])=>name===label)?.[0]||'catalog';$('#content').innerHTML=section==='rules'?ruleManagerPage(DATA,gameOperations,'game',t.ruleUI||t.managementUI||{}):managementPage(DATA,gameOperations,section,t.managementUI);return;}
   if(!defs.has(t.key)){$('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(t.title)+'</h1><p class="breadcrumb">'+menus.find(m=>m[0]===category)?.[1]+' / '+e(t.title)+'</p></div><span class="badge">導覽示意</span></div><section class="generic-page"><h2>此頁內容待後續規劃</h2><p class="muted">目前 Demo 優先提供完整的遊戲報表與模擬明細。</p>'+button('開啟所有遊戲投注記錄','open-all','primary')+'</section></div>';return;}
   const {d,rs,rows}=getReport();
   $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><span class="badge">模擬資料</span></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家淨盈虧＝派彩−實扣投注（示例無退款／費用）。各頁使用同一組資料。</p></div>';
@@ -206,7 +214,7 @@ function render({keepMulti=false}={}){
   if(!keepMulti)closeMulti();
   document.documentElement.lang=locale;
   if(submenuOpen){$('#app').classList.remove('nav-closing');cancelRegion($('#submenu'));cancelRegion($('#rail'));}
-  $('#app').classList.toggle('submenu-closed',!submenuOpen);renderRail();renderMenu();renderHeader();renderContent();persist();
+  $('#app').classList.toggle('submenu-closed',!submenuOpen);renderRail();renderMenu();renderHeader();renderContent();cmsController?.installBanner();persist();
   document.documentElement.lang=locale;localized($('#app'));updateNavigationWidths();
   selectControls.enhance();document.title=tr(current().title||'遊戲報表')+' · R&R CMS Demo';renderAssistant();
   animateCharts($('#content'),previousCharts,tr);
@@ -486,7 +494,7 @@ function updateClock(){
  const now=new Date(),snapshot=clockSnapshot(timeZone,now),time=$('#header-time'),zone=$('#header-time-zone');
  if(time){time.textContent=snapshot.time;time.dateTime=snapshot.iso;zone.textContent=snapshot.date.slice(5)+' · '+tr(snapshot.city)+' · '+snapshot.offset;const button=$('.header-clock');button.title=tr('時區與時間設定')+' · '+snapshot.date+' · '+snapshot.timeZone;}
  if(clockDraft&&$('#clock-preview')){const preview=clockSnapshot(clockDraft.timeZone,now);$('#clock-preview').textContent=preview.time;$('#clock-preview-date').textContent=preview.date+' · '+tr(preview.city)+' · '+preview.offset;}
- for(const cell of $$('[data-rtp-game]')){const value=effectiveRtp(gameOperations,cell.dataset.rtpGame,cell.dataset.rtpValue||cell.dataset.rtpStatus,now);if(value){cell.textContent=cell.hasAttribute('data-rtp-value')?value.value.toFixed(2)+'%':tr(rtpLabels[value.status]);if(cell.hasAttribute('data-rtp-status'))cell.dataset.rtpState=value.status;}}
+ for(const cell of $$('[data-rtp-game]')){const siteId=cell.dataset.rtpValue||cell.dataset.rtpStatus||cell.dataset.rtpApplied||cell.dataset.rtpBase,value=effectiveRtp(gameOperations,cell.dataset.rtpGame,siteId,now);if(value){cell.textContent=cell.hasAttribute('data-rtp-applied')?deployedRtp(gameOperations,cell.dataset.rtpGame,siteId,now).toFixed(2)+'%':cell.hasAttribute('data-rtp-base')?value.baseline.toFixed(2)+'%':cell.hasAttribute('data-rtp-value')?value.value.toFixed(2)+'%':tr(rtpLabels[value.status]);if(cell.hasAttribute('data-rtp-status'))cell.dataset.rtpState=value.status;}}
 }
 function renderClockChoices(query=''){
  const choices=timeZoneChoices(query,clockDraft.timeZone);
@@ -504,7 +512,7 @@ function openGameManagement(section='catalog',gameId=null,type=null){
  let t=tabs.find(t=>t.key==='draft:games:'+entry[1]);if(!t){t=tab('draft:games:'+entry[1],entry[1]);tabs.push(t);}
  t.managementUI={...t.managementUI,...(gameId?{gameId}:{}),...(type?{type,query:'',status:''}:{})};activeId=t.id;category='games';submenuOpen=true;$('#app').classList.remove('mobile-open');render();animateRegion($('#content'));
 }
-function refreshGamePage(focus=null,selection=null){const top=$('#content').scrollTop,previous=captureChartState($('#content'));chartInteractions.hide();renderContent();localized($('#content'));selectControls.enhance();animateCharts($('#content'),previous,tr);$('#content').scrollTop=top;persist();if(focus){const field=document.getElementById(focus);field?.focus({preventScroll:true});if(selection!==null&&field?.setSelectionRange)field.setSelectionRange(selection,selection);}}
+function refreshGamePage(focus=null,selection=null){const top=$('#content').scrollTop,previous=captureChartState($('#content'));chartInteractions.hide();renderContent();cmsController?.installBanner();localized($('#content'));selectControls.enhance();animateCharts($('#content'),previous,tr);$('#content').scrollTop=top;persist();if(focus){const field=document.getElementById(focus);field?.focus({preventScroll:true});if(selection!==null&&field?.setSelectionRange)field.setSelectionRange(selection,selection);}}
 const operationReason=()=>'<label class="mg-label" for="operation-reason">異動原因</label><textarea id="operation-reason" class="mg-input" rows="2" maxlength="200" placeholder="請填寫此次調整的原因" required></textarea><p id="operation-error" class="mg-error" role="alert" hidden></p>';
 function showAvailability(gameId,listed=null){
  const next=listed??!gameOperations.games[gameId].listed;
@@ -517,28 +525,28 @@ function showMaintenance(gameId){
  dialogState={type:'game-operation',kind:'maintenance',gameId,maintenance,revision:gameOperations.revision};
 }
 function showRtpSettings(gameId,siteId=null){
- const game=DATA.games.find(g=>g.id===gameId),config=siteId?gameOperations.games[gameId].overrides[siteId]:null,defaultRtp=gameOperations.games[gameId].defaultRtp;
- const profiles='<select id="operation-rtp">'+RTP_PROFILES.map(v=>option(v,v.toFixed(2)+'% · 示例設定檔',config?.rtp||defaultRtp)).join('')+'</select>';
- let html='<div class="mg-rule">'+uiIcon('percent')+'<div><strong>'+e(game.name)+'</strong><p>遊戲預設 RTP '+defaultRtp.toFixed(2)+'%'+(siteId?' · '+e(cashSites.find(s=>s.id===siteId).name):' · 個別生效中的覆寫不受影響')+'</p></div></div>';
+ const game=DATA.games.find(g=>g.id===gameId),config=siteId?gameOperations.games[gameId].overrides[siteId]:null,defaultRtp=gameOperations.games[gameId].defaultRtp,baseline=siteId?effectiveRtp(gameOperations,gameId,siteId).baseline:defaultRtp;
+ const profiles='<select id="operation-rtp">'+RTP_PROFILES.map(v=>option(v,v.toFixed(2)+'% · 示例設定檔',config?.rtp||baseline)).join('')+'</select>';
+ let html='<div class="mg-rule">'+uiIcon('percent')+'<div><strong>'+e(game.name)+'</strong><p>遊戲預設 RTP '+defaultRtp.toFixed(2)+'%'+(siteId?' · '+e(cashSites.find(s=>s.id===siteId).name)+' · 規則基準 RTP '+baseline.toFixed(2)+'%':' · 個別生效中的覆寫不受影響')+'</p></div></div>';
  if(siteId){const now=new Date(),start=config?.mode==='scheduled'&&Date.parse(config.end)>+now?config.start:new Date(+now+300000),end=config?.mode==='scheduled'&&Date.parse(config.end)>+now?config.end:new Date(+now+86400000);
-  html+='<div class="mg-form-grid"><div class="field"><label for="operation-mode">套用方式</label><select id="operation-mode">'+[['inherit','繼承遊戲預設'],['permanent','持續覆寫'],['scheduled','指定生效期間']].map(([v,label])=>option(v,label,config?.mode||'inherit')).join('')+'</select></div><div class="field"><label for="operation-rtp">現金網 RTP</label>'+profiles+'</div></div><div id="operation-schedule" class="mg-form-grid"><div class="field"><label for="operation-start">開始時間 · UTC+8</label><input id="operation-start" type="datetime-local" value="'+operationsTime(start).replace(' ','T')+'"></div><div class="field"><label for="operation-end">結束時間 · UTC+8</label><input id="operation-end" type="datetime-local" value="'+operationsTime(end).replace(' ','T')+'"></div></div><p class="mg-note">結束時間起，恢復遊戲當時的預設 RTP。新設定會取代此現金網原有的覆寫或排程。</p>';
- }else html+='<div class="field"><label for="operation-rtp">遊戲預設 RTP</label>'+profiles+'</div><p class="mg-note">未覆寫、尚未生效及已到期的現金網將繼承此值。</p>';
+  html+='<div class="mg-form-grid"><div class="field"><label for="operation-mode">套用方式</label><select id="operation-mode">'+[['inherit','繼承規則基準'],['permanent','持續覆寫'],['scheduled','指定生效期間']].map(([v,label])=>option(v,label,config?.mode||'inherit')).join('')+'</select></div><div class="field"><label for="operation-rtp">現金網 RTP</label>'+profiles+'</div></div><div id="operation-schedule" class="mg-form-grid"><div class="field"><label for="operation-start">開始時間 · UTC+8</label><input id="operation-start" type="datetime-local" value="'+operationsTime(start).replace(' ','T')+'"></div><div class="field"><label for="operation-end">結束時間 · UTC+8</label><input id="operation-end" type="datetime-local" value="'+operationsTime(end).replace(' ','T')+'"></div></div><p class="mg-note">結束時間起，恢復現金網當時的規則基準 RTP。新設定會取代此現金網原有的覆寫或排程。</p>';
+ }else html+='<div class="field"><label for="operation-rtp">遊戲預設 RTP</label>'+profiles+'</div><p class="mg-note">採用「繼承遊戲預設」的規則會使用此值；固定規則 RTP 或個別生效中的覆寫不受影響。</p>';
  showDialog(siteId?'現金網 RTP 調整':'調整遊戲預設 RTP',html+operationReason(),{management:true,subtitle:'示例設定檔 · 排程時間為 UTC+8',footer:button('取消','close-dialog')+button('儲存設定','game-operation-save','primary')});
  dialogState={type:'game-operation',kind:siteId?'rtp':'default-rtp',gameId,siteId,revision:gameOperations.revision};updateRtpMode();
 }
-function updateRtpMode(){const mode=$('#operation-mode');if(!mode)return;const scheduled=mode.value==='scheduled';$('#operation-schedule').hidden=!scheduled;$('#operation-rtp').disabled=mode.value==='inherit';if(mode.value==='inherit')$('#operation-rtp').value=String(gameOperations.games[dialogState.gameId].defaultRtp);for(const input of $$('#operation-schedule input'))input.required=scheduled;selectControls.enhance();}
+function updateRtpMode(){const mode=$('#operation-mode');if(!mode)return;const scheduled=mode.value==='scheduled';$('#operation-schedule').hidden=!scheduled;$('#operation-rtp').disabled=mode.value==='inherit';if(mode.value==='inherit')$('#operation-rtp').value=String(effectiveRtp(gameOperations,dialogState.gameId,dialogState.siteId).baseline);for(const input of $$('#operation-schedule input'))input.required=scheduled;selectControls.enhance();}
 function saveGameOperation(){
  const operation=dialogState;if(operation?.type!=='game-operation')return;
  const error=$('#operation-error'),fail=text=>{error.textContent=tr(text);error.hidden=false;};
  const reason=$('#operation-reason').value.trim();if(reason.length<2){fail('請填寫至少兩個字的異動原因');$('#operation-reason').focus();return;}
  try{
-  const latest=JSON.parse(localStorage.getItem(gameStorageKey));if(latest&&latest.revision!==operation.revision){gameOperations=createGameOperations(DATA.games,cashSites,latest);fail('設定已在其他分頁變更，請關閉視窗後重新確認影響範圍');return;}
+  const latest=readLatestOperations();if(latest.revision!==operation.revision){gameOperations=latest;fail('設定已在其他分頁變更，請關閉視窗後重新確認影響範圍');return;}gameOperations=latest;
   const {gameId,siteId}=operation;let next;
   if(operation.kind==='availability')next=setGameAvailability(gameOperations,gameId,operation.listed,reason);
   else if(operation.kind==='maintenance')next=setGameMaintenance(gameOperations,gameId,operation.maintenance,reason);
   else if(operation.kind==='default-rtp')next=setDefaultRtp(gameOperations,gameId,$('#operation-rtp').value,reason);
   else{const mode=$('#operation-mode').value;let config=null;if(mode!=='inherit'){config={mode,rtp:Number($('#operation-rtp').value)};if(mode==='scheduled'){for(const input of $$('#operation-schedule input'))if(!input.reportValidity())return;config.start=fromOperationsTime($('#operation-start').value);config.end=fromOperationsTime($('#operation-end').value);}}next=setRtpOverride(gameOperations,gameId,siteId,config,reason);}
-  localStorage.setItem(gameStorageKey,JSON.stringify(next));gameOperations=next;saveView();closeDialog();render();toast('已儲存示範設定與異動紀錄');
+  next=queueLegacyChange(DATA,next,operation,reason);commitOperations(next);saveView();closeDialog();render();cmsController.showSync(next.configuration.batches[0].id);cmsController.runSync(next.configuration.batches[0].id);toast('CMS 設定已發布，開始同步現金網');
  }catch(err){fail(err.name==='QuotaExceededError'?'無法儲存設定，請檢查瀏覽器儲存空間':err.message||'無法儲存設定');}
 }
 function openJackpotPage(section='pools',poolId=null){
@@ -567,6 +575,7 @@ function showGameVersions(gameId,version='',replace=false){
  dialogState={type:'game-versions',gameId,version,label:DATA.games.find(g=>g.id===gameId).name+' · 版本分布'};
 }
 function handleManagementClick(target){
+ if(cmsController?.handleClick(target))return true;
  if(target.hasAttribute('data-clock-zone')){clockDraft.timeZone=normalizeTimeZone(target.dataset.clockZone);renderClockChoices($('#clock-zone-search').value);$$('[data-clock-zone]').find(b=>b.dataset.clockZone===clockDraft.timeZone)?.focus({preventScroll:true});updateClock();return true;}
  if(target.dataset.pool){showPoolDetail(target.dataset.pool);return true;}
  if(target.dataset.jpSection){openJackpotPage(target.dataset.jpSection,target.dataset.jpPool);return true;}
@@ -595,7 +604,7 @@ document.addEventListener('keydown',event=>{
 });
 window.addEventListener('storage',event=>{
  if(event.key===storageKey){try{timeZone=normalizeTimeZone(JSON.parse(event.newValue)?.timeZone);updateClock();}catch{}}
- if(event.key===gameStorageKey){try{gameOperations=createGameOperations(DATA.games,cashSites,JSON.parse(event.newValue));if(current().key.startsWith('draft:games:')&&!$('#modal').open)refreshGamePage();}catch{}}
+ if(event.key===gameStorageKey){try{gameOperations=normalizeOperations(JSON.parse(event.newValue));cmsController?.refresh();updateClock();if((current().key.startsWith('draft:games:')||current().key.startsWith('draft:jackpot:'))&&!$('#modal').open)refreshGamePage();}catch{}}
 });
 document.addEventListener('change',event=>{
  if(['jp-pool','jp-type'].includes(event.target.id)){const field=event.target.id==='jp-pool'?'poolId':'type';current().jackpotUI={...current().jackpotUI,[field]:event.target.value,page:1};refreshGamePage(event.target.id+'-trigger');return;}
@@ -647,6 +656,7 @@ document.addEventListener('click',event=>{
   if(target.hasAttribute('data-detail-index')){const i=Number(target.dataset.detailIndex),v=detailTrail[i];detailTrail=detailTrail.slice(0,i);restoreDetail(v);return;}
   if(target.dataset.detailMode){restoreDetail({...dialogState,mode:target.dataset.detailMode});return;}
   if(target.dataset.draft&&['全部機構','包網商','現金網'].includes(target.dataset.draft)){openOrganization();return;}
+  if(target.dataset.draft==='設定同步'){cmsController.showSync();return;}
   if(target.dataset.draft==='系統設定'){showClockSettings();return;}
   if(target.dataset.draft&&category==='jackpot'){openJackpotPage(JACKPOT_SECTIONS.find(([,label])=>label===target.dataset.draft)?.[0]||'pools');return;}
   if(target.dataset.draft&&category==='games'){openGameManagement(GAME_SECTIONS.find(([,label])=>label===target.dataset.draft)?.[0]||'catalog');return;}
@@ -739,10 +749,12 @@ $('#modal').addEventListener('cancel',event=>{event.preventDefault();finishDialo
 window.addEventListener('beforeunload',saveView);
 const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti();closeLanguage();}});
 const chartInteractions=installChartInteractions({translate:tr});
+cmsController=installCmsController({data:DATA,getState:()=>gameOperations,loadState:readLatestOperations,commitState:commitOperations,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},localize:localized,translate:tr,toast,enhance:()=>selectControls.enhance(),currentTab:current,openManager:(kind,gameId)=>{if(kind==='game')openGameManagement('rules',gameId);else openJackpotPage('rules');current().ruleUI={gameId};render();}});
 const requested=location.hash.slice(1);if(defs.has(requested)||requested==='dashboard'){let t=tabs.find(t=>t.key===requested);if(!t){t=tab(requested,requested==='dashboard'?'儀表板':'新增分頁');tabs.push(t);}activeId=t.id;}
 if(requested.startsWith('jackpot/')){const section=JACKPOT_SECTIONS.find(([key])=>key===requested.split('/')[1]);if(section){let t=tabs.find(t=>t.key==='draft:jackpot:'+section[1]);if(!t){t=tab('draft:jackpot:'+section[1],section[1]);tabs.push(t);}activeId=t.id;}}
 if(requested.startsWith('games/')){const section=GAME_SECTIONS.find(([key])=>key===requested.split('/')[1]);if(section){let t=tabs.find(t=>t.key==='draft:games:'+section[1]);if(!t){t=tab('draft:games:'+section[1],section[1]);tabs.push(t);}activeId=t.id;}}
 category=currentKeyCategory();
 render();
+cmsController.resume();
 setInterval(updateClock,1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateClock();});
