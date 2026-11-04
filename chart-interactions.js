@@ -54,6 +54,7 @@ export function installChartInteractions({translate=value=>value}={}){
   const items=[...scope.querySelectorAll('[data-chart-tip][tabindex="0"]')],index=items.indexOf(next);if(index<0)return;
   const i=event.key==='Home'?0:event.key==='End'?items.length-1:Math.max(0,Math.min(items.length-1,index+(event.key==='ArrowRight'?1:-1)));
   event.preventDefault();items[i].focus({preventScroll:true});
+  if(items[i].closest('.hour-bars'))items[i].scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
  },true);
  document.addEventListener('scroll',()=>{if(anchor&&keyboard&&document.activeElement===anchor){const r=anchor.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight)position({x:r.left+r.width/2,y:r.top+r.height/2});else hide();}else hide();},true);window.addEventListener('resize',hide);
  return {hide};

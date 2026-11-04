@@ -337,5 +337,62 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .wager-metric strong.positive{color:var(--positive)}
 .wager-metric strong.negative{color:var(--negative)}
 .game-card-metrics>span:first-child{grid-column:1/-1}
+
+/* Full monetary labels stay inside each highlighted hourly bar. */
+.trend-chart .hour-bars{height:176px;align-items:stretch;overflow-x:auto;overflow-y:hidden;padding:4px;gap:10px;min-width:0}
+.trend-chart .hour-column{flex:1 0 76px;width:auto;min-width:max-content;padding:8px 8px 6px;justify-content:flex-end;gap:8px}
+.trend-chart .hour-column>.hour-value{display:block;line-height:16px;white-space:nowrap}
+.trend-chart .bar-space{height:100px;flex:0 0 100px}
+
+/* Compact game summaries retain a readable cover and all three financial figures. */
+.game-cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:12px}
+.game-card{container-type:inline-size;padding:12px;gap:10px}
+.game-card .game-cover{width:72px;height:72px;border-radius:12px}
+.game-card .game-identity{gap:10px}
+.game-card .game-identity strong{font-size:14px;line-height:20px}
+.game-card .game-identity small{line-height:16px}
+.game-card-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.game-card-metrics>span:first-child{grid-column:auto}
+.game-card-metrics>span{gap:4px}
+.game-card-metrics small{font-size:11px;line-height:18px;gap:5px}
+.game-card-metrics small .ui-icon{width:17px;height:17px;flex:none}
+.game-card-metrics strong{font-size:clamp(16px,5cqw,20px);line-height:24px;white-space:nowrap}
+.game-card .share-track{height:3px;margin:0}
+.game-card .card-foot{gap:6px;min-height:32px}
+.game-card .card-foot small{font-size:10px;line-height:16px}
+.game-card .card-foot .game-card-arrow{width:32px;height:32px;min-width:32px}
+.game-card .game-card-arrow .ui-icon{width:23px;height:23px}
+.rtp-number-control{position:relative;width:100%;min-width:0}
+.rtp-number-control>input{width:100%;min-width:0;padding-right:44px;font-variant-numeric:tabular-nums}
+.rtp-number-control>span{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.rtp-number-control>input:disabled{opacity:.55}
+.summary-caption,.net-win-caption{overflow-wrap:anywhere}
 .region-segment{cursor:default;outline:none}
 .region-segment.chart-highlight,.region-segment:focus-visible{stroke-width:28;filter:drop-shadow(0 0 3px #ffffff18)}
+
+/* Keep ranking height independent of the number of pools. */
+.jp-report-grid{align-items:start;gap:16px;margin-bottom:20px}
+.jp-report-grid>.jp-chart{align-self:start}
+.jp-ranking-card .jp-ranking{max-height:360px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:2px 6px 2px 0;gap:4px}
+.jp-ranking-card .jp-ranking>button{padding:10px 12px;border-radius:10px;min-height:58px}
+.jp-ranking-card .mg-card-title{margin-bottom:12px}
+.jp-chart .chart-legend{margin:14px 0 10px}
+.jp-chart-footer{margin-top:14px}
+.jp-chart .chart-data{margin-top:12px}
+.business-page .wager-overview:not(.wager-overview--compact){margin-bottom:18px}
+.cms-editor-basics{margin-top:14px}
+.cms-editor .cms-trial{margin-top:22px;padding:16px}
+.cms-trial>.mg-card-title{gap:10px;margin-bottom:10px}
+.cms-trial>.mg-card-title h3{margin:0;font-size:15px}
+.cms-trial>.mg-card-title small{font-size:10px;color:var(--muted);margin-left:auto}
+.cms-preview-source{font-size:12px;line-height:1.7;margin:0}
+.cms-preview-source small{display:block;color:var(--muted);font-size:10px;overflow-wrap:anywhere}
+.cms-trial-metrics{margin-top:12px;gap:10px}
+.cms-trial-metrics>div{padding:12px;min-width:0;grid-template-columns:26px minmax(0,1fr)}
+.cms-trial-metrics strong{font-size:17px}
+.cms-preview-basis{margin-top:12px;font-size:11px}
+.cms-preview-basis>summary{cursor:pointer;color:var(--accent-gold-ink);padding:6px 0}
+.cms-preview-basis .cms-summary{margin:8px 0;gap:12px;padding:12px}
+.rtp-number-control>input::-webkit-inner-spin-button,.rtp-number-control>input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.rtp-number-control>input{appearance:textfield;-moz-appearance:textfield}
+@media(max-width:620px){.jp-ranking-card .jp-ranking{max-height:300px}.cms-trial-metrics{grid-template-columns:1fr}.cms-trial-metrics>div{grid-template-columns:26px minmax(0,1fr) auto}.cms-trial-metrics .ui-icon{grid-row:auto}.cms-trial>.mg-card-title{flex-wrap:wrap}.cms-trial>.mg-card-title small{margin-left:0}}

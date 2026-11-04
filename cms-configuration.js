@@ -1,5 +1,5 @@
 import {gameFunding,validateFunding} from './jackpot-partnership.js?v=14.4.1';
-import {RTP_PROFILES,gameAccess} from './game-operations.js?v=14.4.1';
+import {parseRtp,RTP_ERROR,gameAccess} from './game-operations.js?v=14.4.6';
 import {cents} from './jackpot-analytics.js?v=14.4.1';
 
 const copy=value=>JSON.parse(JSON.stringify(value));
@@ -20,7 +20,7 @@ export function validateRule(data,gameId,kind,name,settings){
  if(!settings||typeof settings!=='object')return [...errors,'規則設定無效'];
  if(typeof settings.allowFreeRounds!=='boolean'||kind==='jackpot'&&typeof settings.enabled!=='boolean')errors.push('規則開關無效');
  if(kind==='game'){
-  if(settings.rtp!==null&&!RTP_PROFILES.includes(settings.rtp))errors.push('請選擇可用的 RTP 設定檔');
+  if(settings.rtp!==null&&(typeof settings.rtp!=='number'||parseRtp(settings.rtp)===null))errors.push(RTP_ERROR);
   if(!finite(settings.minBet,0,1000000)||!finite(settings.maxBet,.01,1000000)||Number(settings.minBet)>Number(settings.maxBet))errors.push('投注上限須大於或等於下限');
   if(!finite(settings.maxWin,0,100000000))errors.push('單局派彩上限無效');
   const p=settings.params||{};
@@ -115,6 +115,17 @@ export function syncCounts(config){return config.batches.reduce((all,b)=>{for(co
 export function deployedRtp(state,gameId,siteId,now=new Date()){
  const a=state.configuration?.applied[gameId]?.[siteId],base=a?.game?.snapshot?.settings?.rtp??a?.rtp?.snapshot?.defaultRtp??state.games[gameId]?.defaultRtp,override=a?.rtp?.snapshot?.override;
  return override&&(override.mode==='permanent'||+now>=Date.parse(override.start)&&+now<Date.parse(override.end))?override.rtp:base;
+}
+// Reuse one mock transaction and the live draft; never ask for a second set of rule inputs.
+export function rulePreviewContext(data,state,gameId,kind,settings,siteId=null){
+ const sites=sitesOf(data),records=data.records.filter(r=>r.gameId===gameId&&r.bet>0).slice().sort((a,b)=>(b.date+b.time+b.id).localeCompare(a.date+a.time+a.id));
+ const preferred=records.find(r=>gameAccess(state,gameId,r.cashId).canPlay&&(kind!=='jackpot'||r.jackpot?.award>0))||records.find(r=>gameAccess(state,gameId,r.cashId).canPlay);
+ const site=sites.find(s=>s.id===siteId)||sites.find(s=>s.id===preferred?.cashId)||sites.find(s=>gameAccess(state,gameId,s.id).canPlay)||sites[0];
+ const candidates=records.filter(r=>r.cashId===site.id),sample=(kind==='jackpot'?candidates.find(r=>r.jackpot?.award>0):null)||candidates[0];
+ const sampleAt=sample?Date.parse(sample.date+'T'+sample.time+'+08:00'):null,prior=sample&&candidates.find(r=>r!==sample&&r.jackpot?.award>0&&Date.parse(r.date+'T'+r.time+'+08:00')<sampleAt);
+ const elapsed=prior?Math.floor((sampleAt-Date.parse(prior.date+'T'+prior.time+'+08:00'))/1000):3600;
+ return {siteId:site.id,siteName:site.name,sourceId:sample?.id||null,sampleTime:sample?sample.date+' '+sample.time:null,eventDescription:sample?.event||'預設模擬事件',elapsedAssumed:!prior,
+  input:{siteId:site.id,bet:sample?.bet??100,refund:sample?.refund??0,balance:settings.funding?.seedAmount??0,eventCount:sample?.event_count??3,elapsed,gameAward:sample?.jackpot?.award??100,eventMatched:sample?sample.jackpot?.award>0:true,duplicate:false}};
 }
 export function jackpotTrial(data,state,gameId,settings,binding,input){
  const errors=validateRule(data,gameId,'jackpot','試算',settings);if(errors.length)throw Error(errors.join('；'));

@@ -2,7 +2,7 @@ import {netWinsFor} from './net-win.js?v=14.4.1';
 import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=14.4.1';
 import {gameCatalog} from './game-catalog.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
-import {chartTipAttrs} from './chart-interactions.js?v=14.4.1';
+import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
 export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));
 export function gameIdentity(name,size=64){const g=games[name];if(!g)return '<span>'+e(name)+'</span>';return '<span class="game-identity"><img class="game-cover" width="'+size+'" height="'+size+'" src="assets/games/'+g.cover+'.jpg" alt="'+e(name)+'" loading="lazy"><span><strong>'+e(name)+'</strong><small>'+g.type+'</small></span></span>';}
 export function gameCards(records){

@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {createGameOperations,gameAccess,availabilityImpact,effectiveRtp,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,versionUsage,gameReleases} from '../game-operations.js';
+import {parseRtp,createGameOperations,gameAccess,availabilityImpact,effectiveRtp,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,versionUsage,gameReleases} from '../game-operations.js';
 const data=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url))),sites=data.organizations.filter(o=>o.level==='現金網'),gameId=data.games[0].id,siteId=sites[0].id,now=new Date('2026-11-03T01:00:00Z');
 const fresh=()=>createGameOperations(data.games,sites,null,now);
 test('each game version group partitions deployed sites without duplicates or omissions',()=>{
@@ -55,4 +55,14 @@ test('saved game settings survive reload and schedule times use UTC+8 independen
  assert.equal(loaded.games[gameId].listed,false);assert.equal(loaded.audit[0].reason,'測試');
  assert.equal(fromOperationsTime('2026-11-03T09:00'),'2026-11-03T01:00:00.000Z');
  assert.equal(fromOperationsTime('2026-02-30T09:00'),null);assert.equal(fromOperationsTime('not-a-date'),null);
+});
+
+test('RTP numeric entry accepts two decimals and preserves default/override precision on reload and expiry',()=>{
+ for(const value of [0,0.01,96.25,100,'97.35'])assert.equal(parseRtp(value),Number(value));
+ for(const value of ['',null,true,NaN,Infinity,-1,100.01,96.255,'96.250','1e2'])assert.equal(parseRtp(value),null);
+ const base=setDefaultRtp(fresh(),gameId,96.25,'小數預設',now),scheduled=setRtpOverride(base,gameId,siteId,{mode:'scheduled',rtp:97.35,start:'2026-11-03T02:00:00Z',end:'2026-11-03T03:00:00Z'},'小數排程',now),loaded=createGameOperations(data.games,sites,JSON.parse(JSON.stringify(scheduled)),now);
+ assert.equal(loaded.games[gameId].defaultRtp,96.25);assert.equal(loaded.games[gameId].overrides[siteId].rtp,97.35);
+ assert.equal(effectiveRtp(loaded,gameId,siteId,new Date('2026-11-03T02:30:00Z')).value,97.35);assert.equal(effectiveRtp(loaded,gameId,siteId,new Date('2026-11-03T03:00:00Z')).value,96.25);
+ for(const value of [96.255,101,-0.01]){assert.throws(()=>setDefaultRtp(base,gameId,value,'驗證',now));assert.throws(()=>setRtpOverride(base,gameId,siteId,{mode:'permanent',rtp:value},'驗證',now));}
+ const zero=setRtpOverride(setDefaultRtp(fresh(),gameId,0,'邊界',now),gameId,siteId,{mode:'permanent',rtp:0},'邊界',now),zeroLoaded=createGameOperations(data.games,sites,JSON.parse(JSON.stringify(zero)),now);assert.equal(zeroLoaded.games[gameId].defaultRtp,0);assert.equal(zeroLoaded.games[gameId].overrides[siteId].rtp,0);
 });

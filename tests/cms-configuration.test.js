@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createGameOperations,gameAccess,effectiveRtp,setRtpOverride,setGameAvailability} from '../game-operations.js';
-import {hydrateConfiguration,defaultRuleSettings,validateRule,saveRuleDraft,publishRule,assignedRule,advanceSync,retrySync,queueLegacyChange,deployedRtp,jackpotTrial,jackpotEligibility} from '../cms-configuration.js';
+import {hydrateConfiguration,defaultRuleSettings,validateRule,saveRuleDraft,publishRule,assignedRule,advanceSync,retrySync,queueLegacyChange,deployedRtp,rulePreviewContext,jackpotTrial,jackpotEligibility} from '../cms-configuration.js';
 const data=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url))),sites=data.organizations.filter(o=>o.level==='現金網'),game=data.games.find(g=>g.hasJackpot),fishing=data.games.find(g=>g.type==='捕魚'),at=new Date('2026-11-03T01:00:00Z');
 const fresh=()=>hydrateConfiguration(data,createGameOperations(data.games,sites,null,at));
 const settings=(state,kind='jackpot',gameId=game.id)=>defaultRuleSettings(data,state,gameId,kind);
@@ -81,4 +81,17 @@ test('duplicate events do not contribute or pay twice and existing historical le
 });
 test('site jackpot counts follow published eligibility but not unpublished drafts',()=>{
  const s=fresh(),site=sites.find(v=>jackpotEligibility(s,game.id,v.id).participates),d=make(s,'jackpot',{enabled:false}),target=[{siteId:site.id,rate:null,contribute:true,canWin:true}];assert.equal(jackpotEligibility(d.state,game.id,site.id).participates,true);assert.equal(jackpotEligibility(publishRule(data,d.state,d.id,target,'停用規則',at),game.id,site.id).participates,false);
+});
+
+test('decimal game-rule RTP survives publishing, sync and configuration hydration',()=>{
+ const original=fresh(),draft=make(original,'game',{rtp:96.25}),published=publishRule(data,draft.state,draft.id,targets(1),'小數 RTP',at),synced=sync(published),loaded=hydrateConfiguration(data,synced,JSON.parse(JSON.stringify(synced.configuration)));
+ assert.equal(assignedRule(loaded,game.id,sites[0].id,'game').snapshot.settings.rtp,96.25);assert.equal(assignedRule(loaded,game.id,sites[0].id,'game','applied').snapshot.settings.rtp,96.25);
+ assert.ok(validateRule(data,game.id,'game','測試',{...settings(original,'game'),rtp:96.255}).length);
+});
+test('integrated rule preview reuses one mock transaction, updates with the draft, and writes nothing',()=>{
+ const state=fresh(),rule=settings(state),before=JSON.stringify(state),preview=rulePreviewContext(data,state,game.id,'jackpot',rule),source=data.records.find(r=>r.id===preview.sourceId);
+ assert.ok(source);assert.equal(preview.input.bet,source.bet);assert.equal(preview.input.refund,source.refund);assert.equal(preview.input.eventCount,source.event_count);assert.equal(preview.input.balance,rule.funding.seedAmount);
+ const changed={...rule,rate:5,funding:{...rule.funding,seedAmount:54321}},same=rulePreviewContext(data,state,game.id,'jackpot',changed,preview.siteId);assert.equal(same.sourceId,preview.sourceId);assert.equal(same.input.balance,54321);
+ const a=jackpotTrial(data,state,game.id,rule,{rate:null,contribute:true,canWin:true},preview.input),b=jackpotTrial(data,state,game.id,changed,{rate:null,contribute:true,canWin:true},same.input);assert.notEqual(a.contribution,b.contribution);assert.equal(JSON.stringify(state),before);
+ const empty=rulePreviewContext({...data,records:[]},state,game.id,'jackpot',changed,preview.siteId);assert.equal(empty.sourceId,null);assert.equal(empty.input.bet,100);assert.equal(empty.input.balance,54321);
 });

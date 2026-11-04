@@ -1,5 +1,5 @@
 import {escape as e,money} from './core.js?v=14.4.1';
-import {chartTipAttrs} from './chart-interactions.js?v=14.4.1';
+import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
 import {donutArc,captureChartState,animateCharts} from './chart-motion.js?v=14.4.1';
 
 const palette=['#E6C066','#65e3b6','#79cfdc','#e7a68c','#a8bfbd','#a0adb9','#c8d0c6','#d4bd98'];

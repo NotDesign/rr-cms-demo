@@ -41,7 +41,7 @@ test('refunds propagate into accounting totals without changing charges or payou
 test('both CSV views expose separate signed columns that match every filtered group',()=>{
   const selected=accountingModel(data,[],{merchant:['示範商戶／主站'],accountingItems:['bullet','tool'],accountingGroup:'record'});
   for(const trial of [false,true]){
-    const out=accountingCsvRows(selected,data,data.organizations,trial),player=out.headers.indexOf('玩家 Net Win USDT'),operator=out.headers.indexOf('營運 Net Win USDT');
+    const out=accountingCsvRows(selected,data,data.organizations,trial),player=out.headers.indexOf('玩家淨盈虧 USDT'),operator=out.headers.indexOf('營運淨輸贏 USDT');
     assert.ok(player>=0&&operator>=0);assert.ok(out.rows.length);
     out.rows.forEach((row,i)=>{assert.equal(row.length,out.headers.length);assert.equal(Math.round(Number(row[player])*100),selected.groups[i].totals.playerNetWin);assert.equal(Math.round(Number(row[operator])*100),selected.groups[i].totals.operatorNetWin);});
   }
@@ -52,16 +52,16 @@ test('cards, totals and source rows retain both perspectives in game and service
     const html=accountingPage(data,selected,{filters:{},accountingAmounts},data.organizations,'');
     assert.match(html,/玩家淨盈虧/);assert.match(html,/營運淨輸贏/);
     assert.match(html,/class="negative">−40\.00/);assert.match(html,/class="positive">\+40\.00/);
-    assert.match(html,/<th class="num" scope="col">玩家 Net Win USDT/);assert.match(html,/<th class="num" scope="col">營運 Net Win USDT/);
+    assert.match(html,/<th class="num" scope="col">玩家淨盈虧 USDT/);assert.match(html,/<th class="num" scope="col">營運淨輸贏 USDT/);
   }
   const html=accountingDetail(data,selected.groups[0],data.organizations);
-  assert.match(html,/Player Net Win/);assert.match(html,/Operator Net Win/);
+  assert.match(html,/玩家淨盈虧/);assert.match(html,/營運淨輸贏/);
   const table=html.match(/<table class="acct-table">([\s\S]*?)<\/table>/)[1],count=[...table.match(/<thead>([\s\S]*?)<\/thead>/)[1].matchAll(/<th /g)].length;
   for(const row of table.matchAll(/<tr>([\s\S]*?)<\/tr>/g))if(row[1].includes('<td'))assert.equal([...row[1].matchAll(/<td[ >]/g)].length,count);
 });
 test('player directory retains both independent numeric columns and matches filtered records',()=>{
   const players=playerDirectory(createPlayerCatalog(data),createPlayerState(),{start:data.date,end:data.date,query:'P1001'}),html=playerPage(data,players,createPlayerState(),'directory',{filters:{},playerUI:{}},'');
-  assert.ok(players.length);assert.match(html,/<th scope="col" class="num">玩家 Net Win USDT/);assert.match(html,/<th scope="col" class="num">營運 Net Win USDT/);
+  assert.ok(players.length);assert.match(html,/<th scope="col" class="num">玩家淨盈虧 USDT/);assert.match(html,/<th scope="col" class="num">營運淨輸贏 USDT/);
   const table=html.match(/<table class="pm-table"[\s\S]*?<\/table>/)[0],count=[...table.matchAll(/<th /g)].length;
   for(const row of table.matchAll(/<tr>([\s\S]*?)<\/tr>/g))if(row[1].includes('<td'))assert.equal([...row[1].matchAll(/<td /g)].length,count);
 });
