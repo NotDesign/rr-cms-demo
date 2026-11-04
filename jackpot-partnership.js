@@ -1,4 +1,4 @@
-import {cents} from './jackpot-analytics.js?v=13.1';
+import {cents} from './jackpot-analytics.js?v=14.4.1';
 
 // Historical funding is an explicit synthetic 50/50 agreement, independent of CMS drafts.
 export function defaultPoolFunding(pool){return {seedAmount:pool?.opening||0,providerCapitalShare:50,providerNetShare:50};}

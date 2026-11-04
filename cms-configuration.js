@@ -1,6 +1,6 @@
-import {gameFunding,validateFunding} from './jackpot-partnership.js?v=14.1';
-import {RTP_PROFILES,gameAccess} from './game-operations.js?v=14.1';
-import {cents} from './jackpot-analytics.js?v=13.1';
+import {gameFunding,validateFunding} from './jackpot-partnership.js?v=14.4.1';
+import {RTP_PROFILES,gameAccess} from './game-operations.js?v=14.4.1';
+import {cents} from './jackpot-analytics.js?v=14.4.1';
 
 const copy=value=>JSON.parse(JSON.stringify(value));
 const sitesOf=data=>data.organizations.filter(s=>s.level==='現金網');

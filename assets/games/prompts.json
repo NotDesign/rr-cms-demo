@@ -1,43 +1,805 @@
 {
-  "generator": "built-in image_gen.imagegen",
-  "original_size": "1254x1254",
-  "web_assets": "256x256 JPEG derivatives; CSS border-radius:12px",
-  "assets": [
+  "generator": "built-in image_gen",
+  "games": [
     {
-      "key": "electronic",
-      "subject": "A sleek small silver exploration spacecraft flying upward through three glowing emerald cosmic gates, luminous starfield and deep blue nebula. Emphasize a staged space adventure, one bold centered spacecraft and orbital path.",
-      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A sleek small silver exploration spacecraft flying upward through three glowing emerald cosmic gates, luminous starfield and deep blue nebula. Emphasize a staged space adventure, one bold centered spacecraft and orbital path. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
-      "file": "assets/games/electronic.jpg"
+      "id": "CA-01",
+      "name": "經典 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"經典 21 點\" (CA-01), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-01.jpg",
+      "original": "output/imagegen/game-covers/ca-01.png",
+      "sha256": "18d7293fdba1055c52df2e75fd7cf35d83af2f40f97af40f300567ba98b3f4ec"
     },
     {
-      "key": "slots",
-      "subject": "An emerald gemstone mine overflowing with luminous green crystals and a polished golden treasure cart, with a few elegant golden slot reel shapes integrated subtly. One bold emerald cluster as focal point.",
-      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. An emerald gemstone mine overflowing with luminous green crystals and a polished golden treasure cart, with a few elegant golden slot reel shapes integrated subtly. One bold emerald cluster as focal point. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
-      "file": "assets/games/slots.jpg"
+      "id": "CA-02",
+      "name": "搶莊牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"搶莊牛牛\" (CA-02), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-02.jpg",
+      "original": "output/imagegen/game-covers/ca-02.png",
+      "sha256": "e6c9de5e43416f29dcc85fc3e49c5cf42da9606bd9137cc938ed0867dbed7e3e"
     },
     {
-      "key": "fishing",
-      "subject": "An imposing majestic golden dragon fish swimming in a luminous deep teal underwater arena, smaller colorful reef fish and light rays, dramatic golden fins and bright clear eye. One bold centered fish.",
-      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. An imposing majestic golden dragon fish swimming in a luminous deep teal underwater arena, smaller colorful reef fish and light rays, dramatic golden fins and bright clear eye. One bold centered fish. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
-      "file": "assets/games/fishing.jpg"
+      "id": "CA-03",
+      "name": "經典鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"經典鬥地主\" (CA-03), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-03.jpg",
+      "original": "output/imagegen/game-covers/ca-03.png",
+      "sha256": "dafb2cf6332a9ce6d8134a0341f0af9e9eca820e18ce34fbc4b437c283b9309c"
     },
     {
-      "key": "blackjack",
-      "subject": "A luxurious green felt blackjack table with an elegant ace of spades and a king of hearts fanned prominently, glossy black and emerald casino chips, warm gold rim lighting. Clear playing-card composition; only natural A and K card indices are permitted.",
-      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A luxurious green felt blackjack table with an elegant ace of spades and a king of hearts fanned prominently, glossy black and emerald casino chips, warm gold rim lighting. Clear playing-card composition; only natural A and K card indices are permitted. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
-      "file": "assets/games/blackjack.jpg"
+      "id": "CA-04",
+      "name": "極速 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"極速 21 點\" (CA-04), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-04.jpg",
+      "original": "output/imagegen/game-covers/ca-04.png",
+      "sha256": "973caf656a53520bdeb3f9e2d4a1e22e63411532c54e0a0db3e1aab070b9c4f9"
     },
     {
-      "key": "bull",
-      "subject": "A dignified powerful stylized golden bull mascot with curved horns, alongside a refined fan of five playing cards and stacked emerald casino chips on dark green felt. Premium Chinese Niu Niu card-game theme, no text or lettering.",
-      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A dignified powerful stylized golden bull mascot with curved horns, alongside a refined fan of five playing cards and stacked emerald casino chips on dark green felt. Premium Chinese Niu Niu card-game theme, no text or lettering. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
-      "file": "assets/games/bull.jpg"
+      "id": "CA-05",
+      "name": "經典牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"經典牛牛\" (CA-05), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-05.jpg",
+      "original": "output/imagegen/game-covers/ca-05.png",
+      "sha256": "e38d885a7a597f92e80bbbb49839dce0da5044b5abc67b0423a4fb589cf6f4cb"
     },
     {
-      "key": "landlord",
-      "subject": "A refined stylized Chinese Dou Dizhu card-game cover: a fan of playing cards with a red and a black joker, tasteful golden coins and emerald chips, festive red silk and dark jade backdrop. Prominent central card fan, no human figures, no text or lettering.",
-      "prompt": "Use case: stylized-concept. Asset type: production game cover art for a Traditional Chinese casino back-office demo. Generate ONE square 1:1 image, 1024 by 1024. A refined stylized Chinese Dou Dizhu card-game cover: a fan of playing cards with a red and a black joker, tasteful golden coins and emerald chips, festive red silk and dark jade backdrop. Prominent central card fan, no human figures, no text or lettering. Cohesive premium stylized 3D game illustration, crisp silhouettes readable as a 64px thumbnail, rich but restrained emerald, gold and deep charcoal palette, cinematic lighting, high craft, no flat vector look. Fill the entire square edge to edge, centered composition with 10 percent safe margins; rounded corners will be applied by the app. No game title, no wordmark, no watermark, no badges, no border, no interface, no promotional claims.",
-      "file": "assets/games/landlord.jpg"
+      "id": "CA-06",
+      "name": "歡樂鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"歡樂鬥地主\" (CA-06), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-06.jpg",
+      "original": "output/imagegen/game-covers/ca-06.png",
+      "sha256": "3ea0a7861ac22533863db33ccca5a2724748a0d376eba5867cf2525bddb29ae8"
+    },
+    {
+      "id": "CA-07",
+      "name": "皇家 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"皇家 21 點\" (CA-07), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-07.jpg",
+      "original": "output/imagegen/game-covers/ca-07.png",
+      "sha256": "31f06d338bb9f35bd455db3bd0ab4568610523a332113768d6890443e2f25393"
+    },
+    {
+      "id": "CA-08",
+      "name": "鑽石 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"鑽石 21 點\" (CA-08), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-08.jpg",
+      "original": "output/imagegen/game-covers/ca-08.png",
+      "sha256": "8a144d5ff7ddc17b9cf4a51bcc37f48449e5271267cd8ce604fd45bc49a93fff"
+    },
+    {
+      "id": "CA-09",
+      "name": "幸運 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"幸運 21 點\" (CA-09), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-09.jpg",
+      "original": "output/imagegen/game-covers/ca-09.png",
+      "sha256": "67d037728fe03fe2f0ab5031b6fab6134ff32e083bc9083806f450b64044911f"
+    },
+    {
+      "id": "CA-10",
+      "name": "競技牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"競技牛牛\" (CA-10), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-10.jpg",
+      "original": "output/imagegen/game-covers/ca-10.png",
+      "sha256": "d40397371fa9e89105afc222ecb52f5e3836751f6b52838522e7edcea5f661cc"
+    },
+    {
+      "id": "CA-11",
+      "name": "黃金牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"黃金牛牛\" (CA-11), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-11.jpg",
+      "original": "output/imagegen/game-covers/ca-11.png",
+      "sha256": "bff92b17cbbdf289d9b10a90e74973829e4dc1d26221932ae06703341fb3515c"
+    },
+    {
+      "id": "CA-12",
+      "name": "至尊牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"至尊牛牛\" (CA-12), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-12.jpg",
+      "original": "output/imagegen/game-covers/ca-12.png",
+      "sha256": "66124861316f033aaafb47b43d80851fa26acf632a147c313a9aa2e32120785a"
+    },
+    {
+      "id": "CA-13",
+      "name": "歡樂牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"歡樂牛牛\" (CA-13), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-13.jpg",
+      "original": "output/imagegen/game-covers/ca-13.png",
+      "sha256": "addd33951e6fcdc6390c72ea814f86eda38df9cac5148713a8f42b0b9abc6988"
+    },
+    {
+      "id": "CA-14",
+      "name": "休閒鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"休閒鬥地主\" (CA-14), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-14.jpg",
+      "original": "output/imagegen/game-covers/ca-14.png",
+      "sha256": "d323ca21c161e94d0728b79597371e6fcd40b2f08173e4c340a80e7a17747e7d"
+    },
+    {
+      "id": "CA-15",
+      "name": "王牌鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"王牌鬥地主\" (CA-15), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-15.jpg",
+      "original": "output/imagegen/game-covers/ca-15.png",
+      "sha256": "16ac18d4d1251836f855471988f15cccd17d28f9d9e315efa32d602d2dcf9bfe"
+    },
+    {
+      "id": "CA-16",
+      "name": "皇家鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"皇家鬥地主\" (CA-16), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-16.jpg",
+      "original": "output/imagegen/game-covers/ca-16.png",
+      "sha256": "c9568e7e87cb9b99e482495b0c5e4dc364e25c1fec17b2be59d001055db2c989"
+    },
+    {
+      "id": "CA-17",
+      "name": "競技鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"競技鬥地主\" (CA-17), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-17.jpg",
+      "original": "output/imagegen/game-covers/ca-17.png",
+      "sha256": "bc6119f12f151babd36e0e6b9095ecd9fef4d5aa75cadcc93270afc293193927"
+    },
+    {
+      "id": "CA-18",
+      "name": "黃金鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"黃金鬥地主\" (CA-18), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-18.jpg",
+      "original": "output/imagegen/game-covers/ca-18.png",
+      "sha256": "5be78ccc991f7eca2965853364cd58c551d5cd7c59b724a9fa654bcb2259db41"
+    },
+    {
+      "id": "CA-19",
+      "name": "休閒 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"休閒 21 點\" (CA-19), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-19.jpg",
+      "original": "output/imagegen/game-covers/ca-19.png",
+      "sha256": "cca52f6ec03ed26f063e37904632bd0ba12584163d438ea8e528910cd1a0ec9c"
+    },
+    {
+      "id": "CA-20",
+      "name": "翡翠牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"翡翠牛牛\" (CA-20), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-20.jpg",
+      "original": "output/imagegen/game-covers/ca-20.png",
+      "sha256": "daf3972251b111d5494c6085c5058fb4a98bd08a4a407fdcb983e3d229ab54c7"
+    },
+    {
+      "id": "CA-21",
+      "name": "星光 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"星光 21 點\" (CA-21), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-21.jpg",
+      "original": "output/imagegen/game-covers/ca-21.png",
+      "sha256": "90833075481f53dfd3f5165fc7b6ad28ac452c8cd20d5660c5d75748e9d07090"
+    },
+    {
+      "id": "CA-22",
+      "name": "巔峰鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"巔峰鬥地主\" (CA-22), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-22.jpg",
+      "original": "output/imagegen/game-covers/ca-22.png",
+      "sha256": "d7cc49f251882390ccd45013e369d5aed2fa8e38823a0e44722103694e18eea2"
+    },
+    {
+      "id": "CA-23",
+      "name": "極速牛牛",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"極速牛牛\" (CA-23), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Niu Niu card-game theme with a majestic ornate bull emblem, beautifully arranged playing cards and casino chips, title-specific materials and scenery. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-23.jpg",
+      "original": "output/imagegen/game-covers/ca-23.png",
+      "sha256": "abb5dbf2e3f4819425eebef1967b6469ad7a279fa1c7460400713103f879ab02"
+    },
+    {
+      "id": "CA-24",
+      "name": "金牌 21 點",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"金牌 21 點\" (CA-24), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Blackjack theme with elegant aces and 21-point playing cards, casino chips, no readable lettering. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-24.jpg",
+      "original": "output/imagegen/game-covers/ca-24.png",
+      "sha256": "ad4f0b99e306d474efea42ff2165d35604c8519c6b082e527d1c8137d00a5228"
+    },
+    {
+      "id": "CA-25",
+      "name": "歡聚鬥地主",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"歡聚鬥地主\" (CA-25), category 棋牌. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Dou Dizhu Chinese card-game theme with beautifully arranged playing cards, jokers, Chinese auspicious ornaments, casino chips and a distinctive title-specific setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/ca-25.jpg",
+      "original": "output/imagegen/game-covers/ca-25.png",
+      "sha256": "7b387e9e6a0edfa343518b7219d4b0c4c7050cade11e1a6f0997b7adab97bab5"
+    },
+    {
+      "id": "EG-01",
+      "name": "星際闖關",
+      "prompt": "Square premium casino cover for 星際闖關 (EG-01): luminous emerald interstellar portal, gold spacecraft, blue galaxy, cinematic fantasy game key art, no text, logo, border or watermark.",
+      "image": "assets/games/eg-01.jpg",
+      "original": "output/imagegen/game-covers/eg-01.png",
+      "sha256": "7cd877825239237f4a321f9f261c2e7896d8c366d1957181b52e9aaec6a62dbf"
+    },
+    {
+      "id": "EG-02",
+      "name": "烈焰階梯",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"烈焰階梯\" (EG-02), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-02.jpg",
+      "original": "output/imagegen/game-covers/eg-02.png",
+      "sha256": "b21a8f92984de42ba1e133e20d1f2f8b77490989eacaf89f0fafb9ec09eb5895"
+    },
+    {
+      "id": "EG-03",
+      "name": "冰川探險",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"冰川探險\" (EG-03), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-03.jpg",
+      "original": "output/imagegen/game-covers/eg-03.png",
+      "sha256": "a748e7dda872f34ae5e29a83a5f241dbf73bc3c6769c08a2f3830f34274483ce"
+    },
+    {
+      "id": "EG-04",
+      "name": "極速穿越",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"極速穿越\" (EG-04), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-04.jpg",
+      "original": "output/imagegen/game-covers/eg-04.png",
+      "sha256": "7418f0e2e4c770f9195287cee0396f9d75d12913fab890ba451ccc7e266ec0f0"
+    },
+    {
+      "id": "EG-05",
+      "name": "銀河遠征",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"銀河遠征\" (EG-05), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-05.jpg",
+      "original": "output/imagegen/game-covers/eg-05.png",
+      "sha256": "0319ea2f23d813d5d58e658ff410d2e9909a04d63115c185cc5f433557c8e195"
+    },
+    {
+      "id": "EG-06",
+      "name": "蒼穹之翼",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"蒼穹之翼\" (EG-06), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-06.jpg",
+      "original": "output/imagegen/game-covers/eg-06.png",
+      "sha256": "5172e821e5ef0ee9d5ab605f355a6af7daf0f72e02fcf05b41ce19ac9d732e19"
+    },
+    {
+      "id": "EG-07",
+      "name": "時空旅人",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"時空旅人\" (EG-07), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-07.jpg",
+      "original": "output/imagegen/game-covers/eg-07.png",
+      "sha256": "90246a05b925c9b9b37f4ff9985f291a6d23d9314c0215c16d8d3d4c0ab07c0e"
+    },
+    {
+      "id": "EG-08",
+      "name": "幻境迷城",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"幻境迷城\" (EG-08), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-08.jpg",
+      "original": "output/imagegen/game-covers/eg-08.png",
+      "sha256": "5a5ec79a99190c9946f4d4d2b06e65520a12b13cb273dd218abea7ca931a9428"
+    },
+    {
+      "id": "EG-09",
+      "name": "雷霆突襲",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"雷霆突襲\" (EG-09), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-09.jpg",
+      "original": "output/imagegen/game-covers/eg-09.png",
+      "sha256": "e55489b68bc96e063c37e1d423fb7cd3a9bffb8ebb43ec25d7750e71630c1167"
+    },
+    {
+      "id": "EG-10",
+      "name": "極地曙光",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"極地曙光\" (EG-10), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-10.jpg",
+      "original": "output/imagegen/game-covers/eg-10.png",
+      "sha256": "fa43c313bd5aed97cf67046e665478c68b777fe8b661bc6519e774d7d5e65a4a"
+    },
+    {
+      "id": "EG-11",
+      "name": "黃金航線",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"黃金航線\" (EG-11), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-11.jpg",
+      "original": "output/imagegen/game-covers/eg-11.png",
+      "sha256": "5a2359f1bac480853e8940b38fd698e7c3c0b6207a1611b325ebec23defb8914"
+    },
+    {
+      "id": "EG-12",
+      "name": "星雲探索",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"星雲探索\" (EG-12), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-12.jpg",
+      "original": "output/imagegen/game-covers/eg-12.png",
+      "sha256": "22cec1ffff48c74e40be6d5d0104951be364b5cf59fa91662329d4a4a0eb2f55"
+    },
+    {
+      "id": "EG-13",
+      "name": "熔岩之巔",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"熔岩之巔\" (EG-13), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-13.jpg",
+      "original": "output/imagegen/game-covers/eg-13.png",
+      "sha256": "fbcd3b38b0c9809d1fa66d804ae6ed1d7533f0db826e3ce157dc3130752e8a51"
+    },
+    {
+      "id": "EG-14",
+      "name": "森林奇旅",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"森林奇旅\" (EG-14), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-14.jpg",
+      "original": "output/imagegen/game-covers/eg-14.png",
+      "sha256": "620339216fa12634dca47b60865ef9eb304e6054c65d1a6ba403c326270229c2"
+    },
+    {
+      "id": "EG-15",
+      "name": "沙漠疾行",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"沙漠疾行\" (EG-15), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-15.jpg",
+      "original": "output/imagegen/game-covers/eg-15.png",
+      "sha256": "078c6199d40779c1a4b10f1ffa5f08c66e1ee6f719009ae5572e4cfef36f0364"
+    },
+    {
+      "id": "EG-16",
+      "name": "天空之城",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"天空之城\" (EG-16), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-16.jpg",
+      "original": "output/imagegen/game-covers/eg-16.png",
+      "sha256": "95ed297faf5e5ea8153bbace6da77291d7d6e3827b6fccec19a02cc608eef572"
+    },
+    {
+      "id": "EG-17",
+      "name": "秘境之門",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"秘境之門\" (EG-17), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-17.jpg",
+      "original": "output/imagegen/game-covers/eg-17.png",
+      "sha256": "2186eb2df10e08a02e3656f66e14d1cc48df88ec135af7ba4b93c1169ac49bf9"
+    },
+    {
+      "id": "EG-18",
+      "name": "流星追逐",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"流星追逐\" (EG-18), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-18.jpg",
+      "original": "output/imagegen/game-covers/eg-18.png",
+      "sha256": "ccef53d7d815bf57d1da63ffd4cdab3a30f23a4060872b4cf6579953bd00e67b"
+    },
+    {
+      "id": "EG-19",
+      "name": "深淵探索",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"深淵探索\" (EG-19), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-19.jpg",
+      "original": "output/imagegen/game-covers/eg-19.png",
+      "sha256": "0ce5267e07049a6396eb1f4f3a3e5d6b568d70b3e2a6d7242fef5c555e65d5eb"
+    },
+    {
+      "id": "EG-20",
+      "name": "晶石傳說",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"晶石傳說\" (EG-20), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-20.jpg",
+      "original": "output/imagegen/game-covers/eg-20.png",
+      "sha256": "2a7ef3c571b5300304115d85f4e4b367fe86f28149bc6347ba150c3ce55453de"
+    },
+    {
+      "id": "EG-21",
+      "name": "機甲遠征",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"機甲遠征\" (EG-21), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-21.jpg",
+      "original": "output/imagegen/game-covers/eg-21.png",
+      "sha256": "6aaefcb5b48591b0f3fcb2bcf219e174978714f7406e625b87f5995c23e17902"
+    },
+    {
+      "id": "EG-22",
+      "name": "月光階梯",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"月光階梯\" (EG-22), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-22.jpg",
+      "original": "output/imagegen/game-covers/eg-22.png",
+      "sha256": "6bc161a2c9df66eeffff60bded37fde1d218e2a1cd0dcc6020e3b3cae77eddfb"
+    },
+    {
+      "id": "EG-23",
+      "name": "鳳凰之路",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"鳳凰之路\" (EG-23), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-23.jpg",
+      "original": "output/imagegen/game-covers/eg-23.png",
+      "sha256": "7b4299774598045447057459f8ff158f6cba922768a7f06a2fe7d3e3394935e1"
+    },
+    {
+      "id": "EG-24",
+      "name": "龍焰試煉",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"龍焰試煉\" (EG-24), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-24.jpg",
+      "original": "output/imagegen/game-covers/eg-24.png",
+      "sha256": "f6bc514aff37b8b168d4ff3cf8bff2b76ca857ae6fba68cea23da03ed684bab7"
+    },
+    {
+      "id": "EG-25",
+      "name": "光速挑戰",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"光速挑戰\" (EG-25), category 電子遊戲. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/eg-25.jpg",
+      "original": "output/imagegen/game-covers/eg-25.png",
+      "sha256": "0c64625b94208ef6a263a2cdc02e751257997e34d352153f94f9146ce2d6cd35"
+    },
+    {
+      "id": "FI-01",
+      "name": "深海獵場",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"深海獵場\" (FI-01), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-01.jpg",
+      "original": "output/imagegen/game-covers/fi-01.png",
+      "sha256": "cb9396f0dd3628e59d09af9b1cc6131e3bf92f9e5d261585427032c46d4047e3"
+    },
+    {
+      "id": "FI-02",
+      "name": "龍宮爭霸",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"龍宮爭霸\" (FI-02), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-02.jpg",
+      "original": "output/imagegen/game-covers/fi-02.png",
+      "sha256": "ba6cf729671f8b1b9c06bd16d889dac0f436c47656ba4429de193e24444326af"
+    },
+    {
+      "id": "FI-03",
+      "name": "海盜寶藏",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"海盜寶藏\" (FI-03), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-03.jpg",
+      "original": "output/imagegen/game-covers/fi-03.png",
+      "sha256": "19d6eac3013625636fa207ec2ea9a5a395b73b682d118c92f0415eb2a58daef9"
+    },
+    {
+      "id": "FI-04",
+      "name": "珊瑚王國",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"珊瑚王國\" (FI-04), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-04.jpg",
+      "original": "output/imagegen/game-covers/fi-04.png",
+      "sha256": "059583c704c82da391b1d7fed9fdcd27ab3562cf0d9ab3c559c205bc6aa7d188"
+    },
+    {
+      "id": "FI-05",
+      "name": "巨鯨傳說",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"巨鯨傳說\" (FI-05), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-05.jpg",
+      "original": "output/imagegen/game-covers/fi-05.png",
+      "sha256": "7bd3f91d9f5fd190d35fb95ae9ebbd8a2c75d646d9e791c9f624787293ac8b24"
+    },
+    {
+      "id": "FI-06",
+      "name": "怒海狂潮",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"怒海狂潮\" (FI-06), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-06.jpg",
+      "original": "output/imagegen/game-covers/fi-06.png",
+      "sha256": "9b616a30d206dc3625fa4a3613b9c2a43a86d9d13353537ba727427183b6aac1"
+    },
+    {
+      "id": "FI-07",
+      "name": "海底奇兵",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"海底奇兵\" (FI-07), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-07.jpg",
+      "original": "output/imagegen/game-covers/fi-07.png",
+      "sha256": "2ded95363e5ee1f37801459be6de8bcd0e8cfbe7d4e19957d52e801c7b8d8fdb"
+    },
+    {
+      "id": "FI-08",
+      "name": "冰海巨獸",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"冰海巨獸\" (FI-08), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-08.jpg",
+      "original": "output/imagegen/game-covers/fi-08.png",
+      "sha256": "0357f9d67c1b0e3c60c645c7c247626aaf92204c498cfa4519a0e61dd28d9569"
+    },
+    {
+      "id": "FI-09",
+      "name": "黃金漁港",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"黃金漁港\" (FI-09), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-09.jpg",
+      "original": "output/imagegen/game-covers/fi-09.png",
+      "sha256": "326c785dbdac881f90274b040c9e2a96e3560493fe49943d085afe78ed43ddfe"
+    },
+    {
+      "id": "FI-10",
+      "name": "深淵巨鯊",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"深淵巨鯊\" (FI-10), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-10.jpg",
+      "original": "output/imagegen/game-covers/fi-10.png",
+      "sha256": "f3d07dbd14c016beec5dddc6691bc79e392555090ebb973e8cce51d59808c10e"
+    },
+    {
+      "id": "FI-11",
+      "name": "碧海尋寶",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"碧海尋寶\" (FI-11), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-11.jpg",
+      "original": "output/imagegen/game-covers/fi-11.png",
+      "sha256": "7e44743663f636366a7d34635004964fe4908d26f43175312f5896e39c9a6db6"
+    },
+    {
+      "id": "FI-12",
+      "name": "海神之怒",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"海神之怒\" (FI-12), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-12.jpg",
+      "original": "output/imagegen/game-covers/fi-12.png",
+      "sha256": "9cd3cb490fa30d9d9058948626b8a5a8cfbd2d6982b547fb2a0edbfdafdde68f"
+    },
+    {
+      "id": "FI-13",
+      "name": "寶石水域",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"寶石水域\" (FI-13), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-13.jpg",
+      "original": "output/imagegen/game-covers/fi-13.png",
+      "sha256": "77a164ddefd3a6280264a63b39ec9cf63f65dc5814831b35a4b2e60e5ddb5869"
+    },
+    {
+      "id": "FI-14",
+      "name": "熱帶漁樂",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"熱帶漁樂\" (FI-14), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-14.jpg",
+      "original": "output/imagegen/game-covers/fi-14.png",
+      "sha256": "a2448bb8b9d8e18082bf1fbd14c65468896b77048299175c441dc57f3d2d72df"
+    },
+    {
+      "id": "FI-15",
+      "name": "極光冰洋",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"極光冰洋\" (FI-15), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-15.jpg",
+      "original": "output/imagegen/game-covers/fi-15.png",
+      "sha256": "587603d54cc246ec0907d9e7fe9397ca423a4e2ce88c158281856f1e0f1d699a"
+    },
+    {
+      "id": "FI-16",
+      "name": "龍王秘境",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"龍王秘境\" (FI-16), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-16.jpg",
+      "original": "output/imagegen/game-covers/fi-16.png",
+      "sha256": "acbf33b543da91e4c868fcecb988c9f70ac747ecb57d54b153c43609020e0e2f"
+    },
+    {
+      "id": "FI-17",
+      "name": "遠洋探險",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"遠洋探險\" (FI-17), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-17.jpg",
+      "original": "output/imagegen/game-covers/fi-17.png",
+      "sha256": "526ad98d94424fd545f2a7b88699028c3fece9a7295474fe871569b7e006eb6a"
+    },
+    {
+      "id": "FI-18",
+      "name": "水晶海灣",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"水晶海灣\" (FI-18), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-18.jpg",
+      "original": "output/imagegen/game-covers/fi-18.png",
+      "sha256": "e5d9eff36bfaf72145b7c2e8a8346fde62d1c6a5958590191d0a693d2a1cdad7"
+    },
+    {
+      "id": "FI-19",
+      "name": "狂暴章魚",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"狂暴章魚\" (FI-19), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-19.jpg",
+      "original": "output/imagegen/game-covers/fi-19.png",
+      "sha256": "ce6b5e4e9e5c62713b75be75de9660885f05f3587904b83283bfbfce6475e3f3"
+    },
+    {
+      "id": "FI-20",
+      "name": "黃金鯨王",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"黃金鯨王\" (FI-20), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-20.jpg",
+      "original": "output/imagegen/game-covers/fi-20.png",
+      "sha256": "d4bf6bfa4c74744ff3692d614579f0feb1bbb699f68486e622421fc457c6ff11"
+    },
+    {
+      "id": "FI-21",
+      "name": "幽藍深淵",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"幽藍深淵\" (FI-21), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-21.jpg",
+      "original": "output/imagegen/game-covers/fi-21.png",
+      "sha256": "05fe28b4290ea2bbe3a9ae3259d35ce4c226a28fef2a3e92a24e7aa917a693b6"
+    },
+    {
+      "id": "FI-22",
+      "name": "海洋嘉年華",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"海洋嘉年華\" (FI-22), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-22.jpg",
+      "original": "output/imagegen/game-covers/fi-22.png",
+      "sha256": "1e608467ba84ba600a99d99cea11fba869ee50dde17972c7e09ac5b84c7ce156"
+    },
+    {
+      "id": "FI-23",
+      "name": "幻彩海域",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"幻彩海域\" (FI-23), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-23.jpg",
+      "original": "output/imagegen/game-covers/fi-23.png",
+      "sha256": "01d17df593d444cc6962da46514e0d0f792edad71b7903ad28cb717380f640ac"
+    },
+    {
+      "id": "FI-24",
+      "name": "風暴漁場",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"風暴漁場\" (FI-24), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-24.jpg",
+      "original": "output/imagegen/game-covers/fi-24.png",
+      "sha256": "e0c5f14eb53ecc834a6aa9c80ecdad260792c346da0e42d4eaf34c6c09747b57"
+    },
+    {
+      "id": "FI-25",
+      "name": "珍珠海岸",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"珍珠海岸\" (FI-25), category 捕魚. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Underwater fishing arcade game key art: show a spectacular title-specific sea creature or treasure scene with shimmering water and elaborate ocean detail. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/fi-25.jpg",
+      "original": "output/imagegen/game-covers/fi-25.png",
+      "sha256": "d7051ce909477791515a337aa3f4935b299fffdb52253552e2915d390b8b9ddd"
+    },
+    {
+      "id": "SL-01",
+      "name": "翡翠金礦",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"翡翠金礦\" (SL-01), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-01.jpg",
+      "original": "output/imagegen/game-covers/sl-01.png",
+      "sha256": "824ad287fc4bf1e36478d2504c392b8dc47aa1a2f4ab3a62c8118f05ce80a9e7"
+    },
+    {
+      "id": "SL-02",
+      "name": "埃及祕寶",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"埃及祕寶\" (SL-02), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-02.jpg",
+      "original": "output/imagegen/game-covers/sl-02.png",
+      "sha256": "181478f712627a707e5497eaf3aebc657c0ed21422d0ac1406f77c5b3f316cde"
+    },
+    {
+      "id": "SL-03",
+      "name": "福運招財",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"福運招財\" (SL-03), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-03.jpg",
+      "original": "output/imagegen/game-covers/sl-03.png",
+      "sha256": "80a4c86ed28184fb8ad82abf4a90f59fb65cedc049ac99b832bbf22d02c413a8"
+    },
+    {
+      "id": "SL-04",
+      "name": "雷霆之神",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"雷霆之神\" (SL-04), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-04.jpg",
+      "original": "output/imagegen/game-covers/sl-04.png",
+      "sha256": "ce2d5eabf31c405de3795a6d0cfa32430f6d3cd51ec1e9d26da06e0a894bc425"
+    },
+    {
+      "id": "SL-05",
+      "name": "叢林寶藏",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"叢林寶藏\" (SL-05), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-05.jpg",
+      "original": "output/imagegen/game-covers/sl-05.png",
+      "sha256": "af7f41255601dd1876f8056f570d00975829fdf975fa84129fdd2da8d1efca0b"
+    },
+    {
+      "id": "SL-06",
+      "name": "黃金帝國",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"黃金帝國\" (SL-06), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-06.jpg",
+      "original": "output/imagegen/game-covers/sl-06.png",
+      "sha256": "7e4d28d65b9f695c852dcc67efa3f12d0f017d94f912d19862e0e08a7b046936"
+    },
+    {
+      "id": "SL-07",
+      "name": "海神寶庫",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"海神寶庫\" (SL-07), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-07.jpg",
+      "original": "output/imagegen/game-covers/sl-07.png",
+      "sha256": "8072f139c2a23bac25286b8f2dade85436c3109ec6e2da8a27d77898fdc23566"
+    },
+    {
+      "id": "SL-08",
+      "name": "月夜神殿",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"月夜神殿\" (SL-08), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-08.jpg",
+      "original": "output/imagegen/game-covers/sl-08.png",
+      "sha256": "0b66a16eb8a1238f8da877e03645b6b23087e42cf369becf1960f0556ca5a1bc"
+    },
+    {
+      "id": "SL-09",
+      "name": "幸運熊貓",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"幸運熊貓\" (SL-09), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-09.jpg",
+      "original": "output/imagegen/game-covers/sl-09.png",
+      "sha256": "bb8cf1a9aac2c73f233a776bdd72b8ca5611889cded16f4aa76b78a5a534e706"
+    },
+    {
+      "id": "SL-10",
+      "name": "霓虹都會",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"霓虹都會\" (SL-10), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-10.jpg",
+      "original": "output/imagegen/game-covers/sl-10.png",
+      "sha256": "45cbf54129b3db8de1dc07c064fcb7c93ef0e1e7b46ead0a0b1ebf3e1f6f5ee3"
+    },
+    {
+      "id": "SL-11",
+      "name": "鑽石盛宴",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"鑽石盛宴\" (SL-11), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-11.jpg",
+      "original": "output/imagegen/game-covers/sl-11.png",
+      "sha256": "61a88de1563e8b46fc734ffb00a6eca4f749383929fc826d55d2129a716ba96d"
+    },
+    {
+      "id": "SL-12",
+      "name": "財神報喜",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"財神報喜\" (SL-12), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-12.jpg",
+      "original": "output/imagegen/game-covers/sl-12.png",
+      "sha256": "9457a888c445051a6de6aaeeb5c8e90c314f6cb97a8c8422e5b277a65593ec03"
+    },
+    {
+      "id": "SL-13",
+      "name": "神龍秘寶",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"神龍秘寶\" (SL-13), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-13.jpg",
+      "original": "output/imagegen/game-covers/sl-13.png",
+      "sha256": "13b9db4bbfaf0a02d82bea8365b1bb813a5b6ca9efdeec08c80e2cc097088c82"
+    },
+    {
+      "id": "SL-14",
+      "name": "水果狂歡",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"水果狂歡\" (SL-14), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-14.jpg",
+      "original": "output/imagegen/game-covers/sl-14.png",
+      "sha256": "ddf043985f44a3ced1834d1e4289b41449661f0ada75f76fef03fe118d4dc247"
+    },
+    {
+      "id": "SL-15",
+      "name": "極地寶石",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"極地寶石\" (SL-15), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-15.jpg",
+      "original": "output/imagegen/game-covers/sl-15.png",
+      "sha256": "972199de8cab0b556961a5a7727af35d0c8cbb3d2d957b8ef79d65b3bafc862f"
+    },
+    {
+      "id": "SL-16",
+      "name": "海盜金庫",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"海盜金庫\" (SL-16), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-16.jpg",
+      "original": "output/imagegen/game-covers/sl-16.png",
+      "sha256": "4f85b61fe1523aede4b8d935edf5e1681384e2085d433cbfb81f77cbf714621a"
+    },
+    {
+      "id": "SL-17",
+      "name": "王牌富豪",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"王牌富豪\" (SL-17), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-17.jpg",
+      "original": "output/imagegen/game-covers/sl-17.png",
+      "sha256": "a1743e60bbc535cd0128d696b4662a5677855117207a436525069b63a05adde4"
+    },
+    {
+      "id": "SL-18",
+      "name": "烈焰寶鑽",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"烈焰寶鑽\" (SL-18), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-18.jpg",
+      "original": "output/imagegen/game-covers/sl-18.png",
+      "sha256": "30f3d18cbbc31053ff89f2fba136e988a3775fe893e74affa8f4a524d8b2a1fb"
+    },
+    {
+      "id": "SL-19",
+      "name": "仙境花園",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"仙境花園\" (SL-19), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-19.jpg",
+      "original": "output/imagegen/game-covers/sl-19.png",
+      "sha256": "601af31c87d64a285249987efbf0db5466f036ef52e75dbf13ae2aeb7008e671"
+    },
+    {
+      "id": "SL-20",
+      "name": "招財貓",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"招財貓\" (SL-20), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-20.jpg",
+      "original": "output/imagegen/game-covers/sl-20.png",
+      "sha256": "43f34b99ddc2ee290c7cf6cd029da45c30af336f5987878007e332c7ae721db7"
+    },
+    {
+      "id": "SL-21",
+      "name": "古墓探險",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"古墓探險\" (SL-21), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-21.jpg",
+      "original": "output/imagegen/game-covers/sl-21.png",
+      "sha256": "48ff74b3777abd1daa0b8a22fabba72859bdbcaa21ff0381f7ce7f6ee85d5886"
+    },
+    {
+      "id": "SL-22",
+      "name": "蒸汽奇城",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"蒸汽奇城\" (SL-22), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-22.jpg",
+      "original": "output/imagegen/game-covers/sl-22.png",
+      "sha256": "fe32bbf4d3499e2f6ac4ace8a31df387a31f1b6ac9c93af1bad19d5f529efb6b"
+    },
+    {
+      "id": "SL-23",
+      "name": "七彩糖果",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"七彩糖果\" (SL-23), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-23.jpg",
+      "original": "output/imagegen/game-covers/sl-23.png",
+      "sha256": "48f29d3259461f9cf516cc6ee14d2e31c0372595983f01251c078faaa444da11"
+    },
+    {
+      "id": "SL-24",
+      "name": "鳳凰寶珠",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"鳳凰寶珠\" (SL-24), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-24.jpg",
+      "original": "output/imagegen/game-covers/sl-24.png",
+      "sha256": "9861f9ed9a4252ae7d4548d2fa22788786b325da0af29de127e27348caf7dd0c"
+    },
+    {
+      "id": "SL-25",
+      "name": "銀河財富",
+      "prompt": "Create ONE square premium casino game cover illustration for R&R game \"銀河財富\" (SL-25), category 老虎機. Interpret the Chinese game title literally to choose an instantly recognizable unique main subject, environment and color palette specifically for this title. Cinematic fantasy game key art with a strong centered title-specific hero object and richly detailed spectacular setting. Cohesive high-end digital painted 3D game-art quality. Rich dimensional lighting, jewel-tone shadows and restrained gold highlights. Edge-to-edge square artwork, large centered focal subject legible at 72px. Make this game's composition unmistakably distinct from all other titles. No text, no letters, no numerals, no title, no logo, no watermark, no border, no collage.",
+      "image": "assets/games/sl-25.jpg",
+      "original": "output/imagegen/game-covers/sl-25.png",
+      "sha256": "7bfb32d727510ce78dc3df859b3646f3a634f09ebe1a9f479f1db840dc9486fb"
     }
   ]
 }

@@ -8,3 +8,24 @@
 @media(max-width:620px){.player-management-page .filters{--filter-columns:1}.player-management-page .date-toolbar{grid-template-columns:1fr}.pm-financials .mg-metric{align-items:flex-start;flex-direction:column}.pm-financials .mg-metric strong{font-size:20px}}
 
 .player-management-page .operation-metrics{display:none}
+
+/* Profile controls and facts use the same compact, aligned card rhythm. */
+.pm-control-card{padding:20px;margin:0;border:1px solid var(--line);background:var(--paper)}
+.pm-control-heading{display:flex;align-items:center;gap:14px;justify-content:space-between}
+.pm-control-heading h2{margin:0}
+.pm-control-heading .pm-badges{flex-direction:row;flex-wrap:wrap}
+.pm-permissions{margin:16px 0;gap:10px}
+.pm-permissions>span{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.pm-control-card .pm-actions{border-top:1px solid var(--line);padding-top:16px;gap:10px}
+.pm-demo-note{margin-top:12px;line-height:1.5}
+.pm-control-card+.key-values{margin-top:0}
+.player-identity-card{padding:20px;border:1px solid var(--line);background:var(--paper);border-radius:20px}
+.player-identity-card h3{display:flex;align-items:center;gap:10px;font-size:16px;margin:0 0 16px}
+.player-identity-card h3>.ui-icon{color:var(--accent-gold-ink);width:26px;height:26px}
+.player-identity-card>.key-values{padding:0;background:transparent;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.player-identity-card .key-values strong{overflow-wrap:anywhere}
+.player-profile-page .source-card{padding:20px;margin:0;background:var(--paper)}
+.player-profile-page .source-card>.key-values{gap:18px 24px}
+.player-profile-page .source-card h3>.ui-icon{color:var(--accent-gold-ink)}
+@media(max-width:1200px){.player-identity-card>.key-values{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.pm-control-card,.player-identity-card,.player-profile-page .source-card{padding:16px}.pm-control-heading{align-items:flex-start}.pm-control-heading h2{font-size:16px}.pm-control-heading .pm-policy-status{justify-content:flex-end}.pm-permissions{grid-template-columns:repeat(2,minmax(0,1fr))}.pm-permissions>span{padding:10px 8px;font-size:11px;gap:6px}.player-identity-card>.key-values{grid-template-columns:repeat(2,minmax(0,1fr))}.player-profile-page .source-card>.key-values{gap:16px}}

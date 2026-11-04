@@ -1,4 +1,4 @@
-import {recordPlayerKey} from './core.js?v=14.4';
+import {recordPlayerKey} from './core.js?v=14.4.1';
 // Calculated from selected wager records, never invented telemetry.
 const dayMs=86400000;
 // Legend selection changes the chart's visible population, not the report's global filters.

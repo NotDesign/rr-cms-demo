@@ -1,5 +1,5 @@
-import {organizationRecords,totals} from './core.js?v=14.4';
-import {DEMO_INTEGRATOR_ID,organizationParents,organizationSections} from './organization-hierarchy.js?v=14.3.3';
+import {organizationRecords,totals} from './core.js?v=14.4.1';
+import {DEMO_INTEGRATOR_ID,organizationParents,organizationSections} from './organization-hierarchy.js?v=14.4.1';
 export const BUSINESS_SECTIONS={promotion:[['center','活動中心'],['rtp','RTP 活動'],['free','免費旋轉'],['bonus','紅利／獎勵'],['logs','活動紀錄']],merchant:[['all','全部機構'],...organizationSections,['gateways','API 中介']],settlement:[['rules','傭金規則'],['pricing','渠道價差'],['ggr','GGR 結算'],['periods','週結／月結'],['reports','結算報表']]};
 export const campaignTypes={rtp:'RTP 活動',free:'免費旋轉',bonus:'紅利／獎勵'};
 export const businessStatus={draft:'草稿',active:'啟用中',paused:'已暫停',ended:'已結束',disabled:'停用',review:'待覆核',confirmed:'已確認',held:'暫緩'};

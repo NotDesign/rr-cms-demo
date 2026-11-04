@@ -29,3 +29,25 @@
 @media(max-width:760px){.mg-version-overview{gap:8px}.mg-version-overview .mg-metric{display:block;padding:12px}.mg-version-overview .ui-icon{width:22px;height:22px;margin-bottom:8px}.mg-version-overview strong{font-size:22px}.mg-version-overview small{font-size:10px}.mg-version-group{padding:14px}.mg-version-group>.mg-card-title{flex-wrap:wrap}.mg-version-group>.mg-card-title>span:last-child{width:100%;margin-left:0}.mg-detail-actions{flex-wrap:wrap}.jp-chart{padding:16px}.jp-rule-grid{gap:14px;padding:16px}.jp-detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.jp-pool-card{padding:18px}.jp-chart .mg-card-title{flex-wrap:wrap}.jp-chart .mg-card-title small{font-size:10px}.jp-hour-bars,.pool-dialog .jp-hour-bars{gap:2px}.jp-column-bars{gap:1px}.jp-hour-bars .hour-column>small{font-size:8px}.jp-chart .chart-legend{gap:8px}.jp-chart .chart-legend button{font-size:11px}.jackpot-page .mg-metric strong,.jp-detail-metrics .mg-metric strong{font-size:20px}.jackpot-page .mg-metric,.jp-detail-metrics .mg-metric{gap:8px;padding:12px}.jackpot-page .mg-metric>.ui-icon,.jp-detail-metrics .mg-metric>.ui-icon{width:22px;height:22px}.jp-pagination{flex-wrap:wrap}}
 
 .mg-table [data-gm-site-toggle]{min-width:72px}
+
+/* Game access keeps the complete list in the drawer's single scroll area. */
+.mg-identity img{width:72px;height:72px;flex:none;border-radius:16px}
+.mg-identity{min-width:190px;gap:14px}
+.game-access-dialog .dialog-body{display:block;overflow-y:auto;overscroll-behavior:contain}
+.mg-access-view{display:grid;gap:14px;min-width:0}
+.mg-access-view>.mg-impact-heading,.mg-access-view>.wager-overview,.mg-access-view>.mg-detail-actions,.mg-access-view>.mg-list-filters{margin:0}
+.mg-access-view>.mg-detail-actions{flex-wrap:wrap;gap:10px}
+.mg-access-view>.mg-detail-actions .button{min-height:34px;padding:6px 14px}
+.mg-access-view>.mg-table-scroll{overflow:auto;max-height:560px;min-height:280px}
+.mg-access-view>.mg-table-scroll .mg-table th{position:sticky;top:0;z-index:2}
+.mg-access-view>.mg-table-scroll .mg-table th,.mg-access-view>.mg-table-scroll .mg-table td{padding:12px 16px}
+.mg-access-view .mg-table .text-link{font-weight:600}
+.mg-access-view>.wager-regions{margin-top:8px;margin-bottom:0}
+@media(max-width:760px){.mg-identity img{width:64px;height:64px}.mg-access-view{gap:12px}.mg-access-view>.mg-table-scroll{max-height:60dvh}.mg-access-view>.mg-list-filters button{padding:8px 10px;gap:8px}}
+.mg-category-results{display:grid;gap:8px;font-size:12px;margin:12px 0 16px}
+.mg-category-results>span{display:flex;justify-content:space-between;gap:12px}
+.mg-version-financial{display:grid;grid-template-columns:repeat(3,minmax(80px,1fr));gap:12px;font-size:12px}
+.mg-version-site:has(.mg-version-financial){flex-wrap:wrap}
+.mg-version-site:has(.mg-version-financial)>div:first-child{flex:1 1 140px}
+.mg-version-financial small{margin-bottom:4px}
+@media(max-width:620px){.mg-version-financial{width:100%;order:3}.mg-version-financial strong{font-size:12px}}

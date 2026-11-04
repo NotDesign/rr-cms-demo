@@ -1,9 +1,9 @@
-import {NET_WIN,netWinCents} from './net-win.js?v=14.3.2';
-import {normalizeAccountingDisplay,visibleAccountingCards} from './accounting-display.js?v=14.3.2';
-import {escape as e,money,signed,tone,selectionValues} from './core.js?v=14.4';
-import {uiIcon} from './ui-icons.js?v=14.1';
-import {chartTipAttrs} from './chart-interactions.js?v=12.10';
-import {ACCOUNTING_ITEMS,accountingTotals} from './accounting.js?v=14.4';
+import {NET_WIN,netWinCents} from './net-win.js?v=14.4.1';
+import {normalizeAccountingDisplay,visibleAccountingCards} from './accounting-display.js?v=14.4.1';
+import {escape as e,money,signed,tone,selectionValues} from './core.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {chartTipAttrs} from './chart-interactions.js?v=14.4.1';
+import {ACCOUNTING_ITEMS,accountingTotals} from './accounting.js?v=14.4.1';
 const amount=n=>money(n/100),net=n=>signed(n/100),itemName=k=>ACCOUNTING_ITEMS.find(([id])=>id===k)?.[1]||k;
 const metric=(icon,label,value,small='',cls='')=>'<article class="acct-metric">'+uiIcon(icon)+'<div><small>'+label+'</small><strong class="'+cls+'">'+value+'</strong>'+(small?'<span>'+small+'</span>':'')+'</div></article>';
 function scopeCell(ids,orgs,kind,attribute){if(ids.length===1){const o=orgs.find(o=>o.id===ids[0]);return '<button class="text-link" data-'+attribute+'="'+e(attribute==='game'?o?.name||ids[0]:ids[0])+'">'+e(o?.name||ids[0])+'</button>';}return ids.length+' '+kind;}

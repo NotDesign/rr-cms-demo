@@ -1,40 +1,41 @@
-import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfitLoss} from './net-win.js?v=14.3.2';
-import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4';
-import {installAccountingController} from './accounting-controller.js?v=14.3.2';
-import {BUSINESS_SECTIONS} from './business-management.js?v=14.4';
-import {installBusinessController} from './business-management-controller.js?v=14.4';
-import {PLAYER_SECTIONS} from './player-management.js?v=14.4';
-import {installPlayerController} from './player-management-controller.js?v=14.4';
-import {SYSTEM_SECTIONS} from './system-management.js?v=14.4';
-import {installSystemController} from './system-controller.js?v=14.2';
-import {poolPartnersView} from './jackpot-partnership-view.js?v=14.1';
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4';
-import {localize,translate,languageNames} from './i18n.js?v=14.4';
+import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfitLoss} from './net-win.js?v=14.4.1';
+import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4.1';
+import {installAccountingController} from './accounting-controller.js?v=14.4.1';
+import {BUSINESS_SECTIONS} from './business-management.js?v=14.4.1';
+import {installBusinessController} from './business-management-controller.js?v=14.4.1';
+import {PLAYER_SECTIONS} from './player-management.js?v=14.4.1';
+import {installPlayerController} from './player-management-controller.js?v=14.4.1';
+import {SYSTEM_SECTIONS} from './system-management.js?v=14.4.1';
+import {installSystemController} from './system-controller.js?v=14.4.1';
+import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.1';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4.1';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4.1';
+import {localize,translate,languageNames} from './i18n.js?v=14.4.1';
 
-import {uiIcon,metricIcon} from './ui-icons.js?v=14.1';
-import {recordOrganizationId} from './organization-hierarchy.js?v=14.3.3';
-import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4';
-import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4';
-import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4';
-import {statisticsDashboard} from './statistics-view.js?v=14.4';
-import {captureChartState,animateCharts,cancelChartMotion} from './chart-motion.js?v=13.1';
-import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=12.10';
-import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
-import {answerQuestion} from './assistant.js?v=12.6';
-import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.4';
-import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.6';
-import {installSelectControls} from './select-control.js?v=12.6';
-import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=13.0';
-import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.1';
-import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4';
+import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.1';
+import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.1';
+import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4.1';
+import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4.1';
+import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4.1';
+import {statisticsDashboard} from './statistics-view.js?v=14.4.1';
+import {captureChartState,animateCharts,cancelChartMotion} from './chart-motion.js?v=14.4.1';
+import {installRegionCharts} from './region-chart.js?v=14.4.1';
+import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=14.4.1';
+import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=14.4.1';
+import {answerQuestion} from './assistant.js?v=14.4.1';
+import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.4.1';
+import {animateRegion,animateExit,cancelRegion} from './motion.js?v=14.4.1';
+import {installSelectControls} from './select-control.js?v=14.4.1';
+import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=14.4.1';
+import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.4.1';
+import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4.1';
 
-import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=13.1';
-import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4';
+import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=14.4.1';
+import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4.1';
 
-import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.4';
-import {ruleManagerPage} from './cms-rule-view.js?v=14.4';
-import {installCmsController} from './cms-controller.js?v=14.1';
+import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.4.1';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.4.1';
+import {installCmsController} from './cms-controller.js?v=14.4.1';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(expandDemoScenarios);
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -117,7 +118,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.1</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -341,7 +342,7 @@ function restoreDetail(view){if(view.type==='accounting')accountingController.de
 function detailNavigation(){return detailTrail.length?'<div class="detail-return"><button data-action="detail-back">'+uiIcon('arrow')+'返回上一層</button><small>'+e(detailTrail.at(-1).type==='org'?liveOrganizations().find(o=>o.id===detailTrail.at(-1).id)?.name||detailTrail.at(-1).id:detailTrail.at(-1).type==='player'?detailTrail.at(-1).name:detailTrail.at(-1).type==='game'?detailTrail.at(-1).game:detailTrail.at(-1).label||detailTrail.at(-1).id)+'</small></div>':'';}
 function viewToggle(mode,range=detailRange,attribute='data-detail-mode'){return '<div class="view-controls"><small>'+e(detailDateLabel(range))+' · USDT · 模擬資料</small><div class="view-toggle" role="group" aria-label="呈現方式">'+['visual','table'].map((v,i)=>'<button '+attribute+'="'+v+'" aria-pressed="'+(mode===v)+'">'+(i?'傳統表格':'視覺摘要')+'</button>').join('')+'</div></div>';}
 function liveOrganizations(){return businessController?.organizations()||DATA.organizations;}
-function organizationPath(id){const organizations=liveOrganizations(),path=[];let n=organizations.find(o=>o.id===id);const seen=new Set();while(n&&!seen.has(n.id)){seen.add(n.id);path.unshift(n);n=organizations.find(o=>o.id===n.parent);}return '<nav class="hierarchy-context'+(path.length>3?' hierarchy-context--long':'')+'" aria-label="所屬機構">'+path.map((o,i)=>'<button class="hierarchy-node" data-org="'+e(o.id)+'" title="'+e(o.level+' · '+o.name)+'"><span class="hierarchy-icon">'+uiIcon(i===0?'games':o.level==='現金網'?'wallet':'channels')+'</span><span class="hierarchy-copy"><small>'+e(o.level)+'</small><strong>'+e(o.name)+'</strong></span></button>').join('')+'</nav>';}
+function organizationPath(id){const organizations=liveOrganizations(),path=[];let n=organizations.find(o=>o.id===id);const seen=new Set();while(n&&!seen.has(n.id)){seen.add(n.id);path.unshift(n);n=organizations.find(o=>o.id===n.parent);}return '<nav class="hierarchy-context" aria-label="所屬機構">'+path.map((o,i)=>'<button class="hierarchy-node" data-org="'+e(o.id)+'" title="'+e(o.level+' · '+o.name)+'"><span class="hierarchy-icon">'+uiIcon(i===0?'games':o.level==='現金網'?'wallet':'channels')+'</span><span class="hierarchy-copy"><small>'+e(o.level)+'</small><strong>'+e(o.name)+'</strong></span></button>').join('')+'</nav>';}
 function financialSummary(records){const t=totals(records);return detailSummary(t)+'<div class="detail-counts"><span>玩家 '+t.players+'</span><span>遊戲 '+t.games+'</span><span>記錄 '+t.count+'</span><span>獎池派彩 <strong class="'+tone(records.reduce((n,r)=>n+r.jackpotAward,0))+'">'+money(records.reduce((n,r)=>n+r.jackpotAward,0))+' USDT</strong></span></div>';}
 function gameTable(records){const games=[...new Set(records.map(r=>r.game))],all=totals(records);return miniTable(['遊戲','類型','記錄筆數','投注 USDT','派彩 USDT','玩家 Net Win USDT','營運 Net Win USDT'],games.map(game=>{const t=totals(records.filter(r=>r.game===game));return [game,DATA.records.find(r=>r.game===game).kind,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)];}),{0:v=>'<button class="text-link" data-game="'+e(v)+'">'+e(v)+'</button>'},['合計','',all.count,money(all.bet),money(all.payout),signed(all.playerNetWin),signed(all.operatorNetWin)]);}
 function recordList(records,visual=false){const ordered=[...records].sort((a,b)=>b.time.localeCompare(a.time)),all=totals(records);return miniTable(['時間','玩家帳號','玩家 ID','遊戲','投注單號','投注 USDT','派彩 USDT','玩家 Net Win USDT','營運 Net Win USDT'],ordered.map(r=>{const wins=netWinsFromAmounts(r);return [r.time,r.player,playerId(r.player),r.game,r.id,money(r.bet),money(r.payout),signed(wins.playerNetWin),signed(wins.operatorNetWin)];}),{1:(v,i)=>'<button class="text-link" data-player-site="'+e(ordered[i].cashId)+'" data-player="'+e(v)+'">'+e(v)+'</button>',2:(v,i)=>'<button class="text-link" data-player-site="'+e(ordered[i].cashId)+'" data-player="'+e(ordered[i].player)+'">'+e(v)+'</button>',3:v=>visual?gameIdentity(v):e(v),4:v=>'<button class="text-link" data-record="'+e(v)+'">'+e(v)+'</button>'},['合計','',all.players+' 位玩家','','',money(all.bet),money(all.payout),signed(all.playerNetWin),signed(all.operatorNetWin)]);}
@@ -372,7 +373,7 @@ function playerSourceCard(p){
 function playerDetailContent(p,rs,mode,range,asPage=false){
  const date=detailDateLabel(range);
  return organizationPath(recordOrganizationId(p.latest))+viewToggle(mode,range,asPage?'data-player-profile-mode':'data-detail-mode')+playersController.card(p)+
-  kv([['玩家帳號',p.name],['玩家 ID',p.id],['現金網',p.site],['最近遊戲',p.latest.game],['最近遊玩時間',p.latest.date+' '+p.latest.time]])+playerSourceCard(p)+detailSummary(totals(rs),playerProfitLoss(rs))+
+  '<section class="player-identity-card"><h3>'+uiIcon('players')+'玩家資訊</h3>'+kv([['玩家帳號',p.name],['玩家 ID',p.id],['現金網',p.site],['最近遊戲',p.latest.game],['最近遊玩時間',p.latest.date+' '+p.latest.time]])+'</section>'+playerSourceCard(p)+detailSummary(totals(rs),playerProfitLoss(rs))+
   '<p class="notice">總盈利為正數淨盈虧加總，總虧損為負數淨盈虧加總。統計依目前日期區間。</p>'+
   (rs.length?(mode==='visual'?trendChart(rs,date)+section('各遊戲盈虧／投注額排行',gameCards(rs)):section('各遊戲盈虧／投注額排行',gameTable(rs)))+section('最近遊玩',recordList(rs,mode==='visual')):'<p class="pm-empty">此日期區間沒有投注記錄，仍可查看玩家資訊及管理狀態。</p>')+
   button('在新分頁查看此玩家投注記錄','player-records','primary','data-name="'+e(p.name)+'" data-site="'+e(p.site)+'"');
@@ -618,7 +619,7 @@ function showAvailability(gameId,listed=null){
 function showSiteAvailability(gameId,siteId){
  const game=DATA.games.find(g=>g.id===gameId),site=cashSites.find(s=>s.id===siteId),o=gameOperations.games[gameId],enabled=!o.sites[siteId].enabled;
  const message=enabled?'僅啟動此現金網的遊戲；全域下架與維護限制仍優先。':'僅停止此站開啟新局，其他現金網不受影響。';
- showDialog(enabled?'啟動此現金網遊戲':'關閉此現金網遊戲','<div class="mg-impact-heading"><h3>'+e(game.name)+'</h3><span class="mg-status">'+e(site.name)+'</span></div><p class="mg-note">'+message+'</p>'+(!o.sites[siteId].version&&enabled?'<p class="mg-note">啟動時套用目前建議版本 v'+o.version+'</p>':'')+operationReason(),{management:true,subtitle:'單一現金網 · '+site.id,footer:button('取消','close-dialog')+button(enabled?'確認啟動':'確認關閉','game-operation-save','primary')});
+ showDialog(enabled?'啟動此現金網遊戲':'關閉此現金網遊戲','<div class="mg-impact-heading"><h3>'+e(game.name)+'</h3><span class="mg-status">'+e(site.name)+'</span></div><p class="mg-note">'+message+'</p>'+(!o.sites[siteId].version&&enabled?'<p class="mg-note">啟動時套用目前遊戲版本 v'+o.version+'</p>':'')+operationReason(),{management:true,subtitle:'單一現金網 · '+site.id,footer:button('取消','close-dialog')+button(enabled?'確認啟動':'確認關閉','game-operation-save','primary')});
  dialogState={type:'game-operation',kind:'site-availability',gameId,siteId,enabled,revision:gameOperations.revision};
 }
 function showMaintenance(gameId){
@@ -673,7 +674,7 @@ function toggleJackpotSeries(key){
 }
 function showGameSites(gameId,filter='all',replace=false){
  const same=dialogState?.type==='game-sites'&&dialogState.gameId===gameId;rememberDetail(replace||same);
- showDialog('現金網使用情況',detailNavigation()+gameAccessView(DATA,gameOperations,gameId,new Date(),filter),{drawer:true,subtitle:'依目前可遊玩狀態篩選現金網名單'});
+ showDialog('現金網使用情況',detailNavigation()+gameAccessView(DATA,gameOperations,gameId,new Date(),filter),{drawer:true,subtitle:'依目前可遊玩狀態篩選現金網名單'});$('#modal').classList.add('game-access-dialog');
  dialogState={type:'game-sites',gameId,filter,label:DATA.games.find(g=>g.id===gameId).name+' · 現金網'};
 }
 function showGameVersions(gameId,version='',replace=false){
@@ -863,6 +864,7 @@ $('#modal').addEventListener('cancel',event=>{event.preventDefault();finishDialo
 window.addEventListener('beforeunload',saveView);
 const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti();closeLanguage();}});
 const chartInteractions=installChartInteractions({translate:tr});
+installRegionCharts({beforeChange:()=>chartInteractions.hide(),translate:tr});
 cmsController=installCmsController({data:DATA,getState:()=>gameOperations,loadState:readLatestOperations,commitState:commitOperations,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},localize:localized,translate:tr,toast,enhance:()=>selectControls.enhance(),currentTab:current,openManager:(kind,gameId)=>{if(kind==='game')openGameManagement('rules',gameId);else openJackpotPage('rules');current().ruleUI={gameId};render();}});
 systemController=installSystemController({data:DATA,playerEvents:()=>[...(playersController?.audit()||[]),...(businessController?.audit()||[])],operations:()=>gameOperations,showDialog,closeDialog,setDialog:value=>{dialogState=value;},getDialog:()=>dialogState,currentTab:current,renderMain:()=>render(),preferences:()=>({timeZone,locale,theme:document.documentElement.dataset.theme||'dark'}),setPreferences:values=>{if(values.locale&&languageNames[values.locale])locale=values.locale;if(['light','dark'].includes(values.theme))document.documentElement.dataset.theme=values.theme;persist();render();},showClock:showClockSettings,localize:localized,toast});
 playersController=installPlayerController({data:DATA,currentTab:current,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},openPlayer,openPlayerPage,saveView,onAudit:()=>systemController?.refresh(),toast,localize:localized});

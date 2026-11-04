@@ -146,10 +146,10 @@ test('mixed bullet levels reconcile free references, debit counts and kill-shot 
  assert.deepEqual(f.levels.map(g=>[g.level,g.count,g.cost]),[['Lv.1',30,30],['Lv.2',20,30],['Lv.3',10,20],['Lv.4',20,60],['Lv.5',10,40],['Lv.5',10,0]]);
  assert.equal(f.freeReference,40);assert.equal(f.bulletCost+f.toolCost,200);
 });
-test('income colors cover unsigned prizes without treating stakes and balances as losses',()=>{
- for(const h of ['一般獎金','結算派彩','合計 USDT','入帳 USDT']){assert.equal(financialTone(h,'12.00'),'positive');assert.equal(financialTone(h,'0.00'),'neutral');}
- assert.equal(financialTone('玩家淨盈虧','−12.00'),'negative');assert.equal(financialTone('實際派彩','160.00 USDT'),'positive');
- for(const h of ['實扣投注','子彈成本','結算後餘額','派彩倍數','最後可領金額（未入帳）','獎金基準 USDT'])assert.equal(financialTone(h,'12.00'),'');
+test('financial colors distinguish profit and loss from neutral stakes and payouts',()=>{
+ for(const h of ['玩家淨盈虧','營運淨輸贏','總盈利','總虧損','投注派彩差額']){assert.equal(financialTone(h,'12.00'),'positive');assert.equal(financialTone(h,'0.00'),'neutral');}
+ assert.equal(financialTone('玩家淨盈虧','−12.00'),'negative');assert.equal(financialTone('實際派彩','160.00 USDT'),'');
+ for(const h of ['一般獎金','結算派彩','合計 USDT','入帳 USDT','實扣投注','子彈成本','結算後餘額','派彩倍數','最後可領金額（未入帳）','獎金基準 USDT'])assert.equal(financialTone(h,'12.00'),'');
 });
 test('hierarchy partitions records and amounts once and keeps every player in one cash site',()=>{
  for(const parent of d.organizations){

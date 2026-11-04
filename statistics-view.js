@@ -1,10 +1,10 @@
-import {wagerRegionTable} from './game-wagers.js?v=14.4';
-import {money,signed,tone,escape as e} from './core.js?v=14.4';
-import {statisticsModel,popularitySelection} from './analytics.js?v=14.4';
-import {donutArc} from './chart-motion.js?v=12.13';
-import {uiIcon} from './ui-icons.js?v=12.6';
-import {gameIdentity} from './detail-views.js?v=14.4';
-import {chartTipAttrs} from './chart-interactions.js?v=12.10';
+import {wagerRegionTable} from './game-wagers.js?v=14.4.1';
+import {money,signed,tone,escape as e} from './core.js?v=14.4.1';
+import {statisticsModel,popularitySelection} from './analytics.js?v=14.4.1';
+import {donutArc} from './chart-motion.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {gameIdentity} from './detail-views.js?v=14.4.1';
+import {chartTipAttrs} from './chart-interactions.js?v=14.4.1';
 const palette=['var(--chart-green)','var(--chart-cyan)','var(--chart-purple)','var(--chart-amber)','var(--chart-pink)','var(--chart-gray)'];
 const sharePalette=[palette[3],palette[0],palette[1],palette[2],palette[4],palette[5]];
 const counter=(key,value,decimals=0,suffix='')=>' data-chart-number="'+e(key)+'" data-chart-value="'+value+'" data-chart-decimals="'+decimals+'" data-chart-suffix="'+e(suffix)+'"';

@@ -1,5 +1,7 @@
-import {escape as e, money, recordPlayerKey} from './core.js?v=14.4';
-import {uiIcon} from './ui-icons.js?v=14.1';
+import {escape as e, money, signed, tone, recordPlayerKey} from './core.js?v=14.4.1';
+import {netWinsFor} from './net-win.js?v=14.4.1';
+import {regionChart} from './region-chart.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.1';
 
 export function wagerMetrics(records) {
   let cents = 0;
@@ -27,25 +29,27 @@ export function wagerRegions(records, organizations) {
     if (!grouped.has(region)) grouped.set(region, []);
     grouped.get(region).push(record);
   }
-  return [...grouped].map(([region, entries]) => ({region, ...wagerMetrics(entries)}))
+  return [...grouped].map(([region, entries]) => ({region, ...wagerMetrics(entries), ...netWinsFor(entries)}))
     .sort((a, b) => b.players - a.players || b.total - a.total || a.region.localeCompare(b.region, 'zh-Hant'));
 }
 
 export function wagerOverview(records, date, label = '總投注額') {
-  const {total, average} = wagerMetrics(records);
+  const {total, average} = wagerMetrics(records), wins=netWinsFor(records);
   return '<div class="wager-overview"><span class="wager-metric">'+uiIcon('coins')+'<span>'+label+'</span><strong>'+money(total)+' USDT</strong></span>'+
     '<span class="wager-metric"><span>平均每筆投注額</span><strong>'+(average === null ? '—' : money(average)+' USDT')+'</strong></span>'+
+    '<span class="wager-metric"><span>玩家淨盈虧</span><strong class="'+tone(wins.playerNetWin)+'">'+signed(wins.playerNetWin)+' USDT</strong></span>'+
+    '<span class="wager-metric"><span>營運淨輸贏</span><strong class="'+tone(wins.operatorNetWin)+'">'+signed(wins.operatorNetWin)+' USDT</strong></span>'+
     '<small>'+e(date)+' · 模擬投注 · 平均按實扣投注筆數計算</small></div>';
 }
 
 export function wagerRegionTable(records, organizations) {
-  const groups = wagerRegions(records, organizations), total = wagerMetrics(records);
+  const groups = wagerRegions(records, organizations), total = {...wagerMetrics(records),...netWinsFor(records)};
   const cells = row => '<td class="num">'+row.players+'</td><td class="num">'+row.paid+'</td><td class="num">'+money(row.total)+'</td><td class="num">'+
-    (row.average === null ? '—' : money(row.average))+'</td>';
-  const headings = ['地區', '遊玩人數', '實扣投注筆數', '總投注額 USDT', '平均每筆投注額 USDT'];
+    (row.average === null ? '—' : money(row.average))+'</td><td class="num '+tone(row.playerNetWin)+'">'+signed(row.playerNetWin)+'</td><td class="num '+tone(row.operatorNetWin)+'">'+signed(row.operatorNetWin)+'</td>';
+  const headings = ['地區', '遊玩人數', '實扣投注筆數', '總投注額 USDT', '平均每筆投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT'];
   return '<section class="analytics-card wager-regions"><div class="analytics-card-head"><div><h2>'+uiIcon('globe')+
     '地區遊玩統計</h2><p>依現金網所屬地區統計 · 遊玩人數按現金網玩家帳號去重</p></div></div>'+
-    '<div class="mini-scroll" tabindex="0" role="region" aria-label="地區遊玩統計"><table class="mini-table"><thead><tr>'+
+    regionChart(groups)+'<div class="mini-scroll" tabindex="0" role="region" aria-label="地區遊玩統計"><table class="mini-table"><thead><tr>'+
     headings.map((title,i) => '<th scope="col"'+(i?' class="num"':'')+'>'+title+'</th>').join('')+
     '</tr></thead><tbody><tr class="mini-totals"><th scope="row">合計</th>'+cells(total)+'</tr>'+
     groups.map(group => '<tr><th scope="row">'+e(group.region)+'</th>'+cells(group)+'</tr>').join('')+

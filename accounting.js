@@ -1,5 +1,5 @@
-import {netWinCents} from './net-win.js?v=14.3.2';
-import {fishingDetail,selectionValues,matchesSelection} from './core.js?v=14.4';
+import {netWinCents} from './net-win.js?v=14.4.1';
+import {fishingDetail,selectionValues,matchesSelection} from './core.js?v=14.4.1';
 export const ACCOUNTING_ITEMS=[
  ['regular','一般投注','coins','charge'],['progression','闖關／加碼投注','reports','charge'],['chess','棋牌／籌碼投注','cards','charge'],['bullet','捕魚子彈','target','charge'],['tool','道具／技能','tools','charge'],['bonus-buy','購買獎勵','slot','charge'],['free-spin','免費旋轉','slot','payout'],['spin-bonus','旋轉獎勵','payout','payout'],['big-prize','大獎','jackpot','payout'],['jackpot','累積獎池','jackpot','fund']
 ];

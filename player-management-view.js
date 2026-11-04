@@ -1,10 +1,10 @@
-import {NET_WIN,netWinsFor} from './net-win.js?v=14.3.2';
-import {escape as e,money,signed,tone,totals} from './core.js?v=14.4';
-import {uiIcon} from './ui-icons.js?v=14.1';
-import {managementMetric as baseMetric} from './game-management-view.js?v=14.4';
-import {statisticsDashboard} from './statistics-view.js?v=14.4';
-import {operationsTime} from './game-operations.js?v=14.1';
-import {PLAYER_SECTIONS,accessLabels,botLabels,playerPolicy,playerAccess,playerEvidence} from './player-management.js?v=14.4';
+import {NET_WIN,netWinsFor} from './net-win.js?v=14.4.1';
+import {escape as e,money,signed,tone,totals} from './core.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {managementMetric as baseMetric} from './game-management-view.js?v=14.4.1';
+import {statisticsDashboard} from './statistics-view.js?v=14.4.1';
+import {operationsTime} from './game-operations.js?v=14.4.1';
+import {PLAYER_SECTIONS,accessLabels,botLabels,playerPolicy,playerAccess,playerEvidence} from './player-management.js?v=14.4.1';
 const metric=(icon,label,value,cls='',caption='')=>baseMetric(icon,label,cls?'<span class="'+cls+'">'+value+'</span>':value).replace('</strong>','</strong>'+(caption?'<span class="net-win-caption">'+e(caption)+'</span>':''));
 const button=(label,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+label+'</button>';
 const badge=(label,cls='')=>'<span class="mg-status '+cls+'">'+e(label)+'</span>';
@@ -15,7 +15,7 @@ const heading=(icon,title)=>'<h2>'+uiIcon(icon)+title+'</h2>';
 function evidenceRows(evidence){return [['投注記錄',evidence.count+' 筆'],['最短記錄間隔',evidence.minInterval===null?'資料不足':evidence.minInterval+' 秒'],['≤ 60 秒間隔',evidence.shortIntervals+' 次'],['相同投注金額最高佔比',(evidence.repeatedShare*100).toFixed(1)+'%'],['遊玩遊戲',evidence.distinctGames+' 款']];}
 export function playerPolicyCard(player,state){
  const policy=playerPolicy(state,player.key),access=playerAccess(policy);
- return '<section class="pm-control-card">'+heading('shield','玩家管控')+'<div class="pm-policy-status">'+playerBadges(policy)+'</div><div class="pm-permissions">'+[['登入',access.login],['開始新局',access.newRound],['既有結算',access.settlement],['歷史查閱',access.history]].map(([label,allow])=>'<span>'+uiIcon(allow?'check':'minus')+label+' · '+(allow?'允許':'限制')+'</span>').join('')+'</div><div class="pm-actions">'+button('凍結','data-pm-policy="'+e(player.key)+'" data-pm-field="access" data-pm-value="frozen"'+(policy.access==='frozen'?' disabled':''))+button('封鎖','data-pm-policy="'+e(player.key)+'" data-pm-field="access" data-pm-value="blocked"'+(policy.access==='blocked'?' disabled':''),'pm-danger')+(policy.access!=='active'?button(policy.access==='blocked'?'解除封鎖':'解除凍結','data-pm-policy="'+e(player.key)+'" data-pm-field="access" data-pm-value="active"','primary'):'')+button(uiIcon('target')+'判定 BOT','data-pm-policy="'+e(player.key)+'" data-pm-field="bot"')+button('模擬登入／新局檢查','data-pm-check="'+e(player.key)+'"')+'</div><small class="pm-demo-note">限制僅針對 '+e(player.site)+' 的此帳號 · 本機互動示範</small></section>';
+ return '<section class="pm-control-card">'+'<div class="pm-control-heading">'+heading('shield','玩家管控')+'<div class="pm-policy-status">'+playerBadges(policy)+'</div></div><div class="pm-permissions">'+[['登入',access.login],['開始新局',access.newRound],['既有結算',access.settlement],['歷史查閱',access.history]].map(([label,allow])=>'<span>'+uiIcon(allow?'check':'minus')+label+' · '+(allow?'允許':'限制')+'</span>').join('')+'</div><div class="pm-actions">'+button('凍結','data-pm-policy="'+e(player.key)+'" data-pm-field="access" data-pm-value="frozen"'+(policy.access==='frozen'?' disabled':''))+button('封鎖','data-pm-policy="'+e(player.key)+'" data-pm-field="access" data-pm-value="blocked"'+(policy.access==='blocked'?' disabled':''),'pm-danger')+(policy.access!=='active'?button(policy.access==='blocked'?'解除封鎖':'解除凍結','data-pm-policy="'+e(player.key)+'" data-pm-field="access" data-pm-value="active"','primary'):'')+button(uiIcon('target')+'判定 BOT','data-pm-policy="'+e(player.key)+'" data-pm-field="bot"')+button('模擬登入／新局檢查','data-pm-check="'+e(player.key)+'"')+'</div><small class="pm-demo-note">限制僅針對 '+e(player.site)+' 的此帳號 · 本機互動示範</small></section>';
 }
 export function playerPolicyEditor(player,state,field,value){
  const policy=playerPolicy(state,player.key),isBot=field==='bot',labels=isBot?botLabels:accessLabels;

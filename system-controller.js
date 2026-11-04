@@ -1,5 +1,5 @@
-import {createSystemState,saveSystemRecord,apiLogFixtures,systemAuditEvents,SYSTEM_SECTIONS} from './system-management.js?v=14.4';
-import {systemPage,systemEditor,systemEventView} from './system-view.js?v=14.2';
+import {createSystemState,saveSystemRecord,apiLogFixtures,systemAuditEvents,SYSTEM_SECTIONS} from './system-management.js?v=14.4.1';
+import {systemPage,systemEditor,systemEventView} from './system-view.js?v=14.4.1';
 export function installSystemController({data,operations,playerEvents=()=>[],showDialog,closeDialog,setDialog,getDialog,currentTab,renderMain,preferences,setPreferences,showClock,localize,toast}){
  const storageKey='rr-cms-system-v1',read=()=>{try{return createSystemState(JSON.parse(localStorage.getItem(storageKey)));}catch{return createSystemState();}};let state=read();const $=selector=>document.querySelector(selector);
  const section=()=>SYSTEM_SECTIONS.find(([,label])=>currentTab().key==='draft:system:'+label)?.[0]||'settings';

@@ -37,4 +37,4 @@ const additions=Object.entries(additionalNames).flatMap(([type,names])=>{
   return {...template,id:prefixes[type]+'-'+String(existing.length+index+1).padStart(2,'0'),name,hasJackpot:index%3!==2&&family!=='landlord'};
  });
 });
-export const gameCatalog=[...baseGameCatalog,...additions].map(game=>game.type==='老虎機'?{...game,slotGameplay:['classic','paylines','ways','cascade','megaways'][(Number(game.id.slice(3))-1)%5]}:game);
+export const gameCatalog=[...baseGameCatalog,...additions].map(game=>({...game,cover:game.id.toLowerCase()})).map(game=>game.type==='老虎機'?{...game,slotGameplay:['classic','paylines','ways','cascade','megaways'][(Number(game.id.slice(3))-1)%5]}:game);

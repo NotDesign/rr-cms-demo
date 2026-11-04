@@ -1,4 +1,4 @@
-import {hasSlotScope} from './slot-gameplay.js?v=14.4';
+import {hasSlotScope} from './slot-gameplay.js?v=14.4.1';
 export const money = value => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const signed = value => (value > 0 ? '+' : value < 0 ? '−' : '') + money(Math.abs(value));
 export const number = value => Number(String(value).replaceAll(',', '').replace('−', '-').replace(/×$/, '').replace(/（[^）]*）$/, ''));
@@ -9,7 +9,7 @@ export function financialTone(label,value){
  const text=String(value).replaceAll(',','').replace('−','-');
  if(!/^[+\-]?\d+(?:\.\d+)?(?:\s*USDT)?$/.test(text))return '';
  if(/倍率|倍數|交易|狀態|時間|未入帳|未收取|基準|面額|費率|參考/.test(label))return '';
- return /盈虧|總盈利|總虧損|投注派彩差額|派彩|獎金|入帳 USDT|合計 USDT/.test(label)?tone(parseFloat(text)):'';
+ return /盈虧|淨輸贏|Net Win|總盈利|總虧損|投注派彩差額|GGR/.test(label)?tone(parseFloat(text)):'';
 }
 export function organizationRecords(records,organizations,id){
  const n=organizations.find(o=>o.id===id);if(!n)return [];
