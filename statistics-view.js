@@ -1,6 +1,6 @@
 import {wagerRegionTable} from './game-wagers.js?v=14.4.2';
 import {money,signed,tone,escape as e} from './core.js?v=14.4.1';
-import {statisticsModel,popularitySelection} from './analytics.js?v=14.4.1';
+import {statisticsModel,popularitySelection} from './analytics.js?v=14.4.7';
 import {donutArc} from './chart-motion.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
 import {gameIdentity} from './detail-views.js?v=14.4.1';

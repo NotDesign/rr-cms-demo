@@ -7,8 +7,13 @@ import {wagerMetrics} from '../game-wagers.js';
 import {accountingLines,accountingTotals,filterAccounting} from '../accounting.js';
 import {createGameOperations,setGameAvailability} from '../game-operations.js';
 import {hydrateConfiguration,compactGameOperations,queueLegacyChange} from '../cms-configuration.js';
-import {managementPage,gameAccessView} from '../game-management-view.js';
+import {managementPage,gameAccessView,impactView} from '../game-management-view.js';
 import {ruleApplyHtml} from '../cms-rule-view.js';
+import {cashWrapper,organizationParents} from '../organization-hierarchy.js';
+import {organizationRecords} from '../core.js';
+import {createPlayerCatalog} from '../player-management.js';
+import {createBusinessState,saveBusinessRecord,settlementPreview,settlementPeriod} from '../business-management.js';
+import {businessDetail} from '../business-management-view.js';
 import {SLOT_GAMEPLAYS,hasSlotScope} from '../slot-gameplay.js';
 
 const source=JSON.parse(readFileSync(new URL('../data/demo-data.json',import.meta.url)));
@@ -100,4 +105,33 @@ test('compact operation storage preserves pending application across reloading a
   assert.ok(JSON.stringify(compact).length<1000000);
   const restored=hydrateConfiguration(data,createGameOperations(data.games,sites,compact),compact.configuration);
   assert.deepEqual(restored.configuration,pending.configuration);
+});
+
+test('direct cash-network scenarios skip the wrapper without inventing organization identities',()=>{
+ const direct=sites.filter(site=>!cashWrapper(data.organizations,site));assert.equal(direct.length,2);
+ assert.deepEqual(direct.map(site=>data.organizations.find(o=>o.id===site.parent).level).sort(),['遊戲商','遊戲集成商'].sort());
+ for(const site of direct){
+  const records=organizationRecords(data.records,data.organizations,site.id);assert.ok(records.length);assert.ok(records.every(r=>r.wrapperId===null));
+  const parent=data.organizations.find(o=>o.id===site.parent);assert.ok(records.every(r=>r.integratorId===(parent.level==='遊戲集成商'?parent.id:null)));
+  const player=createPlayerCatalog(data).find(p=>p.siteId===site.id);assert.ok(player);assert.ok(!player.chain.some(o=>o.level==='包網商'));assert.equal(player.chain[0].level,'遊戲商');assert.ok(player.chain.some(o=>o.level==='第二層代理'));
+  assert.ok(impactView(data,state,'EG-01',false).includes(site.name));
+ }
+ const scopes=[...data.organizations.filter(o=>o.level==='包網商'),...direct],counts=scopes.flatMap(o=>organizationRecords(data.records,data.organizations,o.id));assert.equal(counts.length,data.records.length);assert.equal(new Set(counts.map(r=>r.id)).size,data.records.length);
+ const business=createBusinessState(data),range=settlementPeriod(data.date),sum=scopes.reduce((n,o)=>n+Math.round(settlementPreview(data,business,o.id,range).bet*100),0);assert.equal(sum,Math.round(wagerMetrics(data.records).total*100));
+});
+test('direct campaign persists both sites and displays independent IDs with an empty wrapper identity',()=>{
+ const business=createBusinessState(data),example=business.campaigns.find(c=>c.id==='ACT-DIRECT');assert.equal(example.sites.length,2);
+ const html=businessDetail(data,business,'campaign',example.id);assert.match(html,/>現金網 ID<\/th>/);assert.match(html,/>包網商 ID<\/th>/);
+ for(const id of example.sites){assert.ok(html.includes('>'+id+'<'));assert.ok(!cashWrapper(data.organizations,id));}
+ assert.equal((html.match(/無包網商/g)||[]).length,2);assert.equal((html.match(/>—<\/td>/g)||[]).length,2);
+ const changed=saveBusinessRecord(data,business,'campaign',example.id,{...example,games:data.games.slice(0,5).map(g=>g.id)},'測試複選範圍'),reloaded=createBusinessState(data,JSON.parse(JSON.stringify(changed)));
+ assert.deepEqual(reloaded.campaigns.find(c=>c.id===example.id).sites,example.sites);assert.equal(reloaded.campaigns.find(c=>c.id===example.id).games.length,5);assert.equal(reloaded.campaigns.filter(c=>c.id==='ACT-DIRECT').length,1);
+ const legacy={campaigns:business.campaigns.filter(c=>c.id!=='ACT-DIRECT')};assert.equal(createBusinessState(data,legacy).campaigns.filter(c=>c.id==='ACT-DIRECT').length,1);
+});
+test('new cash networks can connect to a wrapper, an integrator or the game supplier',()=>{
+ const parents=organizationParents(data.organizations,'現金網');for(const level of ['包網商','遊戲集成商','遊戲商']){
+  const parent=parents.find(o=>o.level===level);assert.ok(parent);
+  const business=saveBusinessRecord(data,createBusinessState(data),'org',null,{name:level+'直連測試現金網',level:'現金網',parent:parent.id,status:'active',region:'台灣',gatewayId:'GW-APAC'},'測試可選層級');
+  assert.equal(business.entities.at(-1).parent,parent.id);
+ }
 });

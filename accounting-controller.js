@@ -1,7 +1,7 @@
 import {ACCOUNTING_DISPLAY_KEY,normalizeAccountingDisplay,moveAccountingCard} from './accounting-display.js?v=14.4.1';
 import {accountingLines,accountingModelFromLines} from './accounting.js?v=14.4.1';
-import {accountingPage,accountingDetail,accountingCsvRows,accountingDisplaySettings} from './accounting-view.js?v=14.4.6';
-import {createBusinessState} from './business-management.js?v=14.4.1';
+import {accountingPage,accountingDetail,accountingCsvRows,accountingDisplaySettings} from './accounting-view.js?v=14.4.7';
+import {createBusinessState} from './business-management.js?v=14.4.7';
 import {selectionValues,csv} from './core.js?v=14.4.1';
 export function installAccountingController({data,currentTab,renderMain,showDialog,closeDialog,saveView,queryForm,setDialog,rememberDetail,detailNavigation,organizations,toast,localize=root=>root}){
  let pricingKey='',lines=[],displayDraft=null;

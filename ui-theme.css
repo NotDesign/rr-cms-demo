@@ -396,3 +396,27 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .rtp-number-control>input::-webkit-inner-spin-button,.rtp-number-control>input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .rtp-number-control>input{appearance:textfield;-moz-appearance:textfield}
 @media(max-width:620px){.jp-ranking-card .jp-ranking{max-height:300px}.cms-trial-metrics{grid-template-columns:1fr}.cms-trial-metrics>div{grid-template-columns:26px minmax(0,1fr) auto}.cms-trial-metrics .ui-icon{grid-row:auto}.cms-trial>.mg-card-title{flex-wrap:wrap}.cms-trial>.mg-card-title small{margin-left:0}}
+
+/* Searchable multi-selection keeps large activity scopes compact. */
+.biz-scope-selects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}
+.biz-scope-selects>.field{min-width:0;width:100%;max-width:none}
+.scope-trigger .multi-count{font-variant-numeric:tabular-nums}
+.scope-trigger .multi-count[hidden]{display:none}
+.scope-popover{display:flex;flex-direction:column;gap:10px;padding:12px;overflow:hidden;max-width:calc(100vw - 24px)}
+.scope-menu-head,.scope-menu-tools{display:flex;align-items:center;gap:12px;flex:none}
+.scope-menu-head strong{font-size:14px;flex:1}
+.scope-menu-head button,.scope-menu-tools button{font-size:12px;padding:5px 8px;border-radius:8px;color:var(--accent-gold-ink);min-height:32px}
+.scope-menu-tools>span{font-size:11px;color:var(--muted);flex:1}
+.scope-menu-tools button:disabled{opacity:.4;cursor:default}
+.scope-menu-head button:hover,.scope-menu-tools button:not(:disabled):hover{background:var(--hover-fill)}
+.scope-popover .scope-search{width:100%;min-width:0;padding:10px 12px;border:1px solid var(--glass-line);background:var(--paper);color:var(--text);border-radius:12px;font:inherit;font-size:13px;flex:none;box-sizing:border-box}
+.scope-options{overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;min-height:48px;flex:1}
+.scope-choice{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;line-height:20px}
+.scope-choice:hover{background:var(--hover-fill)}
+.scope-choice:has(input:checked){background:var(--action-fill)}
+.scope-choice input{accent-color:var(--brand);width:18px;height:18px;flex:none;margin:0}
+.scope-choice>span{min-width:0;flex:1;overflow-wrap:anywhere}
+.scope-choice small{display:block;font-size:11px;color:var(--muted);line-height:18px}
+.scope-empty{font-size:12px;color:var(--muted);padding:16px 12px;margin:0}
+.scope-trigger:focus-visible,.scope-search:focus-visible,.scope-choice:focus-within{outline:2px solid var(--action);outline-offset:2px}
+@media(max-width:620px){.biz-scope-selects{grid-template-columns:1fr;gap:14px}.scope-popover{gap:8px}.scope-choice{padding:9px 10px}}

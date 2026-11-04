@@ -1,7 +1,8 @@
+import {cashWrapperName} from './organization-hierarchy.js?v=14.4.7';
 import {escape as e,money} from './core.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
 import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.6';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.7';
 import {poolPartnership} from './jackpot-partnership.js?v=14.4.1';
 const net=value=>'<strong class="'+(value>0?'positive':value<0?'negative':'')+'">'+(value>0?'+':'')+money(value)+'</strong>';
 const pair=(label,value)=>'<div><small>'+label+'</small><strong>'+money(value)+'</strong></div>';
@@ -15,6 +16,6 @@ export function partnershipOverview(data,pool){
 }
 export function poolPartnersView(data,poolId){
  const pool=data.jackpotPools.find(p=>p.id===poolId);if(!pool)return '';const f=poolPartnership(data,pool),wrappers=new Map(data.organizations.map(o=>[o.id,o.name])),game=data.games.find(g=>g.name===pool.game);
- const cards=f.sites.map(s=>'<article class="jp-site-partner" data-jp-partner-row data-jp-partner-search="'+e(s.name+' '+wrappers.get(s.parent))+'"><div class="mg-card-title">'+uiIcon('wallet')+'<button class="text-link" data-org="'+s.id+'">'+e(s.name)+'</button></div><small>'+e(wrappers.get(s.parent))+'</small><div class="jp-site-finances">'+pair('遊戲商初始投入',s.providerInitial)+pair('此現金網初始投入',s.cashInitial)+pair('此現金網投注提撥',s.contribution)+pair('此現金網獎池派彩',s.award)+'<div><small>遊戲商獎池盈虧</small>'+net(s.providerNet)+'</div><div><small>此現金網獎池盈虧</small>'+net(s.cashNet)+'</div></div></article>').join('');
+ const cards=f.sites.map(s=>'<article class="jp-site-partner" data-jp-partner-row data-jp-partner-search="'+e(s.name+' '+cashWrapperName(data.organizations,s))+'"><div class="mg-card-title">'+uiIcon('wallet')+'<button class="text-link" data-org="'+s.id+'">'+e(s.name)+'</button></div><small>'+e(cashWrapperName(data.organizations,s))+'</small><div class="jp-site-finances">'+pair('遊戲商初始投入',s.providerInitial)+pair('此現金網初始投入',s.cashInitial)+pair('此現金網投注提撥',s.contribution)+pair('此現金網獎池派彩',s.award)+'<div><small>遊戲商獎池盈虧</small>'+net(s.providerNet)+'</div><div><small>此現金網獎池盈虧</small>'+net(s.cashNet)+'</div></div></article>').join('');
  return '<div class="mg-impact-heading"><div><h3>'+e(pool.name)+'</h3><small>'+e(f.providerName)+' · '+data.date+' · USDT</small></div><button class="button small" data-cms-open="'+game.id+'" data-cms-kind="jackpot">CMS 合資設定</button></div><div class="mg-metrics jp-detail-metrics">'+metric('coins','初始合資 · USDT',money(f.initial))+metric('wallet','目前獎池餘額',money(f.balance))+metric('games','遊戲商獎池盈虧',net(f.provider.net))+metric('channels','現金網獎池盈虧',net(f.cash.net))+'</div><p class="jp-basis">初始投入與收支分攤各為 50%／50%；初始資金按歷史參與現金網均分，收支按投注來源歸屬。</p><label class="mg-label" for="jp-partner-query">搜尋合作現金網</label><input class="mg-input" id="jp-partner-query" placeholder="現金網名稱或包網商"><div class="jp-site-partners">'+cards+'</div><p id="jp-partner-empty" class="mg-note" hidden>沒有符合條件的現金網</p><details class="chart-data"><summary>傳統表格</summary>'+table(['現金網','遊戲商初始投入','此現金網初始投入','此現金網投注提撥','此現金網獎池派彩','遊戲商獎池盈虧','此現金網獎池盈虧'],f.sites.map(s=>'<tr><td><button class="text-link" data-org="'+s.id+'">'+e(s.name)+'</button></td><td>'+money(s.providerInitial)+'</td><td>'+money(s.cashInitial)+'</td><td>'+money(s.contribution)+'</td><td>'+money(s.award)+'</td><td>'+net(s.providerNet)+'</td><td>'+net(s.cashNet)+'</td></tr>'),'合作現金網收支')+'</details>';
 }

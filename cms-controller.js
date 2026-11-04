@@ -3,7 +3,7 @@ import {uiIcon} from './ui-icons.js?v=14.4.1';
 import {escape as e,money} from './core.js?v=14.4.1';
 import {gameAccess,effectiveRtp} from './game-operations.js?v=14.4.6';
 import {defaultRuleSettings,validateRule,saveRuleDraft,publishRule,assignedRule,rulePreviewContext,jackpotTrial,advanceSync,retrySync,syncCounts} from './cms-configuration.js?v=14.4.6';
-import {ruleEditorHtml,ruleApplyHtml,syncView,siteConfigurationView,ruleAssignmentsView,cmsBanner} from './cms-rule-view.js?v=14.4.6';
+import {ruleEditorHtml,ruleApplyHtml,syncView,siteConfigurationView,ruleAssignmentsView,cmsBanner} from './cms-rule-view.js?v=14.4.7';
 
 export function installCmsController(options){
  const {data,getState,loadState,commitState,renderMain,showDialog,closeDialog,getDialog,setDialog,localize,translate,toast,enhance,currentTab,openManager}=options;

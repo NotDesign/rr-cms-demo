@@ -2,20 +2,20 @@ import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfit
 import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4.1';
 import {installAccountingController} from './accounting-controller.js?v=14.4.1';
 import {installInfoCards} from './info-card-controller.js?v=14.4.5';
-import {BUSINESS_SECTIONS} from './business-management.js?v=14.4.1';
-import {installBusinessController} from './business-management-controller.js?v=14.4.3';
+import {BUSINESS_SECTIONS} from './business-management.js?v=14.4.7';
+import {installBusinessController} from './business-management-controller.js?v=14.4.7';
 import {PLAYER_SECTIONS} from './player-management.js?v=14.4.1';
 import {installPlayerController} from './player-management-controller.js?v=14.4.3';
 import {SYSTEM_SECTIONS} from './system-management.js?v=14.4.1';
 import {installSystemController} from './system-controller.js?v=14.4.3';
-import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.3';
+import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.7';
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4.1';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4.1';
 import {localize,translate,languageNames} from './i18n.js?v=14.4.5';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.1';
-import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.1';
-import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4.1';
+import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.7';
+import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4.7';
 import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4.1';
 import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4.2';
 import {statisticsDashboard} from './statistics-view.js?v=14.4.2';
@@ -26,16 +26,17 @@ import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=14.4.
 import {answerQuestion} from './assistant.js?v=14.4.1';
 import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.4.1';
 import {animateRegion,animateExit,cancelRegion} from './motion.js?v=14.4.1';
+import {installSearchMultiSelect} from './search-multi-select.js?v=14.4.7';
 import {installSelectControls} from './select-control.js?v=14.4.1';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=14.4.1';
 import {GAME_SECTIONS,parseRtp,RTP_ERROR,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.4.6';
-import {managementPage,impactView,gameAccessView,rtpLabels,rtpInput} from './game-management-view.js?v=14.4.6';
+import {managementPage,impactView,gameAccessView,rtpLabels,rtpInput} from './game-management-view.js?v=14.4.7';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=14.4.1';
 import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4.6';
 
 import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.4.6';
-import {ruleManagerPage} from './cms-rule-view.js?v=14.4.6';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.4.7';
 import {installCmsController} from './cms-controller.js?v=14.4.6';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(expandDemoScenarios);
@@ -120,7 +121,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.6</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.7</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -319,7 +320,7 @@ function showDialog(title,html,{drawer=false,subtitle='',footer='',management=fa
   if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});
   const previousCharts=captureChartState($('#modal'));
   chartInteractions.hide();
-  selectControls.close();closeDate();closeMulti();
+  selectControls.close();scopeSelects.close();closeDate();closeMulti();
   const dialog=$('#modal'),drilling=dialog.open&&dialog.classList.contains('drawer')&&drawer;cancelRegion(dialog);if(dialog.open)dialog.close();
   dialog.style.cssText='';
   dialog.className=drawer?'drawer':management?'management-dialog':'';
@@ -327,7 +328,7 @@ function showDialog(title,html,{drawer=false,subtitle='',footer='',management=fa
   localized(dialog);
   selectControls.enhance();dialog.showModal();animateCharts(dialog,previousCharts,tr);animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
-function closeDialog({animated=false}={}){infoCards?.close({animated:false,restoreFocus:false});if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});cancelChartMotion($('#modal'));chartInteractions.hide();selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];clockDraft=null;$('.header-clock')?.setAttribute('aria-expanded','false');};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
+function closeDialog({animated=false}={}){infoCards?.close({animated:false,restoreFocus:false});if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});cancelChartMotion($('#modal'));chartInteractions.hide();selectControls.close();scopeSelects.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];clockDraft=null;$('.header-clock')?.setAttribute('aria-expanded','false');};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
 function finishDialog(){if($('#site-operation-modal').open){closeSiteOperation();return;}if(dialogState?.type==='accounting-display'){accountingController.cancelDisplay();return;}if(['business-editor','business-confirm'].includes(dialogState?.type)){businessController.cancel();return;}if(dialogState?.type==='player-policy'){playersController.cancelPolicy();return;}if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog({animated:true});}
 function miniTable(headers,rows,rich={},totalValues=null){
   totalValues??=detailTableTotals(headers,rows);
@@ -899,7 +900,8 @@ $('#modal').addEventListener('cancel',event=>{event.preventDefault();finishDialo
 $('#site-operation-modal').addEventListener('cancel',event=>{event.preventDefault();closeSiteOperation();});
 $('#site-operation-modal').addEventListener('click',event=>{const dialog=$('#site-operation-modal');if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeSiteOperation();}});
 window.addEventListener('beforeunload',saveView);
-const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti();closeLanguage();}});
+const selectControls=installSelectControls({onOpen:()=>{scopeSelects.close();closeDate();closeMulti();closeLanguage();}});
+const scopeSelects=installSearchMultiSelect({onOpen:()=>{selectControls.close();closeDate();closeMulti();closeLanguage();}});
 const chartInteractions=installChartInteractions({translate:tr});
 infoCards=installInfoCards({pageScope:()=>current().key,translate:tr,localize:root=>localize(root,locale),toast});
 installRegionCharts({beforeChange:()=>chartInteractions.hide(),translate:tr});

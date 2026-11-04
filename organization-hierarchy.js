@@ -17,6 +17,7 @@ const parentLevels = {
 };
 
 export function organizationParents(organizations, level) {
+  if(level==='現金網')return organizations.filter(org=>['包網商','遊戲集成商','遊戲商'].includes(org.level));
   const expected = parentLevels[level];
   if (!expected) return [];
   if (level === '包網商' && !organizations.some(org => org.level === expected)) {
@@ -60,3 +61,10 @@ export function withDemoOrganizationHierarchy(data) {
   });
   return {...data, organizations, records};
 }
+
+// A cash network may connect without a wrapper; never label its integrator as one.
+export function cashWrapper(organizations,site){
+ const node=typeof site==='string'?organizations.find(o=>o.id===site):site;
+ const parent=organizations.find(o=>o.id===node?.parent);return parent?.level==='包網商'?parent:null;
+}
+export function cashWrapperName(organizations,site){return cashWrapper(organizations,site)?.name||'無包網商';}

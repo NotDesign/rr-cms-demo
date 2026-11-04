@@ -24,8 +24,8 @@ function organizationsForDemo(source) {
   }));
   const sites=cashNames.map((name,index)=>{
     const oldId=existingSiteIds[index],wrapper=index<18?wrappers.find(org=>org.id==='PKG-'+oldId[0]):wrappers[6+(index-18)%14];
-    return {id:oldId?'SITE-'+oldId:'SITE-'+String(index+1).padStart(3,'0'),name:name+'現金網',
-      level:'現金網',parent:wrapper.id,region:originalRegions[index]||regions[(index-18)%regions.length]};
+    return {id:oldId?'SITE-'+oldId:'SITE-'+String(index+1).padStart(3,'0'),name:name+(index>=48?'直營':'')+'現金網',
+      level:'現金網',parent:index===48?supplier.id:index===49?integrators[4].id:wrapper.id,region:originalRegions[index]||regions[(index-18)%regions.length]};
   });
   const agents=sites.flatMap(site=>{
     const first={id:'AG1-'+site.id,name:site.name+'一級代理',level:'第一層代理',parent:site.id};
@@ -37,11 +37,12 @@ function organizationsForDemo(source) {
 }
 
 function recordWithOrganization(record,site,organizations) {
-  const wrapper=organizations.find(org=>org.id===site.parent);
+  const parent=organizations.find(org=>org.id===site.parent),wrapper=parent?.level==='包網商'?parent:null;
+  const integrator=wrapper?organizations.find(org=>org.id===wrapper.parent):parent?.level==='遊戲集成商'?parent:null;
   const identity=String(record.player_id||record.player);
   const group=Array.from(identity).reduce((sum,char)=>sum+char.codePointAt(0),0)%2+1;
-  return {...record,site:site.name,siteRegion:site.region,cashId:site.id,wrapperId:wrapper.id,
-    integratorId:wrapper.parent,agent1Id:'AG1-'+site.id,agent2Id:'AG2-'+site.id+'-'+group};
+  return {...record,site:site.name,siteRegion:site.region,cashId:site.id,wrapperId:wrapper?.id||null,
+    integratorId:integrator?.id||null,agent1Id:'AG1-'+site.id,agent2Id:'AG2-'+site.id+'-'+group};
 }
 
 function rebuildReports(source,records) {
@@ -192,6 +193,6 @@ export function expandDemoScenarios(source) {
   for(const pool of jackpotPools)pool.closing=running.get(pool.id)/100;
   const organizationAliases=Object.fromEntries(source.organizations.map(org=>[org.name,organizations.find(next=>next.id===org.id)?.name||org.name]));
   organizationAliases['示例遊戲集成商']=integratorNames[0]+'遊戲集成商';
-  return {...source,revision:'discussion-5-20-50-100-500',games:gameCatalog,organizations,organizationAliases,records,
+  return {...source,revision:'discussion-5-20-50-100-500-direct',games:gameCatalog,organizations,organizationAliases,records,
     jackpotPools,reports:rebuildReports(source,records),totals:totals(records)};
 }
