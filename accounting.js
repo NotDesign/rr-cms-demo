@@ -1,5 +1,5 @@
 import {netWinCents} from './net-win.js?v=14.3.2';
-import {fishingDetail,selectionValues,matchesSelection} from './core.js?v=12.6';
+import {fishingDetail,selectionValues,matchesSelection} from './core.js?v=14.4';
 export const ACCOUNTING_ITEMS=[
  ['regular','一般投注','coins','charge'],['progression','闖關／加碼投注','reports','charge'],['chess','棋牌／籌碼投注','cards','charge'],['bullet','捕魚子彈','target','charge'],['tool','道具／技能','tools','charge'],['bonus-buy','購買獎勵','slot','charge'],['free-spin','免費旋轉','slot','payout'],['spin-bonus','旋轉獎勵','payout','payout'],['big-prize','大獎','jackpot','payout'],['jackpot','累積獎池','jackpot','fund']
 ];
@@ -21,7 +21,7 @@ export function accountingLines(records,pricing=[]){
   }
   if(jp||contribution)parts.push({item:'jackpot',charge:0,generalPayout:0,jackpotPayout:jp,contribution});
   const plan=pricing.find(p=>p.wrapperId===r.wrapperId&&p.status==='active'),grossRate=plan?.saleRate||0,costRate=plan?.costRate||0;
-  parts.forEach((p,i)=>result.push({id:r.id+':'+p.item,recordId:r.id,round:r.round,player:r.player,playerId:r.player_id,providerId:r.providerId,wrapperId:r.wrapperId,cashId:r.cashId,site:r.site,gameId:r.gameId,game:r.game,kind:r.kind,date:r.date,time:r.time,currency:r.currency||'USDT',event:r.event,charge:0,generalPayout:0,jackpotPayout:0,contribution:0,refund:i?0:refund,serviceGross:0,serviceCost:0,pricingId:plan?.id||null,grossRate,costRate,...p}));
+  parts.forEach((p,i)=>result.push({id:r.id+':'+p.item,recordId:r.id,round:r.round,player:r.player,playerId:r.player_id,providerId:r.providerId,wrapperId:r.wrapperId,cashId:r.cashId,site:r.site,gameId:r.gameId,game:r.game,kind:r.kind,slotGameplay:r.slotGameplay,date:r.date,time:r.time,currency:r.currency||'USDT',event:r.event,charge:0,generalPayout:0,jackpotPayout:0,contribution:0,refund:i?0:refund,serviceGross:0,serviceCost:0,pricingId:plan?.id||null,grossRate,costRate,...p}));
  }
  // Match the existing channel-pricing basis: calculate once per wrapper/currency, then allocate cents.
  const buckets=new Map();for(const row of result){const key=row.wrapperId+'|'+row.currency;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(row);}
@@ -37,7 +37,7 @@ export function accountingLines(records,pricing=[]){
 }
 export function filterAccounting(lines,filters={}){
  const query=String(filters.query||'').trim().toLocaleLowerCase(),excluded=selectionValues(filters.excludeAccounting);
- return lines.filter(r=>(!filters.start||r.date>=filters.start)&&(!filters.end||r.date<=filters.end)&&matchesSelection(filters.wrapper,[r.wrapperId])&&matchesSelection(filters.merchant,[r.site,r.cashId])&&matchesSelection(filters.type,[r.kind])&&matchesSelection(filters.game,[r.game])&&matchesSelection(filters.accountingItems,[r.item])&&!excluded.includes(r.item)&&(!query||[r.recordId,r.round,r.player,r.playerId,r.game,r.site].some(v=>String(v).toLocaleLowerCase().includes(query))));
+ return lines.filter(r=>(!filters.start||r.date>=filters.start)&&(!filters.end||r.date<=filters.end)&&matchesSelection(filters.wrapper,[r.wrapperId])&&matchesSelection(filters.merchant,[r.site,r.cashId])&&matchesSelection(filters.type,[r.kind])&&matchesSelection(filters.game,[r.game])&&matchesSelection(filters.slotGameplay,[r.slotGameplay])&&matchesSelection(filters.accountingItems,[r.item])&&!excluded.includes(r.item)&&(!query||[r.recordId,r.round,r.player,r.playerId,r.game,r.site].some(v=>String(v).toLocaleLowerCase().includes(query))));
 }
 export function groupAccounting(lines,group='item'){
  const dimensions=group==='site-item'?['item','cashId']:group==='game-item'?['item','gameId']:group==='wrapper-item'?['item','wrapperId']:group==='date-item'?['item','date']:group==='record'?['id']:['item'],map=new Map();

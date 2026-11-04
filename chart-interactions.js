@@ -1,4 +1,4 @@
-import {escape as e} from './core.js?v=12.6';
+import {escape as e} from './core.js?v=14.4';
 
 // Shared by SVG charts, HTML bars and the charts inside detail drawers.
 export function chartTipAttrs(title,rows,{focusable=false,note=''}={}){

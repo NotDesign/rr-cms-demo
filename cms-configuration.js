@@ -132,3 +132,24 @@ export function jackpotTrial(data,state,gameId,settings,binding,input){
  return {contribution:contribution/100,award:award/100,after:(accumulated-award)/100,triggered:award>0,rate:Number(rate),reasons:reasons.length?reasons:['觸發條件成立，按設定派彩']};
 }
 export function jackpotEligibility(state,gameId,siteId){const a=assignedRule(state,gameId,siteId,'jackpot'),access=gameAccess(state,gameId,siteId);if(!state.configuration)return {participates:access.canPlay,contribute:access.canPlay,canWin:access.canPlay,rate:2,rule:null};const enabled=Boolean(a&&a.snapshot.settings.enabled&&access.canPlay);return {participates:enabled&&(a.binding.contribute||a.binding.canWin),contribute:enabled&&a.binding.contribute,canWin:enabled&&a.binding.canWin,rate:a?a.binding.rate??a.snapshot.settings.rate:0,rule:a};}
+
+
+// Unchanged per-site defaults are recreated during hydration to keep large demos persistable.
+export function compactGameOperations(data,state){
+ const config=state.configuration,seed=seededConfiguration(data,state),bindings={},applied={};
+ for(const game of data.games){
+  const gameBindings={},gameApplied={};
+  for(const site of sitesOf(data)){
+   const binding=config.bindings[game.id]?.[site.id];
+   if(JSON.stringify(binding)!==JSON.stringify(seed.bindings[game.id][site.id]))gameBindings[site.id]=binding;
+   const domains={};
+   for(const [kind,value] of Object.entries(config.applied[game.id]?.[site.id]||{})){
+    if(JSON.stringify(value)!==JSON.stringify(seed.applied[game.id][site.id][kind]))domains[kind]=value;
+   }
+   if(Object.keys(domains).length)gameApplied[site.id]=domains;
+  }
+  if(Object.keys(gameBindings).length)bindings[game.id]=gameBindings;
+  if(Object.keys(gameApplied).length)applied[game.id]=gameApplied;
+ }
+ return {...state,configuration:{...config,bindings,applied}};
+}

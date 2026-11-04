@@ -1,5 +1,6 @@
-import {organizationRecords,totals} from './core.js?v=12.6';
-export const BUSINESS_SECTIONS={promotion:[['center','活動中心'],['rtp','RTP 活動'],['free','免費旋轉'],['bonus','紅利／獎勵'],['logs','活動紀錄']],merchant:[['all','全部機構'],['gateways','API 中介'],['wrappers','包網商'],['sites','現金網']],settlement:[['rules','傭金規則'],['pricing','渠道價差'],['ggr','GGR 結算'],['periods','週結／月結'],['reports','結算報表']]};
+import {organizationRecords,totals} from './core.js?v=14.4';
+import {DEMO_INTEGRATOR_ID,organizationParents,organizationSections} from './organization-hierarchy.js?v=14.3.3';
+export const BUSINESS_SECTIONS={promotion:[['center','活動中心'],['rtp','RTP 活動'],['free','免費旋轉'],['bonus','紅利／獎勵'],['logs','活動紀錄']],merchant:[['all','全部機構'],...organizationSections,['gateways','API 中介']],settlement:[['rules','傭金規則'],['pricing','渠道價差'],['ggr','GGR 結算'],['periods','週結／月結'],['reports','結算報表']]};
 export const campaignTypes={rtp:'RTP 活動',free:'免費旋轉',bonus:'紅利／獎勵'};
 export const businessStatus={draft:'草稿',active:'啟用中',paused:'已暫停',ended:'已結束',disabled:'停用',review:'待覆核',confirmed:'已確認',held:'暫緩'};
 const clone=x=>JSON.parse(JSON.stringify(x)),round=n=>Math.round((n+Number.EPSILON)*100)/100;
@@ -10,7 +11,18 @@ export function createBusinessState(data,raw={}){
  {id:'ACT-002',name:'翡翠免費旋轉',type:'free',games:data.games.filter(g=>g.type==='老虎機').slice(0,2).map(g=>g.id),sites:sites.slice(3,7).map(s=>s.id),start:'2026-11-01T00:00',end:'2026-11-30T23:59',value:20,budget:5000,status:'draft'},
  {id:'ACT-003',name:'新玩家紅利計畫',type:'bonus',games:data.games.slice(0,3).map(g=>g.id),sites:sites.slice(0,3).map(s=>s.id),start:'2026-11-01T00:00',end:'2026-11-30T23:59',value:50,budget:3000,status:'paused'}],commissions:raw?.commissions||[{id:'COM-001',name:'標準正向 GGR 傭金',sites:sites.map(s=>s.id),rate:15,status:'active'}],pricing:raw?.pricing||wrappers.map((w,i)=>({id:'PRICE-'+w.id,wrapperId:w.id,costRate:.5,saleRate:.8+i*.05,status:'active'})),statements:raw?.statements||[],audit:raw?.audit||[]};
 }
-export function businessOrganizations(data,state){return [...data.organizations,...state.entities].map(o=>({...o,status:'active',currency:'USDT',region:'亞洲',gatewayId:'GW-APAC',...state.orgConfig[o.id]}));}
+export function businessOrganizations(data,state){
+ const demoIntegrator=data.organizations.find(org=>org.id===DEMO_INTEGRATOR_ID);
+ return [...data.organizations,...state.entities].map(o=>{
+  const gatewayId=o.level==='第一層代理'||o.level==='第二層代理'?null:'GW-APAC';
+  const org={...o,status:'active',currency:'USDT',region:o.region||'亞洲',gatewayId,...state.orgConfig[o.id]};
+  if(demoIntegrator&&org.level==='包網商'&&org.parent===demoIntegrator.parent){
+   org.parent=o.parent;
+  }
+  org.name=data.organizationAliases?.[org.name]||org.name;
+  return org;
+ });
+}
 const reasonText=reason=>{reason=String(reason||'').trim();if(reason.length<2||reason.length>300)throw Error('請輸入 2–300 字的操作原因');return reason;};
 const finite=(n,min,max,label)=>{if(n===null||n===undefined||String(n).trim()==='')throw Error('請填入'+label);n=Number(n);if(!Number.isFinite(n)||n<min||n>max)throw Error(label+'超出有效範圍');return n;};
 const required=value=>{const s=String(value||'').trim();if(!s||s.length>100)throw Error('名稱須為 1–100 字');return s;};
@@ -22,12 +34,18 @@ export function saveBusinessRecord(data,state,type,id,values,reason,{revision=st
  const orgs=businessOrganizations(data,state),sites=orgs.filter(o=>o.level==='現金網'),next={...state};let before=null,after,module;
  if(type==='org'){
   before=id?orgs.find(o=>o.id===id):null;if(id&&!before)throw Error('找不到機構');
-  const level=before?.level||values.level;if(!['包網商','現金網'].includes(level))throw Error('請選擇機構類型');
+  const level=before?.level||values.level;
+  if(!organizationSections.some(([,label])=>label===level))throw Error('請選擇機構類型');
   if(before&&values.parent!==before.parent)throw Error('既有機構的歷史隸屬關係不可直接移動');
-  const parent=orgs.find(o=>o.id===values.parent);if(!parent||parent.level!==(level==='包網商'?'遊戲商':'包網商'))throw Error('上層機構不符合層級');
-  if(!['active','disabled'].includes(values.status))throw Error('無效的機構狀態');if(!state.gateways.some(g=>g.id===values.gatewayId))throw Error('請選擇 API 中介');
+  const parent=organizationParents(orgs,level).find(o=>o.id===values.parent);
+  if(!parent)throw Error('上層機構不符合層級');
+  const isAgent=level==='第一層代理'||level==='第二層代理';
+  const gatewayId=isAgent?null:values.gatewayId;
+  const region=isAgent?parent.region:required(values.region);
+  if(!['active','disabled'].includes(values.status))throw Error('無效的機構狀態');
+  if(!isAgent&&!state.gateways.some(g=>g.id===gatewayId))throw Error('請選擇 API 中介');
   const name=required(values.name);if(orgs.some(o=>o.id!==id&&o.parent===parent.id&&o.name===name))throw Error('相同層級已有此機構名稱');
-  after={id:id||'ORG-'+(state.revision+1),name,level,parent:parent.id,status:values.status,region:required(values.region),gatewayId:values.gatewayId,currency:'USDT'};
+  after={id:id||'ORG-'+(state.revision+1),name,level,parent:parent.id,status:values.status,region,gatewayId,currency:'USDT'};
   if(id){next.orgConfig={...state.orgConfig,[id]:after};}else next.entities=[...state.entities,after];module='merchant';
  }else if(type==='gateway'){
   before=id?state.gateways.find(r=>r.id===id):null;if(id&&!before)throw Error('找不到 API 中介');

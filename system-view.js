@@ -1,10 +1,10 @@
-import {escape as e,money} from './core.js?v=12.6';
+import {escape as e,money} from './core.js?v=14.4';
 import {uiIcon} from './ui-icons.js?v=14.1';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.1';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4';
 import {operationsTime} from './game-operations.js?v=14.1';
-import {PERMISSIONS,systemLabels,SYSTEM_SECTIONS,apiLogFixtures,systemAuditEvents} from './system-management.js?v=14.2';
-import {syncView} from './cms-rule-view.js?v=14.1';
-import {syncCounts} from './cms-configuration.js?v=14.1';
+import {PERMISSIONS,systemLabels,SYSTEM_SECTIONS,apiLogFixtures,systemAuditEvents} from './system-management.js?v=14.4';
+import {syncView} from './cms-rule-view.js?v=14.4';
+import {syncCounts} from './cms-configuration.js?v=14.4';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
 const status=value=>'<span class="mg-status '+(value==='active'?'good':value==='disabled'||value==='revoked'?'off':'gold')+'">'+(systemLabels[value]||value)+'</span>';
 const select=(id,options,value)=>'<select id="'+id+'">'+options.map(([key,label])=>'<option value="'+e(key)+'"'+(String(key)===String(value)?' selected':'')+'>'+e(label)+'</option>').join('')+'</select>';

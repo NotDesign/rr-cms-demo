@@ -1,6 +1,7 @@
-import {matchesSelection,totals} from './core.js?v=12.6';
-import {playerSourceProfile} from './analytics.js?v=12.13';
+import {matchesSelection,totals} from './core.js?v=14.4';
+import {playerSourceProfile} from './analytics.js?v=14.4';
 import {playerResultTotals as playerProfitLoss} from './net-win.js?v=14.3.2';
+import {recordOrganizationId} from './organization-hierarchy.js?v=14.3.3';
 export const PLAYER_SECTIONS=[['overview','玩家總覽'],['directory','玩家列表'],['risk','風險與 BOT'],['restrictions','凍結與封鎖'],['audit','玩家操作紀錄']];
 export const accessLabels={active:'正常',frozen:'已凍結',blocked:'已封鎖'};
 export const botLabels={unreviewed:'尚未判定',watch:'觀察中',bot:'人工判定為 BOT',human:'正常玩家'};
@@ -8,14 +9,14 @@ export const playerKey=r=>r.cashId+'|'+r.player_id;
 export function organizationChain(organizations,id){const seen=new Set(),path=[];let node=organizations.find(o=>o.id===id);while(node&&!seen.has(node.id)){seen.add(node.id);path.unshift(node);node=organizations.find(o=>o.id===node.parent);}return path;}
 export function createPlayerCatalog(data){
  const groups=new Map();for(const r of data.records){const key=playerKey(r);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);}
- return [...groups].map(([key,records])=>{const r=records[0],latest=[...records].sort((a,b)=>(b.date+' '+b.time).localeCompare(a.date+' '+a.time))[0];return {key,name:r.player,id:r.player_id,siteId:r.cashId,wrapperId:r.wrapperId,providerId:r.providerId,site:r.site,records,latest,source:playerSourceProfile(r.player,records,data.organizations),chain:organizationChain(data.organizations,r.cashId)};});
+ return [...groups].map(([key,records])=>{const r=records[0],latest=[...records].sort((a,b)=>(b.date+' '+b.time).localeCompare(a.date+' '+a.time))[0];return {key,name:r.player,id:r.player_id,siteId:r.cashId,wrapperId:r.wrapperId,providerId:r.providerId,site:r.site,records,latest,source:playerSourceProfile(r.player,records,data.organizations),chain:organizationChain(data.organizations,recordOrganizationId(latest))};});
 }
 export function createPlayerState(raw={}){return {schema:1,revision:Number.isSafeInteger(raw?.revision)?raw.revision:0,profiles:{...(raw?.profiles||{})},audit:Array.isArray(raw?.audit)?raw.audit:[]};}
 export function playerPolicy(state,key){const p=state.profiles[key]||{};return {access:accessLabels[p.access]?p.access:'active',bot:botLabels[p.bot]?p.bot:'unreviewed'};}
 export function playerAccess(policy){return {login:policy.access!=='blocked',newRound:policy.access==='active',settlement:true,history:true};}
 export function updatePlayerPolicy(state,catalog,key,field,value,reason,{revision=state.revision,actor='平台管理員',at=new Date().toISOString()}={}){
  if(revision!==state.revision)throw Error('玩家狀態已在其他分頁更新，請重新開啟後確認');
- const player=catalog.find(p=>p.key===key);if(!player)throw Error('找不到此站點的玩家');
+ const player=catalog.find(p=>p.key===key);if(!player)throw Error('找不到此現金網的玩家');
  if(!['access','bot'].includes(field)||!Object.hasOwn(field==='access'?accessLabels:botLabels,value))throw Error('無效的玩家狀態');
  reason=String(reason||'').trim();if(reason.length<2||reason.length>300)throw Error('請輸入 2–300 字的操作原因');
  const before=playerPolicy(state,key);if(before[field]===value)throw Error('此狀態未變更');

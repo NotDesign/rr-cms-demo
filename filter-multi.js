@@ -1,6 +1,6 @@
-import {escape as e,selectionValues} from './core.js?v=12.6';
+import {escape as e,selectionValues} from './core.js?v=14.4';
 
-export const multiNames=new Set(['wrapper','merchant','type','game','accountingItems','excludeAccounting']);
+export const multiNames=new Set(['wrapper','merchant','type','game','slotGameplay','accountingItems','excludeAccounting']);
 export const choicePairs=choices=>choices.map(x=>Array.isArray(x)?x:[x,x]);
 export function multiFieldHtml(label,name,choices,value,expanded=false){
  const pairs=choicePairs(choices),selected=selectionValues(value),labels=selected.map(v=>pairs.find(([key])=>key===v)?.[1]||v);

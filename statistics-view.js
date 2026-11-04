@@ -1,8 +1,9 @@
-import {money,signed,tone,escape as e} from './core.js?v=12.6';
-import {statisticsModel,popularitySelection} from './analytics.js?v=12.13';
+import {wagerRegionTable} from './game-wagers.js?v=14.4';
+import {money,signed,tone,escape as e} from './core.js?v=14.4';
+import {statisticsModel,popularitySelection} from './analytics.js?v=14.4';
 import {donutArc} from './chart-motion.js?v=12.13';
 import {uiIcon} from './ui-icons.js?v=12.6';
-import {gameIdentity} from './detail-views.js?v=12.10';
+import {gameIdentity} from './detail-views.js?v=14.4';
 import {chartTipAttrs} from './chart-interactions.js?v=12.10';
 const palette=['var(--chart-green)','var(--chart-cyan)','var(--chart-purple)','var(--chart-amber)','var(--chart-pink)','var(--chart-gray)'];
 const sharePalette=[palette[3],palette[0],palette[1],palette[2],palette[4],palette[5]];
@@ -18,7 +19,7 @@ function lineChart(series,lines,label,id,hidden=[]){
  return '<div class="chart-legend" role="group" aria-label="'+e(label)+'圖例">'+lines.map(l=>'<button type="button" data-chart-legend="'+id+'" data-chart-key="'+l.key+'" aria-controls="chart-'+id+'" aria-pressed="'+!hidden.includes(l.key)+'"><i style="background:'+l.color+'"></i><span>'+l.label+'</span></button>').join('')+'</div><svg id="chart-'+id+'" class="line-chart" data-periods="'+e(series.map(b=>b.key).join('|'))+'" data-chart-scope viewBox="0 0 720 232" role="group" aria-label="'+e(label)+'">'+grid+'<line class="chart-crosshair" x1="0" x2="0" y1="'+top+'" y2="'+bottom+'" visibility="hidden"/>'+points+(!visible.length?'<text x="374" y="110" text-anchor="middle" class="chart-axis chart-empty">點擊圖例以顯示資料</text>':'')+series.map((b,i)=>i%tickEvery===0||i===series.length-1?'<text class="chart-axis" x="'+x(i)+'" y="224" text-anchor="middle">'+e(b.label)+'</text>':'').join('')+hits+'</svg>';
 }
 function panel(icon,title,sub,body,tools='',kind=''){return '<section class="analytics-card '+kind+'"><div class="analytics-card-head"><div><h2>'+uiIcon(icon)+title+'</h2><p>'+sub+'</p></div>'+tools+'</div>'+body+'</section>';}
-export function statisticsDashboard(records,filters,shareMetric='count',hidden={}){
+export function statisticsDashboard(records,filters,shareMetric='count',hidden={},organizations=[]){
  const m=statisticsModel(records,filters),unit=m.granularity==='hour'?'每小時':m.granularity==='day'?'每日':'每月';
  const hiddenKeys=id=>Array.isArray(hidden?.[id])?hidden[id]:[];
  const active=panel('players','玩家人數曲線',unit+' · 有投注記錄的去重玩家 · UTC+8',lineChart(m.series,[{key:'players',label:'活躍玩家',color:palette[0]}],'玩家人數曲線','players',hiddenKeys('players'))+'<div class="chart-insight"><span>區間去重玩家 <strong>'+m.players+'</strong></span><span>尖峰 '+e(m.peak.label)+' <strong>'+m.peak.players+'</strong></span></div>'+chartData(['時段','去重玩家','記錄筆數'],m.series.map(b=>[b.label,b.players,b.count]),['區間合計',m.players,m.count]));
@@ -32,5 +33,5 @@ export function statisticsDashboard(records,filters,shareMetric='count',hidden={
  const gamesByBet=[...m.games].sort((a,b)=>b.bet-a.bet),maxBet=Math.max(1,...gamesByBet.map(g=>g.bet));
  const ranking=panel('reports','遊戲營運排行','按投注額排序 · 可開啟遊戲詳情','<div class="operations-ranking">'+gamesByBet.slice(0,5).map((g,i)=>'<button data-game="'+e(g.name)+'"'+chartTipAttrs(g.name,[{label:'實扣投注',value:money(g.bet)+' USDT'},{label:'結算派彩',value:money(g.payout)+' USDT'},{label:'玩家淨盈虧',value:signed(g.net)+' USDT',tone:tone(g.net)},{label:'區間玩家',value:g.players+' 位玩家'},{label:'投注佔比',value:(m.bet?g.bet/m.bet*100:0).toFixed(1)+'%'}])+'><span class="ranking-place">'+(i+1)+'</span>'+gameIdentity(g.name,40)+'<span class="ranking-value"><strong>'+money(g.bet)+'</strong><small>'+g.players+' 位玩家</small></span><span class="ranking-track"><i style="width:'+(g.bet/maxBet*100)+'%"></i></span></button>').join('')+(gamesByBet.length?'':'<p class="notice">此區間沒有記錄</p>')+'</div>');
  const metrics=[['players','區間玩家',m.players+' 位玩家'],['receipt','遊玩筆數',m.count+' 筆記錄'],['percent','實際返還率',m.rtp===null?'無投注':m.rtp.toFixed(2)+'%'],['jackpot','獎池觸發',m.triggers+' 筆記錄']];
- return '<section class="statistics-dashboard"><div class="operation-metrics">'+metrics.map(([icon,label,value])=>'<div>'+uiIcon(icon)+'<span><small>'+label+'</small><strong>'+value+'</strong></span></div>').join('')+'</div><div class="analytics-grid">'+active+popular+flow+ranking+'</div><div class="operations-footnote">'+uiIcon('shield')+'圓環圖依目前顯示遊戲重新計算；上方營運指標維持整體篩選結果。玩家按區間去重；時段玩家不可相加。返還率＝派彩÷投注，含獎池派彩；投注派彩差額未扣分潤與營運費用。獎池派彩 '+money(m.jackpot)+' USDT。曲線不代表即時在線人數。</div></section>';
+ return '<section class="statistics-dashboard"><div class="operation-metrics">'+metrics.map(([icon,label,value])=>'<div>'+uiIcon(icon)+'<span><small>'+label+'</small><strong>'+value+'</strong></span></div>').join('')+'</div><div class="analytics-grid">'+active+popular+flow+ranking+'</div>'+wagerRegionTable(records,organizations)+'<div class="operations-footnote">'+uiIcon('shield')+'圓環圖依目前顯示遊戲重新計算；上方營運指標維持整體篩選結果。玩家按區間去重；時段玩家不可相加。返還率＝派彩÷投注，含獎池派彩；投注派彩差額未扣分潤與營運費用。獎池派彩 '+money(m.jackpot)+' USDT。曲線不代表即時在線人數。</div></section>';
 }

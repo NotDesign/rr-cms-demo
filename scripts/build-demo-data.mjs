@@ -1,6 +1,6 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {money,signed,playerId,totals,rowsFor,summaryFor,tableTotals,balances,chessDetail} from '../core.js';
-import {gameCatalog} from '../game-catalog.js';
+import {baseGameCatalog as gameCatalog} from '../game-catalog.js';
 const seed=JSON.parse(readFileSync(new URL('../data/seed-data.json',import.meta.url)));
 const data=structuredClone(seed),types={electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'};
 data.revision='2026-10-20-live-filters-expanded-fixtures-v9';

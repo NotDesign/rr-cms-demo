@@ -1,5 +1,5 @@
 export const SYSTEM_SECTIONS=[['accounts','帳號管理'],['keys','API 金鑰'],['roles','角色／權限'],['ips','IP 白名單'],['logs','API 日誌'],['settings','系統設定'],['sync','設定同步'],['audit','操作審計紀錄']];
-export const PERMISSIONS=[['reports:read','報表查閱'],['players:read','玩家查閱'],['games:write','遊戲編輯'],['rules:publish','規則發布'],['sites:write','站點管理'],['system:write','系統管理'],['audit:read','審計查閱']];
+export const PERMISSIONS=[['reports:read','報表查閱'],['players:read','玩家查閱'],['games:write','遊戲編輯'],['rules:publish','規則發布'],['sites:write','現金網管理'],['system:write','系統管理'],['audit:read','審計查閱']];
 export const systemLabels={active:'啟用',disabled:'停用',locked:'鎖定',invited:'待啟用',revoked:'已撤銷',expired:'已到期'};
 const clone=v=>JSON.parse(JSON.stringify(v));
 export function createSystemState(saved=null,now=new Date()){
@@ -28,7 +28,7 @@ export function saveSystemRecord(state,type,id,values,reason,at=new Date(),siteI
   if(!text(values.name)||!permissions(values.permissions))throw Error('請填寫角色名稱並選擇權限');if(id==='ROLE-ADMIN'&&PERMISSIONS.some(([key])=>!values.permissions.includes(key)))throw Error('內建管理角色須保留完整權限');
   if(next.roles.some(r=>r.id!==id&&r.name===values.name.trim()))throw Error('角色名稱已存在');record={name:values.name.trim(),permissions:values.permissions};
  }else if(type==='keys'){
-  if(!text(values.name)||!siteIds.includes(values.siteId)||!permissions(values.permissions)||!['active','revoked'].includes(values.status))throw Error('請檢查金鑰名稱、站點與權限');
+  if(!text(values.name)||!siteIds.includes(values.siteId)||!permissions(values.permissions)||!['active','revoked'].includes(values.status))throw Error('請檢查金鑰名稱、現金網與權限');
   const date=new Date(values.expires+'T23:59:59+08:00');if(!/^\d{4}-\d{2}-\d{2}$/.test(values.expires)||!Number.isFinite(+date)||date.toISOString().slice(0,10)!==values.expires||+date<+at)throw Error('金鑰到期日須為今天或未來日期');
   record={name:values.name.trim(),siteId:values.siteId,permissions:values.permissions,expires:values.expires,status:values.status,masked:old?.masked||'demo_rr_••••'+String(state.revision+4).padStart(4,'0')};
  }else{

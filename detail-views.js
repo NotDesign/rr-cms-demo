@@ -1,5 +1,5 @@
-import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=12.6';
-import {gameCatalog} from './game-catalog.js?v=9';
+import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=14.4';
+import {gameCatalog} from './game-catalog.js?v=14.4';
 import {uiIcon} from './ui-icons.js?v=12.6';
 import {chartTipAttrs} from './chart-interactions.js?v=12.10';
 export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));

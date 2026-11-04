@@ -1,39 +1,42 @@
 import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfitLoss} from './net-win.js?v=14.3.2';
-import {ACCOUNTING_ITEMS} from './accounting.js?v=14.3.2';
+import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4';
 import {installAccountingController} from './accounting-controller.js?v=14.3.2';
-import {BUSINESS_SECTIONS} from './business-management.js?v=14.2';
-import {installBusinessController} from './business-management-controller.js?v=14.2';
-import {PLAYER_SECTIONS} from './player-management.js?v=14.3.2';
-import {installPlayerController} from './player-management-controller.js?v=14.3.2';
-import {SYSTEM_SECTIONS} from './system-management.js?v=14.2';
+import {BUSINESS_SECTIONS} from './business-management.js?v=14.4';
+import {installBusinessController} from './business-management-controller.js?v=14.4';
+import {PLAYER_SECTIONS} from './player-management.js?v=14.4';
+import {installPlayerController} from './player-management-controller.js?v=14.4';
+import {SYSTEM_SECTIONS} from './system-management.js?v=14.4';
 import {installSystemController} from './system-controller.js?v=14.2';
 import {poolPartnersView} from './jackpot-partnership-view.js?v=14.1';
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=12.6';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=12.10';
-import {localize,translate,languageNames} from './i18n.js?v=14.3.2';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4';
+import {localize,translate,languageNames} from './i18n.js?v=14.4';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=14.1';
-import {playerSourceProfile} from './analytics.js?v=12.13';
-import {statisticsDashboard} from './statistics-view.js?v=12.14';
+import {recordOrganizationId} from './organization-hierarchy.js?v=14.3.3';
+import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4';
+import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4';
+import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4';
+import {statisticsDashboard} from './statistics-view.js?v=14.4';
 import {captureChartState,animateCharts,cancelChartMotion} from './chart-motion.js?v=13.1';
 import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=12.10';
 import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=12.6';
 import {answerQuestion} from './assistant.js?v=12.6';
-import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.3';
+import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.4';
 import {animateRegion,animateExit,cancelRegion} from './motion.js?v=12.6';
 import {installSelectControls} from './select-control.js?v=12.6';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=13.0';
 import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.1';
-import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.1';
+import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=13.1';
-import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.1';
+import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4';
 
-import {hydrateConfiguration,queueLegacyChange,deployedRtp} from './cms-configuration.js?v=14.1';
-import {ruleManagerPage} from './cms-rule-view.js?v=14.1';
+import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.4';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.4';
 import {installCmsController} from './cms-controller.js?v=14.1';
 
-const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();});
+const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(expandDemoScenarios);
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
 const icons={dashboard:'6398b.svg',reports:'8ec9b.svg',promotion:'5783c.svg',jackpot:'a4bc9.svg',games:'e6435.svg',merchant:'7aa63.svg',players:'a24ad.svg',settlement:'59865.svg',system:'8a8c6.svg'};
 const menus=[
@@ -41,7 +44,7 @@ const menus=[
  ['promotion','營運活動',['活動中心','RTP 活動','免費旋轉','紅利／獎勵','活動紀錄']],
  ['jackpot','累積獎池',['累積獎池列表','累積獎池規則','參與遊戲','中獎紀錄','累積獎池報表']],
  ['games','遊戲管理',['遊戲列表','遊戲分類','遊戲規則','RTP 設定檔','遊戲上下架','版本管理','維護管理']],
- ['merchant','商戶與渠道',['全部機構','API 中介','包網商','現金網']],['players','玩家管理',PLAYER_SECTIONS.map(([,label])=>label)],
+ ['merchant','商戶與渠道',BUSINESS_SECTIONS.merchant.map(([,label])=>label)],['players','玩家管理',PLAYER_SECTIONS.map(([,label])=>label)],
  ['settlement','傭金與結算',['傭金規則','渠道價差','GGR 結算','週結／月結','結算報表']],
  ['system','系統管理',['帳號管理','API 金鑰','角色／權限','IP 白名單','API 日誌','系統設定','設定同步','操作審計紀錄']]
 ];
@@ -53,20 +56,20 @@ const storageKey='rr-cms-workspace-v1';
 function tab(key='new',title='新增分頁'){return {id:crypto.randomUUID(),key,title:defs.get(key)?.title||title,filters:defaultFilters(),draft:defaultFilters(),columnFilters:{},sort:null,page:1,pageSize:50,statsView:'visual',shareMetric:'count',chartHidden:{},columns:defs.has(key)?defs.get(key).headers.map((_,i)=>i):[],freeze:defs.has(key)?defaultFreezeCount(defs.get(key)):0,scroll:{x:0,y:0,main:0}};}
 let saved;
 try{saved=JSON.parse(localStorage.getItem(storageKey));}catch{}
-saved=migrateWorkspace(saved,DATA.reports);
+saved=migrateDemoNames(migrateWorkspace(saved,DATA.reports),DATA);
 let locale=languageNames[saved?.locale]?saved.locale:'zh-Hant';
 let timeZone=normalizeTimeZone(saved?.timeZone),clockDraft=null;
 const gameStorageKey='rr-cms-game-operations-v1',cashSites=DATA.organizations.filter(o=>o.level==='現金網');
 let savedGameOperations;try{savedGameOperations=JSON.parse(localStorage.getItem(gameStorageKey));}catch{}
 function normalizeOperations(raw){return hydrateConfiguration(DATA,createGameOperations(DATA.games,cashSites,raw),raw?.configuration);}
 function readLatestOperations(){try{return normalizeOperations(JSON.parse(localStorage.getItem(gameStorageKey))||gameOperations);}catch{return gameOperations;}}
-function commitOperations(next){localStorage.setItem(gameStorageKey,JSON.stringify(next));gameOperations=next;updateClock();systemController?.refresh();}
+function commitOperations(next){localStorage.setItem(gameStorageKey,JSON.stringify(compactGameOperations(DATA,next)));gameOperations=next;updateClock();systemController?.refresh();}
 let gameOperations=normalizeOperations(savedGameOperations);
 let cmsController=null,systemController=null,playersController=null,businessController=null,accountingController=null;
-try{localStorage.setItem(gameStorageKey,JSON.stringify(gameOperations));}catch{}
+try{localStorage.setItem(gameStorageKey,JSON.stringify(compactGameOperations(DATA,gameOperations)));}catch{}
 const tr=text=>translate(text,locale);
 const localized=root=>localize(root,locale);
-let tabs=Array.isArray(saved?.tabs)&&saved.tabs.length?saved.tabs.filter(t=>t&&typeof t.id==='string'&&(defs.has(t.key)||t.key==='dashboard'||t.key==='new'||t.key.startsWith('draft:'))).map(t=>({...tab(t.key,t.title),...t,filters:{...defaultFilters(),...t.filters},draft:{...defaultFilters(),...t.draft}})):[tab('dashboard','儀表板')];
+let tabs=Array.isArray(saved?.tabs)&&saved.tabs.length?saved.tabs.filter(t=>t&&typeof t.id==='string'&&(defs.has(t.key)||t.key==='dashboard'||t.key==='new'||t.key==='player-detail'||t.key.startsWith('draft:'))).map(t=>({...tab(t.key,t.title),...t,filters:{...defaultFilters(),...t.filters},draft:{...defaultFilters(),...t.draft}})):[tab('dashboard','儀表板')];
 if(!tabs.length)tabs=[tab('dashboard','儀表板')];
 for(const t of tabs)if(['electronic','chess'].includes(t.key))for(const field of ['filters','draft']){const game=DATA.games.find(g=>g.name===t[field].type);if(game){t[field].game=game.name;t[field].type=game.family;}}
 let activeId=tabs.some(t=>t.id===saved?.activeId)?saved.activeId:tabs[0].id;
@@ -76,7 +79,7 @@ const queryTimers=new Map();let columnTimer,composing=false,datePanel=null,multi
 const filterCatalog=new Map();
 let assistantOpen=false;const assistantMessages=[];
 if(saved?.theme==='light')document.documentElement.dataset.theme='light';
-function currentKeyCategory(){const key=tabs.find(t=>t.id===activeId)?.key;return key==='dashboard'?'dashboard':key?.startsWith('draft:')?key.split(':')[1]:'reports';}
+function currentKeyCategory(){const key=tabs.find(t=>t.id===activeId)?.key;return key==='dashboard'?'dashboard':key==='player-detail'?'players':key?.startsWith('draft:')?key.split(':')[1]:'reports';}
 const current=()=>tabs.find(t=>t.id===activeId)||tabs[0];
 function persist(){try{localStorage.setItem(storageKey,JSON.stringify({schemaVersion:4,tabs,activeId,submenuOpen,locale,timeZone,theme:document.documentElement.dataset.theme||'dark'}));return true;}catch{return false;}}
 function toast(text){$('#toast').textContent=tr(text);$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600);}
@@ -109,12 +112,12 @@ function submenuIcon(label,def){
  if(category==='players')return uiIcon(({'玩家總覽':'dashboard','玩家列表':'id','風險與 BOT':'target','凍結與封鎖':'shield','玩家操作紀錄':'audit'})[label]);
  if(category==='system')return uiIcon(({'帳號管理':'players','API 金鑰':'key','角色／權限':'roles','IP 白名單':'network','API 日誌':'api','系統設定':'settings','設定同步':'sync','操作審計紀錄':'audit'})[label]);
  if(category==='promotion')return uiIcon(({'活動中心':'promotion','RTP 活動':'target','免費旋轉':'slot','紅利／獎勵':'coins','活動紀錄':'calendar'})[label]);
- if(category==='merchant')return uiIcon(({'全部機構':'channels','API 中介':'api','包網商':'layers','現金網':'wallet'})[label]);
+ if(category==='merchant')return uiIcon(({'全部機構':'channels','API 中介':'api','遊戲集成商':'network','包網商':'layers','現金網':'wallet','第一層代理':'id','第二層代理':'players'})[label]);
  if(category==='settlement')return uiIcon(({'傭金規則':'percent','渠道價差':'profit','GGR 結算':'wallet','週結／月結':'calendar','結算報表':'reports'})[label]);
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.3.2</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -147,14 +150,15 @@ function textField(label,name,placeholder,cls=''){
 }
 function accountingFiltersHtml(){
  filterCatalog.clear();const f=current().draft,items=ACCOUNTING_ITEMS.map(([id,label])=>[id,label]);
- const fields=selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+selectField('遊戲類型','type',[['','全部類型'],'電子遊戲','老虎機','捕魚','棋牌'])+selectField('遊戲','game',[['','全部遊戲'],...DATA.games.filter(g=>matchesSelection(f.type,[g.type])).map(g=>[g.name,g.name])])+selectField('收費項目／帳務機制','accountingItems',[['','全部機制'],...items])+selectField('排除機制','excludeAccounting',[['','不排除'],...items])+textField('搜尋來源','query','單號、玩家 ID、現金網或遊戲')+selectField('總表分組','accountingGroup',[['','依收費項目'],['site-item','現金網＋收費項目'],['wrapper-item','包網商＋收費項目'],['game-item','遊戲＋收費項目'],['date-item','日期＋收費項目'],['record','逐筆來源']]);
- const fieldsLabels={wrapper:'包網商',merchant:'現金網',type:'類型',game:'遊戲',accountingItems:'機制',excludeAccounting:'排除',query:'搜尋'},labels=new Map([...DATA.organizations.map(o=>[o.id,o.name]),...items]),chips=Object.keys(fieldsLabels).flatMap(name=>selectionValues(f[name]).map(value=>'<button type="button" data-acct-remove-field="'+name+'" data-acct-remove-value="'+e(value)+'" aria-label="移除'+e(fieldsLabels[name]+'：'+(labels.get(value)||value))+'">'+e(fieldsLabels[name]+'：'+(labels.get(value)||value))+' ×</button>')).join('');
+ const fields=selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部現金網'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+selectField('遊戲類型','type',[['','全部類型'],'電子遊戲','老虎機','捕魚','棋牌'])+slotGameplayFilter(f)+selectField('遊戲','game',[['','全部遊戲'],...DATA.games.filter(g=>matchesSelection(f.type,[g.type])).map(g=>[g.name,g.name])])+selectField('收費項目／帳務機制','accountingItems',[['','全部機制'],...items])+selectField('排除機制','excludeAccounting',[['','不排除'],...items])+textField('搜尋來源','query','單號、玩家 ID、現金網或遊戲')+selectField('總表分組','accountingGroup',[['','依收費項目'],['site-item','現金網＋收費項目'],['wrapper-item','包網商＋收費項目'],['game-item','遊戲＋收費項目'],['date-item','日期＋收費項目'],['record','逐筆來源']]);
+ const fieldsLabels={wrapper:'包網商',merchant:'現金網',type:'類型',game:'遊戲',slotGameplay:'遊戲玩法',accountingItems:'機制',excludeAccounting:'排除',query:'搜尋'},labels=new Map([...DATA.organizations.map(o=>[o.id,o.name]),...items]),chips=Object.keys(fieldsLabels).flatMap(name=>selectionValues(f[name]).map(value=>'<button type="button" data-acct-remove-field="'+name+'" data-acct-remove-value="'+e(value)+'" aria-label="移除'+e(fieldsLabels[name]+'：'+(labels.get(value)||value))+'">'+e(fieldsLabels[name]+'：'+(labels.get(value)||value))+' ×</button>')).join('');
  return '<section class="acct-filters-surface"><div class="acct-filter-head"><h2>'+uiIcon('sliders')+'過濾條件</h2><div><span class="filter-live">即時篩選</span><button class="button small" data-action="reset">清除篩選</button></div></div><form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+fields+'</div></form>'+(chips?'<div class="acct-chips" aria-label="已套用篩選">'+chips+'</div>':'')+'</section>';
 }
 function playerFiltersHtml(){
  filterCatalog.clear();const f=current().draft;
- return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+textField('搜尋玩家','query','帳號、玩家 ID、現金網或示例 IP')+selectField('管控狀態','pmAccess',[['','全部狀態'],['active','正常'],['frozen','已凍結'],['blocked','已封鎖']])+selectField('BOT 判定','pmBot',[['','全部判定'],['unreviewed','尚未判定'],['watch','觀察中'],['bot','人工判定為 BOT'],['human','正常玩家']])+selectField('期間活躍度','pmActivity',[['','全部玩家'],['active','本期有投注'],['inactive','本期無投注']])+selectField('排序方式','pmSort',[['',current().key==='draft:players:風險與 BOT'?'待核對特徵優先':'投注額由高至低'],['net','淨盈利由高至低'],['loss','淨虧損由高至低'],['recent','最近投注']])+'<div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div></form>';
+ return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部現金網'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+textField('搜尋玩家','query','帳號、玩家 ID、現金網或示例 IP')+selectField('管控狀態','pmAccess',[['','全部狀態'],['active','正常'],['frozen','已凍結'],['blocked','已封鎖']])+selectField('BOT 判定','pmBot',[['','全部判定'],['unreviewed','尚未判定'],['watch','觀察中'],['bot','人工判定為 BOT'],['human','正常玩家']])+selectField('期間活躍度','pmActivity',[['','全部玩家'],['active','本期有投注'],['inactive','本期無投注']])+selectField('排序方式','pmSort',[['',current().key==='draft:players:風險與 BOT'?'待核對特徵優先':'投注額由高至低'],['net','淨盈利由高至低'],['loss','淨虧損由高至低'],['recent','最近投注']])+'<div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div></form>';
 }
+function slotGameplayFilter(f,key='all'){return hasSlotScope(f,DATA.games,key)?selectField('遊戲玩法','slotGameplay',[['','全部玩法'],...SLOT_GAMEPLAYS]):'';}
 function filtersHtml(def){
   filterCatalog.clear();const f=current().draft;
   const types=def.key==='chess'?[['','全部玩法'],['blackjack','21 點'],['bull','牛牛'],['landlord','鬥地主']]:[['','全部類型'],'電子遊戲','老虎機','捕魚','棋牌'];
@@ -168,13 +172,13 @@ function filtersHtml(def){
   if(def.key==='electronic')extra=selectField('觸發事件','event',[['','全部事件'],['收取','主動收取'],['失敗','闖關失敗'],['追加','追加下注'],['獎池觸發','獎池觸發']])+selectField('結束原因','endReason',[['','全部原因'],'玩家主動收取','闖關失敗'])+selectField('難度','difficulty',[['','全部難度'],'一般','困難'])+selectField('最高倍率','multiplier',[['','不限倍率'],['high','≥ 1.50×'],['low','< 1.50×']])+selectField('結算／對帳','recon',[['','全部狀態'],'已核對','補單已核對']);
   if(def.key==='fishing')extra=textField('魚種／魚隻實例 ID','fish','例如 F9006')+textField('射擊 ID','shot','例如 SH-0301-090')+selectField('道具／技能','tool',[['','全部類型'],'雷射炮',['無道具','無道具']])+selectField('觸發事件','event',[['','全部事件'],['雷射炮','雷射炮'],['金龍','首領事件'],['獎池觸發','獎池觸發'],['未捕獲','未捕獲']])+selectField('結算／對帳','recon',[['','全部狀態'],'已核對','補單已核對']);
   const category={electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[def.key];
-  const games=DATA.games.filter(g=>(!category||g.type===category)&&matchesSelection(f.type,[g.type,g.family,g.name]));
-  return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('商戶／站點','merchant',[['','全部站點'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+gameSelect+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
+  const games=DATA.games.filter(g=>(!category||g.type===category)&&matchesSelection(f.type,[g.type,g.family,g.name])&&matchesSelection(f.slotGameplay,[g.slotGameplay]));
+  return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部現金網'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+gameSelect+slotGameplayFilter(f,def.key)+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
 }
 function totals(records){return {...baseTotals(records),...netWinsFor(records)};}
 function resultTone(label,value){return /Net Win|淨輸贏/.test(label)?tone(value):financialTone(label,value);}
-function metricCard(label,value){const side=label.startsWith(NET_WIN.player.label)?'player':label.startsWith(NET_WIN.operator.label)?'operator':null,meta=side&&NET_WIN[side];return '<div class="summary-card"'+(meta?' data-net-win="'+side+'" title="'+e(meta.english+' · '+meta.formula)+'"':'')+'><span class="metric-icon">'+uiIcon(meta?(side==='player'?'players':'profit'):metricIcon(label))+'</span><div class="metric-copy"><p class="summary-label">'+e(label)+'</p><p class="summary-number '+resultTone(label,value)+'">'+e(value)+'</p>'+(meta?'<small class="summary-caption">'+meta.english+'</small>':'')+'</div></div>';}
-function summaryHtml(def,rs){const wins=netWinsFor(rs),items=summaryFor(def,rs).filter(([label])=>!/玩家淨盈虧|投注派彩差額/.test(label));if(!items.some(([label])=>/派彩/.test(label)))items.push(['結算派彩（USDT）',money(totals(rs).payout)]);else items.push(['退款（USDT）',money(wins.refund)]);items.push([NET_WIN.player.label+'（USDT）',signed(wins.playerNetWin)],[NET_WIN.operator.label+'（USDT）',signed(wins.operatorNetWin)]);return '<div class="summary net-win-summary">'+items.map(([label,value])=>metricCard(label,value)).join('')+'</div>';}
+function metricCard(label,value,caption=''){const side=label.startsWith(NET_WIN.player.label)?'player':label.startsWith(NET_WIN.operator.label)?'operator':null,meta=side&&NET_WIN[side];return '<div class="summary-card"'+(meta?' data-net-win="'+side+'" title="'+e(meta.english+' · '+meta.formula)+'"':'')+'><span class="metric-icon">'+uiIcon(meta?(side==='player'?'players':'profit'):metricIcon(label))+'</span><div class="metric-copy"><p class="summary-label">'+e(label)+'</p><p class="summary-number '+resultTone(label,value)+'">'+e(value)+'</p>'+(meta||caption?'<small class="summary-caption">'+e(meta?.english||caption)+'</small>':'')+'</div></div>';}
+function summaryHtml(def,rs){const wins=netWinsFor(rs),items=summaryFor(def,rs).filter(([label])=>!/玩家淨盈虧|投注派彩差額/.test(label));const {average}=wagerMetrics(rs),averageLabel='平均每筆投注額 '+(average===null?'—':money(average)+' USDT');if(!items.some(([label])=>/派彩/.test(label)))items.push(['結算派彩（USDT）',money(totals(rs).payout)]);else items.push(['退款（USDT）',money(wins.refund)]);items.push([NET_WIN.player.label+'（USDT）',signed(wins.playerNetWin)],[NET_WIN.operator.label+'（USDT）',signed(wins.operatorNetWin)]);return '<div class="summary net-win-summary">'+items.map(([label,value])=>metricCard(label,value,/^(實扣投注|總投注額)/.test(label)?averageLabel:'')).join('')+'</div>';}
 function statsViewControl(){const mode=current().statsView||'visual';return '<div class="view-toggle" role="group" aria-label="統計呈現方式">'+[['visual','視覺總覽'],['table','傳統表格']].map(([v,label])=>'<button data-stats-view="'+v+'" aria-pressed="'+(v===mode)+'">'+uiIcon(v==='visual'?'dashboard':'receipt')+label+'</button>').join('')+'</div>';}
 function getReport(){
   const t=current(),d=defs.get(t.key),base=filterRecords(DATA.records,t.key,t.filters),result=filterReportColumns(d,base,t.columnFilters,tr);
@@ -188,7 +192,7 @@ function linkCell(d,row,index,text){
     return '<button class="text-link" data-player="'+e(name)+'">'+e(text)+'</button>';
   }
   if(d.headers[index]==='供應商')return '<button class="text-link" data-org="PROV-RR">'+e(text)+'</button>';
-  if(d.headers[index]==='商戶／站點'){const org=DATA.organizations.find(o=>o.name===text);if(org)return '<button class="text-link" data-org="'+org.id+'">'+e(text)+'</button>';}
+  if(d.headers[index]==='現金網'){const org=DATA.organizations.find(o=>o.name===text);if(org)return '<button class="text-link" data-org="'+org.id+'">'+e(text)+'</button>';}
   if(d.headers[index]==='遊戲名稱')return '<button class="text-link" data-game="'+e(text)+'">'+e(text)+'</button>';
   if(d.headers[index].includes('投注單號')||d.headers[index].includes('結算單號'))return '<button class="text-link" data-record="'+e(text)+'">'+e(text)+'</button>';
   return e(text);
@@ -228,8 +232,9 @@ function distribution(rs){
 function chooser(){return '<div class="page"><div class="page-heading"><div><h1>新增工作分頁</h1><p class="breadcrumb">選擇報表，開始新的查詢</p></div><span class="badge">USDT · 模擬資料</span></div><div class="chooser-grid">'+DATA.reports.map(d=>'<button class="chooser-card" data-report="'+d.key+'">'+icon(d.icon)+'<span>'+d.title+'<small>獨立保存篩選、排序、頁碼及欄位</small></span></button>').join('')+'</div></div>';}
 function renderContent(){
   const t=current();
-  if(t.key==='dashboard'){const rs=DATA.records;$('#content').innerHTML='<div class="page dashboard-page"><div class="page-heading"><div><h1>營運總覽</h1><p class="breadcrumb">2026/10/15 · USDT · UTC+8</p></div><span class="badge">模擬資料</span></div><div class="dashboard-shortcuts">'+button(uiIcon('receipt')+'所有遊戲投注記錄','open-all')+'<button class="button" data-report="stats">'+uiIcon('reports')+'遊戲統計</button></div>'+summaryHtml(defs.get('all'),rs)+statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden)+'</div>';return;}
-    if(t.key==='new'){$('#content').innerHTML=chooser();return;}
+  if(t.key==='dashboard'){const rs=DATA.records;$('#content').innerHTML='<div class="page dashboard-page"><div class="page-heading"><div><h1>營運總覽</h1><p class="breadcrumb">2026/10/15 · USDT · UTC+8</p></div><span class="badge">模擬資料</span></div><div class="dashboard-shortcuts">'+button(uiIcon('receipt')+'所有遊戲投注記錄','open-all')+'<button class="button" data-report="stats">'+uiIcon('reports')+'遊戲統計</button></div>'+summaryHtml(defs.get('all'),rs)+statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden,DATA.organizations)+'</div>';return;}
+  if(t.key==='player-detail'){$('#content').innerHTML=playerDetailPage(t);return;}
+  if(t.key==='new'){$('#content').innerHTML=chooser();return;}
   if(t.key==='draft:reports:總帳務'){$('#content').innerHTML=accountingController.render(accountingFiltersHtml());return;}
   if(t.key.startsWith('draft:jackpot:')){const label=t.key.slice('draft:jackpot:'.length),section=JACKPOT_SECTIONS.find(([,name])=>name===label)?.[0]||'pools';$('#content').innerHTML=section==='rules'?ruleManagerPage(DATA,gameOperations,'jackpot',t.ruleUI||{}):jackpotPage(DATA,gameOperations,section,t.jackpotUI);return;}
   if(t.key.startsWith('draft:games:')){const label=t.key.slice('draft:games:'.length),section=GAME_SECTIONS.find(([,name])=>name===label)?.[0]||'catalog';$('#content').innerHTML=section==='rules'?ruleManagerPage(DATA,gameOperations,'game',t.ruleUI||t.managementUI||{}):managementPage(DATA,gameOperations,section,t.managementUI);return;}
@@ -238,7 +243,7 @@ function renderContent(){
   if(t.key.startsWith('draft:system:')){$('#content').innerHTML=systemController.render();return;}
   if(!defs.has(t.key)){$('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(t.title)+'</h1><p class="breadcrumb">'+menus.find(m=>m[0]===category)?.[1]+' / '+e(t.title)+'</p></div><span class="badge">導覽示意</span></div><section class="generic-page"><h2>此頁內容待後續規劃</h2><p class="muted">目前 Demo 優先提供完整的遊戲報表與模擬明細。</p>'+button('開啟所有遊戲投注記錄','open-all','primary')+'</section></div>';return;}
   const {d,rs,rows}=getReport();
-  $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><div class="acct-heading-actions">'+(d.key==='all'?'<button class="button" data-accounting-open>'+uiIcon('wallet')+'收費與收入來源</button>':'')+'<span class="badge">模擬資料</span></div></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden):tableHtml(d,rs,rows))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家 Net Win＝派彩−（實扣投注−退款）；營運 Net Win 為其相反數（未扣分潤與費用）。各頁使用同一組資料。</p></div>';
+  $('#content').innerHTML='<div class="page"><div class="page-heading"><div><h1>'+e(d.title)+'</h1><p class="breadcrumb">遊戲報表 / '+e(d.title)+'</p></div><div class="acct-heading-actions">'+(d.key==='all'?'<button class="button" data-accounting-open>'+uiIcon('wallet')+'收費與收入來源</button>':'')+'<span class="badge">模擬資料</span></div></div>'+filtersHtml(d)+summaryHtml(d,rs)+(d.key==='stats'?statsViewControl():'')+(d.key==='stats'&&t.statsView!=='table'?statisticsDashboard(rs,t.filters,t.shareMetric,t.chartHidden,DATA.organizations):tableHtml(d,rs,rows)+(d.key==='stats'?wagerRegionTable(rs,DATA.organizations):''))+'<p class="page-note">模擬資料 · USDT · UTC+8 · 派彩含本金；玩家 Net Win＝派彩−（實扣投注−退款）；營運 Net Win 為其相反數（未扣分潤與費用）。各頁使用同一組資料。</p></div>';
 }
 function render({keepMulti=false}={}){
   const previousCharts=captureChartState($('#content'));
@@ -254,6 +259,7 @@ function render({keepMulti=false}={}){
   else if(defs.has(current().key)||current().key==='dashboard')history.replaceState(null,'','#'+current().key);
   else if(current().key.startsWith('draft:games:'))history.replaceState(null,'','#games/'+(GAME_SECTIONS.find(([,label])=>label===current().title)?.[0]||'catalog'));
   else if(BUSINESS_SECTIONS[current().key.split(':')[1]]&&current().key.startsWith('draft:')){const cat=current().key.split(':')[1];history.replaceState(null,'','#'+cat+'/'+(BUSINESS_SECTIONS[cat].find(([,label])=>label===current().title)?.[0]||'all'));}
+  else if(current().key==='player-detail')history.replaceState(null,'','#player-detail/'+encodeURIComponent(current().profileKey));
   else if(current().key.startsWith('draft:players:'))history.replaceState(null,'','#players/'+(PLAYER_SECTIONS.find(([,label])=>label===current().title)?.[0]||'overview'));
   else if(current().key.startsWith('draft:system:'))history.replaceState(null,'','#system/'+(SYSTEM_SECTIONS.find(([,label])=>label===current().title)?.[0]||'settings'));
   else if(current().key.startsWith('draft:jackpot:'))history.replaceState(null,'','#jackpot/'+(JACKPOT_SECTIONS.find(([,label])=>label===current().title)?.[0]||'pools'));
@@ -328,45 +334,85 @@ function kv(values){return '<div class="key-values">'+values.map(([label,value])
 function detailSummary(r,profitLoss=null){const wins=r.playerNetWin===undefined?netWinsFromAmounts(r):r,items=[['實扣投注',money(r.bet)],['結算派彩',money(r.payout)],[NET_WIN.player.label,signed(wins.playerNetWin)],[NET_WIN.operator.label,signed(wins.operatorNetWin)]];if(profitLoss)items.push(['總盈利',signed(profitLoss.profit)],['總虧損',signed(profitLoss.loss)]);return '<div class="summary net-win-summary '+(profitLoss?'player-summary':'net-win-detail')+'">'+items.map(([label,v])=>metricCard(label+'（USDT）',v)).join('')+'</div>';}
 function section(title,html){return '<section class="detail-section"><h3>'+title+'</h3>'+html+'</section>';}
 function timeline(events){return '<ol class="timeline">'+events.map(([time,title,text])=>'<li><small>'+e(time)+'</small><p>'+e(title)+'</p><small>'+e(text)+'</small></li>').join('')+'</ol>';}
-function detailDateLabel(){return detailRange.start.replaceAll('-','/')+(detailRange.start!==detailRange.end?' – '+detailRange.end.replaceAll('-','/'):'');}
+function detailDateLabel(range=detailRange){return range.start.replaceAll('-','/')+(range.start!==range.end?' – '+range.end.replaceAll('-','/'):'');}
 function detailBaseRecords(){const f=$('#modal').open&&['org','player','player-policy','game','record','game-sites','game-versions','pool','pool-partners','accounting'].includes(dialogState?.type)?detailRange:current().filters;return DATA.records.filter(r=>r.date>=f.start&&r.date<=f.end);}
 function rememberDetail(replace=false){const isDetail=$('#modal').open&&['org','player','player-policy','game','record','game-sites','game-versions','pool','pool-partners','accounting'].includes(dialogState?.type);if(!replace&&isDetail)detailTrail.push({...dialogState,scroll:$('.dialog-body')?.scrollTop||0});else if(!replace){detailTrail=[];detailRange={start:current().filters.start,end:current().filters.end};}}
 function restoreDetail(view){if(view.type==='accounting')accountingController.detail(view.key,true);else if(view.type==='org')openOrganization(view.id,view.mode,true);else if(view.type==='player')openPlayer(view.name,view.mode,true,view.siteId);else if(view.type==='game')openGame(view.game,view.context,true);else if(view.type==='game-sites')showGameSites(view.gameId,view.filter,true);else if(view.type==='game-versions')showGameVersions(view.gameId,view.version,true);else if(view.type==='pool-partners')showPoolPartners(view.id,true);else if(view.type==='pool')showPoolDetail(view.id,true,view.hiddenSeries);else openRecord(view.id,true);if($('.dialog-body'))$('.dialog-body').scrollTop=view.scroll||0;}
 function detailNavigation(){return detailTrail.length?'<div class="detail-return"><button data-action="detail-back">'+uiIcon('arrow')+'返回上一層</button><small>'+e(detailTrail.at(-1).type==='org'?liveOrganizations().find(o=>o.id===detailTrail.at(-1).id)?.name||detailTrail.at(-1).id:detailTrail.at(-1).type==='player'?detailTrail.at(-1).name:detailTrail.at(-1).type==='game'?detailTrail.at(-1).game:detailTrail.at(-1).label||detailTrail.at(-1).id)+'</small></div>':'';}
-function viewToggle(mode){return '<div class="view-controls"><small>'+e(detailDateLabel())+' · USDT · 模擬資料</small><div class="view-toggle" role="group" aria-label="呈現方式">'+['visual','table'].map((v,i)=>'<button data-detail-mode="'+v+'" aria-pressed="'+(mode===v)+'">'+(i?'傳統表格':'視覺摘要')+'</button>').join('')+'</div></div>';}
+function viewToggle(mode,range=detailRange,attribute='data-detail-mode'){return '<div class="view-controls"><small>'+e(detailDateLabel(range))+' · USDT · 模擬資料</small><div class="view-toggle" role="group" aria-label="呈現方式">'+['visual','table'].map((v,i)=>'<button '+attribute+'="'+v+'" aria-pressed="'+(mode===v)+'">'+(i?'傳統表格':'視覺摘要')+'</button>').join('')+'</div></div>';}
 function liveOrganizations(){return businessController?.organizations()||DATA.organizations;}
-function organizationPath(id){const organizations=liveOrganizations(),path=[];let n=organizations.find(o=>o.id===id);const seen=new Set();while(n&&!seen.has(n.id)){seen.add(n.id);path.unshift(n);n=organizations.find(o=>o.id===n.parent);}return '<nav class="hierarchy-context" aria-label="所屬機構">'+path.map((o,i)=>'<button class="hierarchy-node" data-org="'+o.id+'" title="'+e(o.level+' · '+o.name)+'"><span class="hierarchy-icon">'+uiIcon(i===0?'games':o.level==='現金網'?'wallet':'channels')+'</span><span class="hierarchy-copy"><small>'+e(o.level)+'</small><strong>'+e(o.name)+'</strong></span></button>').join('')+'</nav>';}
+function organizationPath(id){const organizations=liveOrganizations(),path=[];let n=organizations.find(o=>o.id===id);const seen=new Set();while(n&&!seen.has(n.id)){seen.add(n.id);path.unshift(n);n=organizations.find(o=>o.id===n.parent);}return '<nav class="hierarchy-context'+(path.length>3?' hierarchy-context--long':'')+'" aria-label="所屬機構">'+path.map((o,i)=>'<button class="hierarchy-node" data-org="'+e(o.id)+'" title="'+e(o.level+' · '+o.name)+'"><span class="hierarchy-icon">'+uiIcon(i===0?'games':o.level==='現金網'?'wallet':'channels')+'</span><span class="hierarchy-copy"><small>'+e(o.level)+'</small><strong>'+e(o.name)+'</strong></span></button>').join('')+'</nav>';}
 function financialSummary(records){const t=totals(records);return detailSummary(t)+'<div class="detail-counts"><span>玩家 '+t.players+'</span><span>遊戲 '+t.games+'</span><span>記錄 '+t.count+'</span><span>獎池派彩 <strong class="'+tone(records.reduce((n,r)=>n+r.jackpotAward,0))+'">'+money(records.reduce((n,r)=>n+r.jackpotAward,0))+' USDT</strong></span></div>';}
 function gameTable(records){const games=[...new Set(records.map(r=>r.game))],all=totals(records);return miniTable(['遊戲','類型','記錄筆數','投注 USDT','派彩 USDT','玩家 Net Win USDT','營運 Net Win USDT'],games.map(game=>{const t=totals(records.filter(r=>r.game===game));return [game,DATA.records.find(r=>r.game===game).kind,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)];}),{0:v=>'<button class="text-link" data-game="'+e(v)+'">'+e(v)+'</button>'},['合計','',all.count,money(all.bet),money(all.payout),signed(all.playerNetWin),signed(all.operatorNetWin)]);}
 function recordList(records,visual=false){const ordered=[...records].sort((a,b)=>b.time.localeCompare(a.time)),all=totals(records);return miniTable(['時間','玩家帳號','玩家 ID','遊戲','投注單號','投注 USDT','派彩 USDT','玩家 Net Win USDT','營運 Net Win USDT'],ordered.map(r=>{const wins=netWinsFromAmounts(r);return [r.time,r.player,playerId(r.player),r.game,r.id,money(r.bet),money(r.payout),signed(wins.playerNetWin),signed(wins.operatorNetWin)];}),{1:(v,i)=>'<button class="text-link" data-player-site="'+e(ordered[i].cashId)+'" data-player="'+e(v)+'">'+e(v)+'</button>',2:(v,i)=>'<button class="text-link" data-player-site="'+e(ordered[i].cashId)+'" data-player="'+e(ordered[i].player)+'">'+e(v)+'</button>',3:v=>visual?gameIdentity(v):e(v),4:v=>'<button class="text-link" data-record="'+e(v)+'">'+e(v)+'</button>'},['合計','',all.players+' 位玩家','','',money(all.bet),money(all.payout),signed(all.playerNetWin),signed(all.operatorNetWin)]);}
 function openOrganization(id='PROV-RR',mode='visual',replace=false){
  const organizations=liveOrganizations(),org=organizations.find(o=>o.id===id);if(!org)return;rememberDetail(replace);dialogState={type:'org',id,mode};
  const records=organizationRecords(detailBaseRecords(),organizations,id),children=organizations.filter(o=>o.parent===id),t=totals(records);
- const childRows=children.length?children.map(o=>{const t=totals(organizationRecords(records,DATA.organizations,o.id));return [o.name,o.id,t.players,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)];}):[...new Set(records.map(r=>r.player))].map(name=>{const t=totals(records.filter(r=>r.player===name));return [name,playerId(name),t.games,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)];});
- const childHeading=children.length?(org.level==='遊戲商'?'包網商列表':'現金網列表'):'玩家列表';
- const details=miniTable([children.length?'名稱':'玩家帳號',children.length?'機構 ID':'玩家 ID',children.length?'玩家數':'遊戲數','記錄筆數','投注 USDT','派彩 USDT','玩家 Net Win USDT','營運 Net Win USDT'],childRows,{0:(v,i)=>'<button class="text-link" '+(children.length?'data-org="'+children[i].id:'data-player-site="'+org.id+'" data-player="'+v)+'">'+e(v)+' →</button>',1:(v,i)=>children.length?e(v):'<button class="text-link" data-player-site="'+org.id+'" data-player="'+childRows[i][0]+'">'+e(v)+'</button>'},['合計','',t.players,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)]);
- const cards=children.length?'<div class="entity-cards">'+children.map(o=>{const t=totals(organizationRecords(records,DATA.organizations,o.id));return '<button class="entity-card" data-org="'+o.id+'"><small>'+uiIcon('channels')+o.level+' · '+o.id+'</small><h3>'+o.name+' →</h3><div class="entity-values"><span><small>'+uiIcon('players')+'玩家 Net Win</small><strong class="'+tone(t.playerNetWin)+'">'+signed(t.playerNetWin)+'</strong></span><span><small>'+uiIcon('profit')+'營運 Net Win</small><strong class="'+tone(t.operatorNetWin)+'">'+signed(t.operatorNetWin)+'</strong></span></div><small>'+t.players+' 位玩家 · '+t.count+' 筆記錄</small></button>';}).join('')+'</div>':details;
+ const playerGroups=new Map();
+ if(!children.length)for(const r of records){
+  const key=JSON.stringify([r.cashId,r.player_id||r.player]);
+  if(!playerGroups.has(key))playerGroups.set(key,[]);
+  playerGroups.get(key).push(r);
+ }
+ const entries=children.length?children.map(o=>({name:o.name,id:o.id,records:organizationRecords(records,organizations,o.id)})):[...playerGroups.values()].map(rs=>({name:rs[0].player,id:rs[0].player_id,siteId:rs[0].cashId,records:rs}));
+ const childRows=entries.map(entry=>{const t=totals(entry.records);return [entry.name,entry.id,children.length?t.players:t.games,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)];});
+ const levels=[...new Set(children.map(o=>o.level))],childHeading=children.length?(levels.length===1?levels[0]:'下層機構')+'列表':'玩家列表';
+ const link=(v,i)=>'<button class="text-link" '+(children.length?'data-org="'+e(entries[i].id)+'"':'data-player-site="'+e(entries[i].siteId)+'" data-player="'+e(entries[i].name)+'"')+'>'+e(v)+'</button>';
+ const details=miniTable([children.length?'名稱':'玩家帳號',children.length?'機構 ID':'玩家 ID',children.length?'玩家數':'遊戲數','記錄筆數','投注 USDT','派彩 USDT','玩家 Net Win USDT','營運 Net Win USDT'],childRows,{0:link,1:(v,i)=>children.length?e(v):link(v,i)},['合計','',children.length?t.players:t.games,t.count,money(t.bet),money(t.payout),signed(t.playerNetWin),signed(t.operatorNetWin)]);
+ const cards=children.length?'<div class="entity-cards">'+children.map(o=>{const t=totals(organizationRecords(records,organizations,o.id));return '<button class="entity-card" data-org="'+e(o.id)+'"><small>'+uiIcon('channels')+e(o.level+' · '+o.id)+'</small><h3>'+e(o.name)+' →</h3><div class="entity-values"><span><small>'+uiIcon('players')+'玩家 Net Win</small><strong class="'+tone(t.playerNetWin)+'">'+signed(t.playerNetWin)+'</strong></span><span><small>'+uiIcon('profit')+'營運 Net Win</small><strong class="'+tone(t.operatorNetWin)+'">'+signed(t.operatorNetWin)+'</strong></span></div><small>'+t.players+' 位玩家 · '+t.count+' 筆記錄</small></button>';}).join('')+'</div>':details;
  const html=detailNavigation()+organizationPath(id)+viewToggle(mode)+financialSummary(records)+
   '<p class="notice">玩家 Net Win＝結算派彩−（實扣−退款）；營運 Net Win＝實扣−退款−結算派彩，未扣分潤與營運費用。</p>'+
   (mode==='visual'?trendChart(records,detailDateLabel())+section(childHeading,cards)+section('各遊戲投注／盈虧',gameCards(records)):section(childHeading,details)+section('各遊戲投注／盈虧',gameTable(records)));
  showDialog(org.level+'詳情 · '+e(org.name),html,{drawer:true,subtitle:org.id+' · '+t.count+' 筆模擬記錄'});
 }
-function playerSourceCard(name,siteId){const p=playerSourceProfile(name,DATA.records.filter(r=>r.player===name&&(!siteId||r.cashId===siteId)),DATA.organizations);return '<section class="source-card"><h3>'+uiIcon('shield')+'來源及安全性</h3>'+kv([['所屬代理',p.agent],['註冊地區',p.region],['註冊時間',p.registered],['註冊 IP',p.registrationIp],['註冊裝置',p.registrationDevice],['VPN／代理 IP',p.vpnIp],['ISP',p.isp],['上次登入時間',p.lastLogin],['上次登入 IP',p.lastIp],['上次登入裝置',p.lastDevice]])+'<p class="detail-note">來源與登入資訊為模擬資料；時間皆為 UTC+8。</p></section>';}
+function playerSourceCard(p){
+ const source=p.source,agents=p.chain.filter(o=>o.level.endsWith('代理')).map(o=>[o.level,o.name]);
+ return '<section class="source-card"><h3>'+uiIcon('shield')+'來源及安全性</h3>'+kv([...(agents.length?agents:[['所屬代理',source.agent]]),['註冊地區',source.region],['註冊時間',source.registered],['註冊 IP',source.registrationIp],['註冊裝置',source.registrationDevice],['VPN／代理 IP',source.vpnIp],['ISP',source.isp],['上次登入時間',source.lastLogin],['上次登入 IP',source.lastIp],['上次登入裝置',source.lastDevice]])+'<p class="detail-note">來源與登入資訊為模擬資料，時間皆為 UTC+8。</p></section>';
+}
+function playerDetailContent(p,rs,mode,range,asPage=false){
+ const date=detailDateLabel(range);
+ return organizationPath(recordOrganizationId(p.latest))+viewToggle(mode,range,asPage?'data-player-profile-mode':'data-detail-mode')+playersController.card(p)+
+  kv([['玩家帳號',p.name],['玩家 ID',p.id],['現金網',p.site],['最近遊戲',p.latest.game],['最近遊玩時間',p.latest.date+' '+p.latest.time]])+playerSourceCard(p)+detailSummary(totals(rs),playerProfitLoss(rs))+
+  '<p class="notice">總盈利為正數淨盈虧加總，總虧損為負數淨盈虧加總。統計依目前日期區間。</p>'+
+  (rs.length?(mode==='visual'?trendChart(rs,date)+section('各遊戲盈虧／投注額排行',gameCards(rs)):section('各遊戲盈虧／投注額排行',gameTable(rs)))+section('最近遊玩',recordList(rs,mode==='visual')):'<p class="pm-empty">此日期區間沒有投注記錄，仍可查看玩家資訊及管理狀態。</p>')+
+  button('在新分頁查看此玩家投注記錄','player-records','primary','data-name="'+e(p.name)+'" data-site="'+e(p.site)+'"');
+}
 function openPlayer(name,mode='visual',replace=false,siteId=null){
  const identities=DATA.records.filter(r=>r.player===name&&(!siteId||r.cashId===siteId)),sites=[...new Set(identities.map(r=>r.cashId))];
  if(!identities.length){toast('找不到此玩家');return;}
  if(!siteId&&sites.length>1){showDialog('選擇玩家所屬現金網','<div class="entity-cards">'+sites.map(id=>{const p=playersController.identity(name,id);return '<button class="entity-card" data-pm-open="'+e(p.key)+'">'+e(p.site)+'</button>';}).join('')+'</div>',{management:true});return;}
- siteId=siteId||sites[0];const p=playersController.identity(name,siteId),rs=detailBaseRecords().filter(r=>r.player===name&&r.cashId===siteId);rememberDetail(replace);
- const t=totals(rs),recent=[...identities].sort((a,b)=>(b.date+' '+b.time).localeCompare(a.date+' '+a.time));dialogState={type:'player',name,mode,siteId};
- const html=detailNavigation()+organizationPath(siteId)+viewToggle(mode)+playersController.card(p)+kv([['玩家帳號',name],['玩家 ID',p.id],['商戶／站點',p.site],['最近遊戲',recent[0].game],['最近遊玩時間',recent[0].date+' '+recent[0].time]])+playerSourceCard(name,siteId)+detailSummary(t,playerProfitLoss(rs))+'<p class="notice">總盈利為正數淨盈虧加總；總虧損為負數淨盈虧加總。統計依目前日期區間。</p>'+
- (rs.length?(mode==='visual'?trendChart(rs,detailDateLabel())+section('各遊戲盈虧／投注額排行',gameCards(rs)):section('各遊戲盈虧／投注額排行',gameTable(rs)))+section('最近遊玩',recordList(rs,mode==='visual')):'<p class="pm-empty">此日期區間沒有投注記錄，仍可查看玩家資訊及管理狀態。</p>')+button('在新分頁查看此玩家投注記錄','player-records','primary','data-name="'+e(name)+'" data-site="'+e(p.site)+'"');
- showDialog('玩家詳情 · '+e(name),html,{drawer:true,subtitle:p.id+' · USDT · 模擬玩家資料'});
+ const p=playersController.identity(name,siteId||sites[0]);rememberDetail(replace);
+ const rs=filterRecords(p.records,'all',{start:detailRange.start,end:detailRange.end});
+ dialogState={type:'player',name,mode,siteId:p.siteId};
+ showDialog('玩家詳情 · '+e(name),detailNavigation()+playerDetailContent(p,rs,mode,detailRange),{drawer:true,subtitle:p.id+' · USDT · 模擬玩家資料'});
+}
+function profileTab(p){
+ let t=tabs.find(t=>t.key==='player-detail'&&t.profileKey===p.key);
+ if(!t){t={...tab('player-detail',p.name),profileKey:p.key};tabs.push(t);}
+ return t;
+}
+function openPlayerPage(p){
+ const source=current(),t=profileTab(p);
+ if(source.id!==t.id){
+  t.returnTabId=source.id;
+  t.filters={...defaultFilters(),start:source.filters.start,end:source.filters.end};
+ }
+ activate(t.id);
+ $('#app').classList.remove('mobile-open');
+}
+function playerDetailPage(t){
+ const p=playersController.find(t.profileKey),back=button(uiIcon('arrow')+'返回玩家列表','player-profile-back','small');
+ if(!p)return '<div class="page"><p>找不到此玩家</p>'+back+'</div>';
+ const rs=filterRecords(p.records,'all',t.filters);
+ return '<div class="page player-profile-page"><div class="page-heading"><div><h1>玩家詳情 · '+e(p.name)+'</h1><p class="breadcrumb">'+e(p.id+' · '+p.site)+'</p></div>'+back+'</div>'+playerDetailContent(p,rs,t.playerView||'visual',t.filters,true)+'</div>';
 }
 function openGame(game,context=dialogState,replace=false){
- const scope=context?.type==='org'?organizationRecords(detailBaseRecords(),DATA.organizations,context.id):context?.type==='player'?detailBaseRecords().filter(r=>r.player===context.name&&(!context.siteId||r.cashId===context.siteId)):detailBaseRecords();
- const rs=scope.filter(r=>r.game===game);rememberDetail(replace);dialogState={type:'game',game,context};
+ rememberDetail(replace);
+ const source=defs.has(current().key)?getReport().rs:detailBaseRecords();
+ const scope=context?.type==='org'?organizationRecords(detailBaseRecords(),liveOrganizations(),context.id):context?.type==='player'?detailBaseRecords().filter(r=>r.player===context.name&&(!context.siteId||r.cashId===context.siteId)):source;
+ const rs=scope.filter(r=>r.game===game);dialogState={type:'game',game,context};
  const explanation={'電子遊戲':'逐關下注、加碼、最高倍率與主動收取／失敗原因。','老虎機':'付費／免費旋轉、父旋轉、獎勵及累積獎池派彩。','捕魚':'各子彈等級、單發費率、道具、擊殺魚隻與獎金事件。','棋牌':'依 21 點、牛牛、鬥地主顯示手牌、操作、角色與結算倍數。'}[rs[0]?.kind];
- showDialog('遊戲詳情 · '+e(game),detailNavigation()+gameIdentity(game,96)+financialSummary(rs)+kv([...gameMetrics(rs),['獎池觸發筆數',rs.filter(r=>r.jackpotAward>0).length],['獎池派彩',money(rs.reduce((n,r)=>n+r.jackpotAward,0))+' USDT']])+'<p class="detail-note">'+explanation+'</p>'+section('投注記錄',recordList(rs)),{drawer:true,subtitle:(context?.type==='player'?context.name:context?.type==='org'?liveOrganizations().find(o=>o.id===context.id)?.name||context.id:'所有機構')+' · USDT'});
+ showDialog('遊戲詳情 · '+e(game),detailNavigation()+gameIdentity(game,96)+financialSummary(rs)+kv([...gameMetrics(rs),['獎池觸發筆數',rs.filter(r=>r.jackpotAward>0).length],['獎池派彩',money(rs.reduce((n,r)=>n+r.jackpotAward,0))+' USDT']])+'<p class="detail-note">'+(explanation||'')+'</p>'+wagerRegionTable(rs,DATA.organizations)+section('投注記錄',recordList(rs)),{drawer:true,subtitle:(context?.type==='player'?context.name:context?.type==='org'?liveOrganizations().find(o=>o.id===context.id)?.name||context.id:'所有機構')+' · USDT'});
 }
 function openRecord(id,replace=false){
   const r=DATA.records.find(r=>r.id===id);if(!r){toast('找不到此模擬記錄');return;}
@@ -427,7 +473,7 @@ function openRecord(id,replace=false){
     if(seed)specific=specific.replaceAll(seed.round,r.round);
     if(r.kind==='捕魚')specific=specific.replaceAll('0301',r.round.replace('FB-','')).replaceAll('0302',r.round.replace('FB-','')).replaceAll('F9006','F'+(r.fishBase+5));
   }
-  showDialog('投注明細 · '+e(r.game),detailNavigation()+organizationPath(r.cashId)+common+detailSummary(r)+specific+jackpotSection+wallet+button('查看玩家詳情','detail-player','primary','data-name="'+r.player+'"'),{drawer:true,subtitle:r.id+' · USDT · 模擬資料'});
+  showDialog('投注明細 · '+e(r.game),detailNavigation()+organizationPath(recordOrganizationId(r))+common+detailSummary(r)+specific+jackpotSection+wallet+button('查看玩家詳情','detail-player','primary','data-name="'+r.player+'"'),{drawer:true,subtitle:r.id+' · USDT · 模擬資料'});
 }
 function showColumns(){
   if(!dialogState||dialogState.type!=='columns'){
@@ -511,7 +557,7 @@ function showMulti(name){if(multiPanel?.name===name){closeMulti({animated:true,f
 function queryForm(t=current(),{preserveMulti=false}={}){
   clearTimeout(queryTimers.get(t.id));queryTimers.delete(t.id);
   if(!tabs.includes(t)||JSON.stringify(t.filters)===JSON.stringify(t.draft))return;
-  const f=t.draft=reconcileFilters(t.draft,DATA.organizations,DATA.games,DATA.records);
+  const f=t.draft=reconcileFilters(t.draft,DATA.organizations,DATA.games,DATA.records,t.key);
   const active=t.id===activeId,focus=active&&document.activeElement?.closest('#query-form')?document.activeElement:null;
   const selection=focus?.tagName==='INPUT'&&focus.selectionStart!==null?[focus.selectionStart,focus.selectionEnd]:null,id=focus?.id;
   if(active)saveView();t.filters={...f};t.page=1;if(t.key.startsWith('draft:players:'))t.playerUI={...t.playerUI,page:1};t.scroll.y=0;
@@ -571,8 +617,8 @@ function showAvailability(gameId,listed=null){
 }
 function showSiteAvailability(gameId,siteId){
  const game=DATA.games.find(g=>g.id===gameId),site=cashSites.find(s=>s.id===siteId),o=gameOperations.games[gameId],enabled=!o.sites[siteId].enabled;
- const message=enabled?'僅啟動此站的遊戲；全域下架與維護限制仍優先。':'僅停止此站開啟新局，其他現金網不受影響。';
- showDialog(enabled?'啟動本站遊戲':'關閉本站遊戲','<div class="mg-impact-heading"><h3>'+e(game.name)+'</h3><span class="mg-status">'+e(site.name)+'</span></div><p class="mg-note">'+message+'</p>'+(!o.sites[siteId].version&&enabled?'<p class="mg-note">啟動時套用目前建議版本 v'+o.version+'</p>':'')+operationReason(),{management:true,subtitle:'單一現金網 · '+site.id,footer:button('取消','close-dialog')+button(enabled?'確認啟動':'確認關閉','game-operation-save','primary')});
+ const message=enabled?'僅啟動此現金網的遊戲；全域下架與維護限制仍優先。':'僅停止此站開啟新局，其他現金網不受影響。';
+ showDialog(enabled?'啟動此現金網遊戲':'關閉此現金網遊戲','<div class="mg-impact-heading"><h3>'+e(game.name)+'</h3><span class="mg-status">'+e(site.name)+'</span></div><p class="mg-note">'+message+'</p>'+(!o.sites[siteId].version&&enabled?'<p class="mg-note">啟動時套用目前建議版本 v'+o.version+'</p>':'')+operationReason(),{management:true,subtitle:'單一現金網 · '+site.id,footer:button('取消','close-dialog')+button(enabled?'確認啟動':'確認關閉','game-operation-save','primary')});
  dialogState={type:'game-operation',kind:'site-availability',gameId,siteId,enabled,revision:gameOperations.revision};
 }
 function showMaintenance(gameId){
@@ -674,7 +720,7 @@ window.addEventListener('storage',event=>{
 document.addEventListener('change',event=>{
  if(['jp-pool','jp-type'].includes(event.target.id)){const field=event.target.id==='jp-pool'?'poolId':'type';current().jackpotUI={...current().jackpotUI,[field]:event.target.value,page:1};refreshGamePage(event.target.id+'-trigger');return;}
  if(event.target.id==='operation-mode'){updateRtpMode();return;}
- if(['gm-type','gm-status','gm-rtp-game'].includes(event.target.id)){const field={'gm-type':'type','gm-status':'status','gm-rtp-game':'gameId'}[event.target.id];current().managementUI={...current().managementUI,[field]:event.target.value};refreshGamePage(event.target.id+'-trigger');return;}
+ if(['gm-type','gm-status','gm-rtp-game','gm-slot-gameplay'].includes(event.target.id)){const field={'gm-type':'type','gm-status':'status','gm-rtp-game':'gameId','gm-slot-gameplay':'slotGameplay'}[event.target.id];current().managementUI={...current().managementUI,[field]:event.target.value};if(field==='type'&&event.target.value!=='老虎機')current().managementUI.slotGameplay='';refreshGamePage(event.target.id+'-trigger');return;}
   if(event.target.hasAttribute('data-multi-value')&&multiPanel){const name=multiPanel.name,v=event.target.dataset.multiValue,values=selectionValues(current().draft[name]);current().draft[name]=event.target.checked?[...new Set([...values,v])]:values.filter(x=>x!==v);queryForm(current(),{preserveMulti:true});renderMultiOptions();return;}
   if(event.target.id==='date-preset'){if(event.target.value!=='custom'){Object.assign(current().draft,datePresetRange(event.target.value));closeDate();queryForm();}else showDate();return;}
   if(event.target.id==='page-size'){saveView();current().pageSize=Number(event.target.value);current().page=1;current().scroll.y=0;render();requestAnimationFrame(()=>$('#page-size-trigger')?.focus({preventScroll:true}));}
@@ -717,8 +763,9 @@ document.addEventListener('click',event=>{
     const key=target.dataset.category;if(key==='dashboard'){openDashboard();return;}if(category===key&&submenuOpen){closeMenu();return;}category=key;languageOpen=false;openMenu();return;
   }
   if(target.dataset.org){openOrganization(target.dataset.org);return;}
-  if(target.dataset.game){openGame(target.dataset.game);return;}
+  if(target.dataset.game){const profile=!dialogState&&playersController.find(current().profileKey);openGame(target.dataset.game,profile?{type:'player',name:profile.name,siteId:profile.siteId}:dialogState);return;}
   if(target.hasAttribute('data-detail-index')){const i=Number(target.dataset.detailIndex),v=detailTrail[i];detailTrail=detailTrail.slice(0,i);restoreDetail(v);return;}
+  if(target.dataset.playerProfileMode){saveView();current().playerView=target.dataset.playerProfileMode;render();return;}
   if(target.dataset.detailMode){restoreDetail({...dialogState,mode:target.dataset.detailMode});return;}
   if(target.dataset.draft==='總帳務'&&category==='reports'){openAccounting();return;}
   if(target.dataset.draft&&BUSINESS_SECTIONS[category]){openBusinessSection(category,BUSINESS_SECTIONS[category].find(([,label])=>label===target.dataset.draft)?.[0]);return;}
@@ -782,7 +829,8 @@ document.addEventListener('click',event=>{
       const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='R&R_'+d.title+'_USDT_'+current().filters.start+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已匯出 '+rows.length+' 筆篩選結果（USDT）');break;
     }
     case 'detail-player':openPlayer(target.dataset.name);break;
-    case 'player-records':openReport('all',{duplicate:true,filters:{start:detailRange.start,end:detailRange.end,query:target.dataset.name,merchant:target.dataset.site||''}});break;
+    case 'player-profile-back':{const source=tabs.find(t=>t.id===current().returnTabId&&t.key==='draft:players:玩家列表');if(source)activate(source.id);else openPlayerSection('directory');break;}
+    case 'player-records':{const range=$('#modal').open?detailRange:current().filters;openReport('all',{duplicate:true,filters:{start:range.start,end:range.end,query:target.dataset.name,merchant:target.dataset.site||''}});break;}
     case 'search':showDialog('快速搜尋','<input id="quick-search" class="dialog-search" placeholder="搜尋報表名稱、玩家帳號或 ID" aria-label="快速搜尋"><div id="search-list">'+showSearch()+'</div>');requestAnimationFrame(()=>$('#quick-search').focus());break;
     case 'apps':showDialog('頁面捷徑','<div class="search-results">'+DATA.reports.map(d=>'<button class="search-result" data-report="'+d.key+'">'+icon(d.icon)+d.title+'</button>').join('')+'</div>');break;
     case 'notifications':showDialog('通知','<div class="small-menu"><button data-record="DEMO-F002"><strong>補單核對完成</strong><p class="notice">捕魚批次 FB-0302 已完成核對，未重複扣款。</p></button><button data-action="open-all"><strong>模擬資料準備完成</strong><p class="notice">'+DATA.records.length.toLocaleString('en-US')+' 筆記錄、'+DATA.totals.players+' 位玩家、'+DATA.totals.games+' 款遊戲，幣別為 USDT。</p></button></div>');break;
@@ -817,13 +865,16 @@ const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti()
 const chartInteractions=installChartInteractions({translate:tr});
 cmsController=installCmsController({data:DATA,getState:()=>gameOperations,loadState:readLatestOperations,commitState:commitOperations,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},localize:localized,translate:tr,toast,enhance:()=>selectControls.enhance(),currentTab:current,openManager:(kind,gameId)=>{if(kind==='game')openGameManagement('rules',gameId);else openJackpotPage('rules');current().ruleUI={gameId};render();}});
 systemController=installSystemController({data:DATA,playerEvents:()=>[...(playersController?.audit()||[]),...(businessController?.audit()||[])],operations:()=>gameOperations,showDialog,closeDialog,setDialog:value=>{dialogState=value;},getDialog:()=>dialogState,currentTab:current,renderMain:()=>render(),preferences:()=>({timeZone,locale,theme:document.documentElement.dataset.theme||'dark'}),setPreferences:values=>{if(values.locale&&languageNames[values.locale])locale=values.locale;if(['light','dark'].includes(values.theme))document.documentElement.dataset.theme=values.theme;persist();render();},showClock:showClockSettings,localize:localized,toast});
-playersController=installPlayerController({data:DATA,currentTab:current,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},openPlayer,saveView,onAudit:()=>systemController?.refresh(),toast,localize:localized});
+playersController=installPlayerController({data:DATA,currentTab:current,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},openPlayer,openPlayerPage,saveView,onAudit:()=>systemController?.refresh(),toast,localize:localized});
 businessController=installBusinessController({data:DATA,currentTab:current,showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},renderMain:()=>render(),saveView,onAudit:()=>systemController?.refresh(),toast,localize:localized});
 accountingController=installAccountingController({data:DATA,currentTab:current,renderMain:()=>render(),showDialog,closeDialog,saveView,queryForm,setDialog:value=>{dialogState=value;},rememberDetail,detailNavigation,organizations:liveOrganizations,toast,localize:localized});
 const requested=location.hash.slice(1);if(defs.has(requested)||requested==='dashboard'){let t=tabs.find(t=>t.key===requested);if(!t){t=tab(requested,requested==='dashboard'?'儀表板':'新增分頁');tabs.push(t);}activeId=t.id;}
 if(requested.startsWith('jackpot/')){const section=JACKPOT_SECTIONS.find(([key])=>key===requested.split('/')[1]);if(section){let t=tabs.find(t=>t.key==='draft:jackpot:'+section[1]);if(!t){t=tab('draft:jackpot:'+section[1],section[1]);tabs.push(t);}activeId=t.id;}}
 if(requested.startsWith('games/')){const section=GAME_SECTIONS.find(([key])=>key===requested.split('/')[1]);if(section){let t=tabs.find(t=>t.key==='draft:games:'+section[1]);if(!t){t=tab('draft:games:'+section[1],section[1]);tabs.push(t);}activeId=t.id;}}
 if(requested.startsWith('system/')){const entry=SYSTEM_SECTIONS.find(([key])=>key===requested.split('/')[1]);if(entry){let t=tabs.find(t=>t.key==='draft:system:'+entry[1]);if(!t){t=tab('draft:system:'+entry[1],entry[1]);tabs.push(t);}activeId=t.id;}}
+if(requested.startsWith('player-detail/')){
+ try{const p=playersController.find(decodeURIComponent(requested.slice('player-detail/'.length)));if(p)activeId=profileTab(p).id;}catch{}
+}
 if(requested.startsWith('players/')){const entry=PLAYER_SECTIONS.find(([key])=>key===requested.split('/')[1]);if(entry){let t=tabs.find(t=>t.key==='draft:players:'+entry[1]);if(!t){t=tab('draft:players:'+entry[1],entry[1]);tabs.push(t);}activeId=t.id;}}
 for(const cat of Object.keys(BUSINESS_SECTIONS))if(requested.startsWith(cat+'/')){const entry=BUSINESS_SECTIONS[cat].find(([key])=>key===requested.split('/')[1]);if(entry){let t=tabs.find(t=>t.key==='draft:'+cat+':'+entry[1]);if(!t){t=tab('draft:'+cat+':'+entry[1],entry[1]);tabs.push(t);}activeId=t.id;}}
 if(requested==='accounting'){let t=tabs.find(t=>t.key==='draft:reports:總帳務');if(!t){t=tab('draft:reports:總帳務','總帳務');tabs.push(t);}activeId=t.id;}

@@ -1,3 +1,4 @@
+import {hasSlotScope} from './slot-gameplay.js?v=14.4';
 export const money = value => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const signed = value => (value > 0 ? '+' : value < 0 ? '−' : '') + money(Math.abs(value));
 export const number = value => Number(String(value).replaceAll(',', '').replace('−', '-').replace(/×$/, '').replace(/（[^）]*）$/, ''));
@@ -12,19 +13,21 @@ export function financialTone(label,value){
 }
 export function organizationRecords(records,organizations,id){
  const n=organizations.find(o=>o.id===id);if(!n)return [];
- return records.filter(r=>[r.providerId,r.wrapperId,r.cashId].includes(id));
+ return records.filter(r=>[r.providerId,r.integratorId,r.wrapperId,r.cashId,r.agent1Id,r.agent2Id].includes(id));
 }
 export const playerId = name => name === 'shawn1328' ? 'P1328' : /^demo_\d+$/.test(name) ? 'P'+name.slice(5) : name;
 export const scenario = record => record.seedId || record.id;
 export const columnIndex = (def, header) => def.headers.indexOf(header);
 export const rowRecordId = (def, row) => def.recordIds?.[def.rows.indexOf(row)] || row[columnIndex(def,'投注單號')] || row[columnIndex(def,'結算單號')];
-export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',wrapper:'',merchant:'',game:'',type:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
+export const defaultFilters = () => ({start:'2026-10-15',end:'2026-10-15',wrapper:'',merchant:'',game:'',type:'',slotGameplay:'',query:'',event:'',result:'',difficulty:'',recon:'',room:'',fish:'',shot:'',tool:'',endReason:'',multiplier:''});
 export const selectionValues = value => [...new Set((Array.isArray(value)?value:[value]).filter(v=>typeof v==='string'&&v))];
 export const matchesSelection = (selected,values) => !selectionValues(selected).length || selectionValues(selected).some(v=>values.includes(v));
-export function reconcileFilters(filters,organizations,games,records){
+export function reconcileFilters(filters,organizations,games,records,key='all'){
  const f={...filters},keep=(value,valid)=>{const chosen=selectionValues(value).filter(v=>valid.includes(v));return Array.isArray(value)?chosen.length?chosen:'':chosen[0]||'';};
  f.merchant=keep(f.merchant,organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>o.name));
- f.game=keep(f.game,games.filter(g=>matchesSelection(f.type,[g.name,g.type,g.family])).map(g=>g.name));
+ if(!hasSlotScope(f,games,key))f.slotGameplay='';
+ else f.slotGameplay=keep(f.slotGameplay,games.filter(g=>g.type==='老虎機').map(g=>g.slotGameplay));
+ f.game=keep(f.game,games.filter(g=>matchesSelection(f.type,[g.name,g.type,g.family])&&matchesSelection(f.slotGameplay,[g.slotGameplay])).map(g=>g.name));
  if(f.room&&!records.some(r=>r.room===f.room&&matchesSelection(f.game,[r.game])))f.room='';
  return f;
 }
@@ -51,6 +54,7 @@ export function filterRecords(records, key, filters) {
     if (!matchesSelection(filters.type,[r.kind,r.game,r.gameFamily])) return false;
     if (!matchesSelection(filters.wrapper,[r.wrapperId])) return false;
     if (!matchesSelection(filters.game,[r.game])) return false;
+    if (!matchesSelection(filters.slotGameplay,[r.slotGameplay])) return false;
     if (!matchesSelection(filters.merchant,[r.site])) return false;
     const text = [r.id,r.player,playerId(r.player),r.round,r.game,r.event].join(' ').toLowerCase();
     if (filters.query && !text.includes(filters.query.trim().toLowerCase())) return false;
@@ -67,9 +71,10 @@ export function filterRecords(records, key, filters) {
     return true;
   });
 }
+export const recordPlayerKey = record => JSON.stringify([record.cashId || record.site || '', record.player_id || record.player]);
 export function totals(records) {
   return {
-    count: records.length, players: new Set(records.map(r=>r.player)).size,
+    count: records.length, players: new Set(records.map(recordPlayerKey)).size,
     games: new Set(records.map(r=>r.game)).size, categories: new Set(records.map(r=>r.kind)).size,
     bet: records.reduce((s,r)=>s+r.bet,0), payout: records.reduce((s,r)=>s+r.payout,0),
     net: records.reduce((s,r)=>s+r.net,0)
@@ -97,7 +102,7 @@ export function rowsFor(def, records) {
 export function summaryFor(def, records) {
   const t=totals(records);
   if(def.key==='player')return [['不重複玩家數',String(t.players)],['遊戲數',String(t.games)],['實扣投注（USDT）',money(t.bet)],['玩家淨盈虧（USDT）',signed(t.net)]];
-  if(def.key==='stats')return [['遊戲類型',String(t.categories)],['記錄筆數',String(t.count)],['有效投注（USDT）',money(t.bet)],['投注派彩差額（USDT）',signed(-t.net)]];
+  if(def.key==='stats')return [['遊戲類型',String(t.categories)],['記錄筆數',String(t.count)],['總投注額（USDT）',money(t.bet)],['投注派彩差額（USDT）',signed(-t.net)]];
   return [[def.key==='slots'?'旋轉次數（免費 '+records.filter(r=>!r.bet).length+' 次）':'記錄筆數',String(t.count)],
     ['實扣投注（USDT）',money(t.bet)],['結算派彩（USDT）',money(t.payout)],['玩家淨盈虧（USDT）',signed(t.net)]];
 }
@@ -191,7 +196,7 @@ export function csv(headers, rows) {
 }
 export function balances(records, target) {
   let balance=10000;
-  for(const r of [...records].filter(r=>r.player===target.player).sort((a,b)=>a.time.localeCompare(b.time))) {
+  for(const r of [...records].filter(r=>recordPlayerKey(r)===recordPlayerKey(target)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))) {
     if(r.id===target.id)return {before:balance,after:balance+r.net};
     balance+=r.net;
   }
