@@ -75,7 +75,7 @@ if(!tabs.length)tabs=[tab('dashboard','儀表板')];
 for(const t of tabs)if(['electronic','chess'].includes(t.key))for(const field of ['filters','draft']){const game=DATA.games.find(g=>g.name===t[field].type);if(game){t[field].game=game.name;t[field].type=game.family;}}
 let activeId=tabs.some(t=>t.id===saved?.activeId)?saved.activeId:tabs[0].id;
 let detailTrail=[],detailRange={start:'2026-10-15',end:'2026-10-15'};
-let category=currentKeyCategory(),submenuOpen=saved?.submenuOpen??true,languageOpen=false,dialogState=null,toastTimer;
+let category=currentKeyCategory(),submenuOpen=saved?.submenuOpen??true,languageOpen=false,dialogState=null,siteOperationState=null,toastTimer;
 const queryTimers=new Map();let columnTimer,composing=false,datePanel=null,multiPanel=null;
 const filterCatalog=new Map();
 let assistantOpen=false;const assistantMessages=[];
@@ -118,7 +118,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.3</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.4</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -314,6 +314,7 @@ document.fonts.addEventListener('loadingdone',fitReportColumns);
 new ResizeObserver(()=>{alignHeader();updateFrozenColumns();if(datePanel)renderDatePicker();if(multiPanel)positionMulti();}).observe($('#content'));
 document.fonts.ready.then(()=>{updateNavigationWidths();alignHeader();updateFrozenColumns();});
 function showDialog(title,html,{drawer=false,subtitle='',footer='',management=false}={}){
+  if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});
   const previousCharts=captureChartState($('#modal'));
   chartInteractions.hide();
   selectControls.close();closeDate();closeMulti();
@@ -324,8 +325,8 @@ function showDialog(title,html,{drawer=false,subtitle='',footer='',management=fa
   localized(dialog);
   selectControls.enhance();dialog.showModal();animateCharts(dialog,previousCharts,tr);animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
-function closeDialog({animated=false}={}){cancelChartMotion($('#modal'));chartInteractions.hide();selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];clockDraft=null;$('.header-clock')?.setAttribute('aria-expanded','false');};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
-function finishDialog(){if(dialogState?.type==='accounting-display'){accountingController.cancelDisplay();return;}if(['business-editor','business-confirm'].includes(dialogState?.type)){businessController.cancel();return;}if(dialogState?.type==='player-policy'){playersController.cancelPolicy();return;}if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog({animated:true});}
+function closeDialog({animated=false}={}){if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});cancelChartMotion($('#modal'));chartInteractions.hide();selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];clockDraft=null;$('.header-clock')?.setAttribute('aria-expanded','false');};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
+function finishDialog(){if($('#site-operation-modal').open){closeSiteOperation();return;}if(dialogState?.type==='accounting-display'){accountingController.cancelDisplay();return;}if(['business-editor','business-confirm'].includes(dialogState?.type)){businessController.cancel();return;}if(dialogState?.type==='player-policy'){playersController.cancelPolicy();return;}if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog({animated:true});}
 function miniTable(headers,rows,rich={},totalValues=null){
   totalValues??=detailTableTotals(headers,rows);
   const numeric=h=>/USDT|Net Win|淨輸贏|投注|派彩|盈虧|獎金|成本|本金|金額|倍率|倍數|發數|筆數|數量/.test(h)&&!/單號|記錄時間|投注時間|等級/.test(h);
@@ -616,11 +617,44 @@ function showAvailability(gameId,listed=null){
  showDialog(next?'確認全域上架':'確認全域下架',impactView(DATA,gameOperations,gameId,next)+operationReason(),{management:true,subtitle:'模擬操作 · 不會更改正式遊戲服務',footer:button('取消','close-dialog')+button(next?'確認全域上架':'確認全域下架','game-operation-save',next?'primary':'mg-danger')});
  dialogState={type:'game-operation',kind:'availability',gameId,listed:next,revision:gameOperations.revision};
 }
+function siteDrawerPosition(){
+ const body=$('#modal .dialog-body'),table=$('#modal .mg-access-view>.mg-table-scroll');
+ return {bodyTop:body?.scrollTop||0,bodyLeft:body?.scrollLeft||0,tableTop:table?.scrollTop||0,tableLeft:table?.scrollLeft||0};
+}
+function restoreSiteDrawerPosition(position){
+ const body=$('#modal .dialog-body'),table=$('#modal .mg-access-view>.mg-table-scroll');if(!position||!body)return;
+ body.scrollTop=position.bodyTop;body.scrollLeft=position.bodyLeft;
+ if(table){table.scrollTop=position.tableTop;table.scrollLeft=position.tableLeft;}
+}
+function closeSiteOperation({animated=true,restoreFocus=true}={}){
+ const dialog=$('#site-operation-modal');if(!dialog.open||(dialog.dataset.closing&&animated))return;
+ const context=siteOperationState;
+ const finish=()=>{dialog.close();dialog.replaceChildren();delete dialog.dataset.closing;siteOperationState=null;if(restoreFocus){context?.trigger?.isConnected&&context.trigger.focus({preventScroll:true});restoreSiteDrawerPosition(context?.position);}};
+ if(animated){dialog.dataset.closing='true';for(const button of dialog.querySelectorAll('button'))button.disabled=true;animateExit(dialog,'popover',finish);}else{cancelRegion(dialog);finish();}
+}
+function showSiteOperation(title,html,options,operation){
+ const dialog=$('#site-operation-modal');if(dialog.open)return;
+ chartInteractions.hide();selectControls.close();
+ const trigger=document.activeElement,switches=$$('#modal [data-gm-site-toggle]');
+ siteOperationState={operation,trigger,position:siteDrawerPosition(),focusIndex:switches.indexOf(trigger)};
+ dialog.innerHTML='<div class="dialog-header"><div><h2 id="site-operation-title">'+title+'</h2><small>'+options.subtitle+'</small></div><button class="icon-button close" data-action="close-dialog" aria-label="關閉確認視窗">×</button></div><div class="dialog-body">'+html+'</div><div class="dialog-footer">'+options.footer+'</div>';
+ localized(dialog);dialog.showModal();animateRegion(dialog,'popover');
+}
+function refreshSiteDrawer(context){
+ if(dialogState?.type!=='game-sites'||!$('#modal').open)return;
+ const body=$('#modal .dialog-body'),previous=captureChartState(body),{gameId,siteId}=context.operation;
+ body.innerHTML=detailNavigation()+gameAccessView(DATA,gameOperations,gameId,new Date(),dialogState.filter);
+ localized(body);selectControls.enhance();animateCharts(body,previous,tr);
+ const switches=$$('#modal [data-gm-site-toggle]'),focus=switches.find(n=>n.dataset.gmSite===siteId)||switches[Math.max(0,Math.min(context.focusIndex,switches.length-1))]||$('#modal .dialog-header .close');
+ focus?.focus({preventScroll:true});restoreSiteDrawerPosition(context.position);
+}
 function showSiteAvailability(gameId,siteId){
  const game=DATA.games.find(g=>g.id===gameId),site=cashSites.find(s=>s.id===siteId),o=gameOperations.games[gameId],enabled=!o.sites[siteId].enabled;
  const message=enabled?'僅啟動此現金網的遊戲；全域下架與維護限制仍優先。':'僅停止此站開啟新局，其他現金網不受影響。';
- showDialog(enabled?'啟動此現金網遊戲':'關閉此現金網遊戲','<div class="mg-impact-heading"><h3>'+e(game.name)+'</h3><span class="mg-status">'+e(site.name)+'</span></div><p class="mg-note">'+message+'</p>'+(!o.sites[siteId].version&&enabled?'<p class="mg-note">啟動時套用目前遊戲版本 v'+o.version+'</p>':'')+operationReason(),{management:true,subtitle:'單一現金網 · '+site.id,footer:button('取消','close-dialog')+button(enabled?'確認啟動':'確認關閉','game-operation-save','primary')});
- dialogState={type:'game-operation',kind:'site-availability',gameId,siteId,enabled,revision:gameOperations.revision};
+ const title=enabled?'啟動此現金網遊戲':'關閉此現金網遊戲',html='<div class="mg-impact-heading"><h3>'+e(game.name)+'</h3><span class="mg-status">'+e(site.name)+'</span></div><p class="mg-note">'+message+'</p>'+(!o.sites[siteId].version&&enabled?'<p class="mg-note">啟動時套用目前遊戲版本 v'+o.version+'</p>':'')+operationReason();
+ const options={management:true,subtitle:'單一現金網 · '+site.id,footer:button('取消','close-dialog')+button(enabled?'確認啟動':'確認關閉','game-operation-save','primary')},operation={type:'game-operation',kind:'site-availability',gameId,siteId,enabled,revision:gameOperations.revision};
+ if($('#modal').open&&dialogState?.type==='game-sites')showSiteOperation(title,html,options,operation);
+ else{showDialog(title,html,options);dialogState=operation;}
 }
 function showMaintenance(gameId){
  const game=DATA.games.find(g=>g.id===gameId),maintenance=!gameOperations.games[gameId].maintenance;
@@ -639,7 +673,7 @@ function showRtpSettings(gameId,siteId=null){
 }
 function updateRtpMode(){const mode=$('#operation-mode');if(!mode)return;const scheduled=mode.value==='scheduled';$('#operation-schedule').hidden=!scheduled;$('#operation-rtp').disabled=mode.value==='inherit';if(mode.value==='inherit')$('#operation-rtp').value=String(effectiveRtp(gameOperations,dialogState.gameId,dialogState.siteId).baseline);for(const input of $$('#operation-schedule input'))input.required=scheduled;selectControls.enhance();}
 function saveGameOperation(){
- const operation=dialogState;if(operation?.type!=='game-operation')return;
+ const context=siteOperationState,operation=context?.operation||dialogState;if(operation?.type!=='game-operation'||(context&&$('#site-operation-modal').dataset.closing))return;
  const error=$('#operation-error'),fail=text=>{error.textContent=tr(text);error.hidden=false;};
  const reason=$('#operation-reason').value.trim();if(reason.length<2){fail('請填寫至少兩個字的異動原因');$('#operation-reason').focus();return;}
  try{
@@ -650,7 +684,10 @@ function saveGameOperation(){
   else if(operation.kind==='maintenance')next=setGameMaintenance(gameOperations,gameId,operation.maintenance,reason);
   else if(operation.kind==='default-rtp')next=setDefaultRtp(gameOperations,gameId,$('#operation-rtp').value,reason);
   else{const mode=$('#operation-mode').value;let config=null;if(mode!=='inherit'){config={mode,rtp:Number($('#operation-rtp').value)};if(mode==='scheduled'){for(const input of $$('#operation-schedule input'))if(!input.reportValidity())return;config.start=fromOperationsTime($('#operation-start').value);config.end=fromOperationsTime($('#operation-end').value);}}next=setRtpOverride(gameOperations,gameId,siteId,config,reason);}
-  next=queueLegacyChange(DATA,next,operation,reason);commitOperations(next);saveView();closeDialog();render();if(operation.kind==='site-availability')showGameSites(gameId,'all',true);else cmsController.showSync(next.configuration.batches[0].id);cmsController.runSync(next.configuration.batches[0].id);toast('CMS 設定已發布，開始同步現金網');
+  next=queueLegacyChange(DATA,next,operation,reason);commitOperations(next);saveView();
+  if(context){closeSiteOperation({animated:false,restoreFocus:false});render();refreshSiteDrawer(context);}
+  else{closeDialog();render();if(operation.kind==='site-availability')showGameSites(gameId,'all',true);else cmsController.showSync(next.configuration.batches[0].id);}
+  cmsController.runSync(next.configuration.batches[0].id);toast('CMS 設定已發布，開始同步現金網');
  }catch(err){fail(err.name==='QuotaExceededError'?'無法儲存設定，請檢查瀏覽器儲存空間':err.message||'無法儲存設定');}
 }
 function openJackpotPage(section='pools',poolId=null){
@@ -861,6 +898,8 @@ document.addEventListener('keydown',event=>{
 });
 $('#modal').addEventListener('click',event=>{if(event.target===$('#modal')){const r=$('#modal').getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)finishDialog();}});
 $('#modal').addEventListener('cancel',event=>{event.preventDefault();finishDialog();});
+$('#site-operation-modal').addEventListener('cancel',event=>{event.preventDefault();closeSiteOperation();});
+$('#site-operation-modal').addEventListener('click',event=>{const dialog=$('#site-operation-modal');if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeSiteOperation();}});
 window.addEventListener('beforeunload',saveView);
 const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti();closeLanguage();}});
 const chartInteractions=installChartInteractions({translate:tr});
