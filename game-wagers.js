@@ -33,13 +33,28 @@ export function wagerRegions(records, organizations) {
     .sort((a, b) => b.players - a.players || b.total - a.total || a.region.localeCompare(b.region, 'zh-Hant'));
 }
 
-export function wagerOverview(records, date, label = '總投注額') {
+export function wagerOverview(records, date, label = '總投注額', {compact=false}={}) {
   const {total, average} = wagerMetrics(records), wins=netWinsFor(records);
-  return '<div class="wager-overview"><span class="wager-metric">'+uiIcon('coins')+'<span>'+label+'</span><strong>'+money(total)+' USDT</strong></span>'+
-    '<span class="wager-metric"><span>平均每筆投注額</span><strong>'+(average === null ? '—' : money(average)+' USDT')+'</strong></span>'+
-    '<span class="wager-metric"><span>玩家淨盈虧</span><strong class="'+tone(wins.playerNetWin)+'">'+signed(wins.playerNetWin)+' USDT</strong></span>'+
-    '<span class="wager-metric"><span>營運淨輸贏</span><strong class="'+tone(wins.operatorNetWin)+'">'+signed(wins.operatorNetWin)+' USDT</strong></span>'+
-    '<small>'+e(date)+' · 模擬投注 · 平均按實扣投注筆數計算</small></div>';
+  const metrics=[
+    {key:'bet',icon:'coins',label,value:money(total),tone:''},
+    {key:'average',icon:'activity',label:'平均每筆投注額',value:average===null?'—':money(average),tone:''},
+    {key:'player',icon:'players',label:'玩家淨盈虧',value:signed(wins.playerNetWin),tone:tone(wins.playerNetWin)},
+    {key:'operator',icon:'profit',label:'營運淨輸贏',value:signed(wins.operatorNetWin),tone:tone(wins.operatorNetWin)}
+  ];
+  const meta='<small class="wager-meta">'+e(date)+' · 模擬投注 · 平均按實扣投注筆數計算</small>';
+  if(compact)return '<div class="wager-overview wager-overview--compact">'+metrics.map(m=>'<span class="wager-metric"><span>'+e(m.label)+'</span><strong class="'+m.tone+'">'+e(m.value)+(m.value==='—'?'':' USDT')+'</strong></span>').join('')+meta+'</div>';
+  return '<div class="wager-overview"><div class="wager-card-grid">'+metrics.map(m=>
+    '<article class="wager-info-card" data-wager-card="'+m.key+'" role="group" aria-label="'+e(m.label+' '+m.value+(m.value==='—'?'':' USDT'))+'">'+
+    '<div class="wager-card-head"><span class="wager-info-icon">'+uiIcon(m.icon)+'</span><span class="wager-card-label">'+e(m.label)+'</span></div>'+
+    '<div class="wager-card-value"><strong class="'+m.tone+'">'+e(m.value)+'</strong>'+(m.value==='—'?'':'<small>USDT</small>')+'</div></article>'
+  ).join('')+'</div>'+meta+'</div>';
+}
+
+// Sum underlying records for the same filter scope; percentages and versions stay blank.
+export function wagerTableTotals(records,label='合計'){
+ const wins=netWinsFor(records);
+ return {label,values:{'總投注額 USDT':money(wagerMetrics(records).total),'投注額 USDT':money(wagerMetrics(records).total),
+  '玩家淨盈虧 USDT':signed(wins.playerNetWin),'營運淨輸贏 USDT':signed(wins.operatorNetWin)}};
 }
 
 export function wagerRegionTable(records, organizations) {

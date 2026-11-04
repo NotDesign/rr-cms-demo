@@ -1,8 +1,8 @@
 import {NET_WIN,netWinsFor} from './net-win.js?v=14.4.1';
 import {escape as e,money,signed,tone,totals} from './core.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
-import {managementMetric as baseMetric} from './game-management-view.js?v=14.4.1';
-import {statisticsDashboard} from './statistics-view.js?v=14.4.1';
+import {managementMetric as baseMetric} from './game-management-view.js?v=14.4.2';
+import {statisticsDashboard} from './statistics-view.js?v=14.4.2';
 import {operationsTime} from './game-operations.js?v=14.4.1';
 import {PLAYER_SECTIONS,accessLabels,botLabels,playerPolicy,playerAccess,playerEvidence} from './player-management.js?v=14.4.1';
 const metric=(icon,label,value,cls='',caption='')=>baseMetric(icon,label,cls?'<span class="'+cls+'">'+value+'</span>':value).replace('</strong>','</strong>'+(caption?'<span class="net-win-caption">'+e(caption)+'</span>':''));

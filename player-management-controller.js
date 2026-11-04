@@ -1,5 +1,5 @@
 import {createPlayerCatalog,createPlayerState,playerDirectory,playerPolicy,playerAccess,updatePlayerPolicy,PLAYER_SECTIONS} from './player-management.js?v=14.4.1';
-import {playerPage,playerPolicyCard,playerPolicyEditor} from './player-management-view.js?v=14.4.1';
+import {playerPage,playerPolicyCard,playerPolicyEditor} from './player-management-view.js?v=14.4.2';
 export function installPlayerController({data,currentTab,renderMain,showDialog,closeDialog,getDialog,setDialog,openPlayer,openPlayerPage,saveView,onAudit,toast,localize}){
  const catalog=createPlayerCatalog(data),storageKey='rr-cms-player-management-v1',$=s=>document.querySelector(s);
  const read=()=>{const raw=localStorage.getItem(storageKey);return createPlayerState(raw?JSON.parse(raw):{});};let context=null;

@@ -1,5 +1,5 @@
 import {BUSINESS_SECTIONS,createBusinessState,businessOrganizations,saveBusinessRecord,changeCampaignStatus,settlementPeriod,settlementPreview,createStatement,changeStatementStatus,businessStatus} from './business-management.js?v=14.4.1';
-import {businessPage,businessEditor,businessDetail,settlementDetail,reasonField} from './business-management-view.js?v=14.4.1';
+import {businessPage,businessEditor,businessDetail,settlementDetail,reasonField} from './business-management-view.js?v=14.4.2';
 import {escape as e,csv} from './core.js?v=14.4.1';
 export function installBusinessController({data,currentTab,showDialog,closeDialog,getDialog,setDialog,renderMain,saveView,onAudit,toast,localize}){
  const storageKey='rr-cms-business-v1',$=s=>document.querySelector(s),read=()=>{const raw=localStorage.getItem(storageKey);return createBusinessState(data,raw?JSON.parse(raw):{});};let previous=null;

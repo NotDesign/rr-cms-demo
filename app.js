@@ -2,12 +2,12 @@ import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfit
 import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4.1';
 import {installAccountingController} from './accounting-controller.js?v=14.4.1';
 import {BUSINESS_SECTIONS} from './business-management.js?v=14.4.1';
-import {installBusinessController} from './business-management-controller.js?v=14.4.1';
+import {installBusinessController} from './business-management-controller.js?v=14.4.2';
 import {PLAYER_SECTIONS} from './player-management.js?v=14.4.1';
-import {installPlayerController} from './player-management-controller.js?v=14.4.1';
+import {installPlayerController} from './player-management-controller.js?v=14.4.2';
 import {SYSTEM_SECTIONS} from './system-management.js?v=14.4.1';
-import {installSystemController} from './system-controller.js?v=14.4.1';
-import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.1';
+import {installSystemController} from './system-controller.js?v=14.4.2';
+import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.2';
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4.1';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4.1';
 import {localize,translate,languageNames} from './i18n.js?v=14.4.1';
@@ -16,8 +16,8 @@ import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.1';
 import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.1';
 import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4.1';
 import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4.1';
-import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4.1';
-import {statisticsDashboard} from './statistics-view.js?v=14.4.1';
+import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4.2';
+import {statisticsDashboard} from './statistics-view.js?v=14.4.2';
 import {captureChartState,animateCharts,cancelChartMotion} from './chart-motion.js?v=14.4.1';
 import {installRegionCharts} from './region-chart.js?v=14.4.1';
 import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=14.4.1';
@@ -28,14 +28,14 @@ import {animateRegion,animateExit,cancelRegion} from './motion.js?v=14.4.1';
 import {installSelectControls} from './select-control.js?v=14.4.1';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=14.4.1';
 import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.4.1';
-import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4.1';
+import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4.2';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=14.4.1';
-import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4.1';
+import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4.2';
 
 import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.4.1';
-import {ruleManagerPage} from './cms-rule-view.js?v=14.4.1';
-import {installCmsController} from './cms-controller.js?v=14.4.1';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.4.2';
+import {installCmsController} from './cms-controller.js?v=14.4.2';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(expandDemoScenarios);
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
@@ -118,7 +118,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.1</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.2</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');

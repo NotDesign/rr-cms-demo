@@ -51,3 +51,12 @@
 .mg-version-site:has(.mg-version-financial)>div:first-child{flex:1 1 140px}
 .mg-version-financial small{margin-bottom:4px}
 @media(max-width:620px){.mg-version-financial{width:100%;order:3}.mg-version-financial strong{font-size:12px}}
+
+/* Column headings and the filtered total row remain one green summary band. */
+.mg-table:has(.mg-totals)>thead{position:sticky;top:0;z-index:3}
+.mg-table:has(.mg-totals)>thead>tr>th,.mg-access-view>.mg-table-scroll .mg-table:has(.mg-totals)>thead>tr>th{position:static}
+.mg-table .mg-totals>td{background:color-mix(in srgb,var(--brand) 16%,var(--paper));border-bottom:1px solid var(--action-line);color:var(--text);font-weight:600;padding:12px 18px}
+.mg-table .mg-totals>td.positive{color:var(--positive)}
+.mg-table .mg-totals>td.negative{color:var(--negative)}
+.mg-table .mg-totals>td:first-child{text-align:left}
+@media(max-width:760px){.mg-table .mg-totals>td{padding:12px 16px}}
