@@ -28,7 +28,19 @@
 @media(max-width:1050px){.jp-report-grid{grid-template-columns:1fr}.jackpot-page .mg-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.jp-rule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.mg-version-overview{gap:8px}.mg-version-overview .mg-metric{display:block;padding:12px}.mg-version-overview .ui-icon{width:22px;height:22px;margin-bottom:8px}.mg-version-overview strong{font-size:22px}.mg-version-overview small{font-size:10px}.mg-version-group{padding:14px}.mg-version-group>.mg-card-title{flex-wrap:wrap}.mg-version-group>.mg-card-title>span:last-child{width:100%;margin-left:0}.mg-detail-actions{flex-wrap:wrap}.jp-chart{padding:16px}.jp-rule-grid{gap:14px;padding:16px}.jp-detail-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.jp-pool-card{padding:18px}.jp-chart .mg-card-title{flex-wrap:wrap}.jp-chart .mg-card-title small{font-size:10px}.jp-hour-bars,.pool-dialog .jp-hour-bars{gap:2px}.jp-column-bars{gap:1px}.jp-hour-bars .hour-column>small{font-size:8px}.jp-chart .chart-legend{gap:8px}.jp-chart .chart-legend button{font-size:11px}.jackpot-page .mg-metric strong,.jp-detail-metrics .mg-metric strong{font-size:20px}.jackpot-page .mg-metric,.jp-detail-metrics .mg-metric{gap:8px;padding:12px}.jackpot-page .mg-metric>.ui-icon,.jp-detail-metrics .mg-metric>.ui-icon{width:22px;height:22px}.jp-pagination{flex-wrap:wrap}}
 
-.mg-table [data-gm-site-toggle]{min-width:72px}
+/* Site switches show the saved setting; existing confirmation handles changes. */
+.mg-site-toggle{display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;min-height:44px;padding:7px 3px;border:0;border-radius:10px;background:transparent;text-align:left;vertical-align:middle;white-space:nowrap;cursor:pointer}
+.mg-switch-track{position:relative;display:block;flex:none;width:52px;height:30px;border-radius:999px;background:color-mix(in srgb,var(--text) 24%,var(--paper));box-shadow:inset 0 0 0 1px var(--line);transition:background-color 160ms ease,box-shadow 160ms ease}
+.mg-switch-thumb{position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0004;transform:translateX(0);transition:transform 180ms cubic-bezier(.2,.8,.2,1)}
+.mg-switch-label{font-size:12px;line-height:20px;color:var(--text)}
+.mg-site-toggle[aria-checked=true] .mg-switch-track{background:var(--brand);box-shadow:inset 0 1px 1px #ffffff20,0 6px 16px -9px color-mix(in srgb,var(--brand) 70%,transparent)}
+.mg-site-toggle[aria-checked=true] .mg-switch-thumb{transform:translateX(22px)}
+.mg-site-toggle:hover .mg-switch-track{background:color-mix(in srgb,var(--text) 32%,var(--paper))}
+.mg-site-toggle[aria-checked=true]:hover .mg-switch-track{background:color-mix(in srgb,var(--brand) 86%,#b6ffe0)}
+.mg-site-toggle:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.mg-site-toggle:disabled{cursor:not-allowed;opacity:.45}
+@media(prefers-reduced-motion:reduce){.mg-switch-track,.mg-switch-thumb{transition:none}}
+
 
 /* Game access keeps the complete list in the drawer's single scroll area. */
 .mg-identity img{width:72px;height:72px;flex:none;border-radius:16px}

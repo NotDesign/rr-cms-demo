@@ -3,7 +3,7 @@ import {escape as e,money,signed,tone,totals,organizationRecords} from './core.j
 import {organizationParents,organizationSections} from './organization-hierarchy.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
 import {gameIdentity} from './detail-views.js?v=14.4.1';
-import {managementMetric as metric} from './game-management-view.js?v=14.4.2';
+import {managementMetric as metric} from './game-management-view.js?v=14.4.3';
 import {operationsTime} from './game-operations.js?v=14.4.1';
 import {BUSINESS_SECTIONS,campaignTypes,businessStatus,businessOrganizations,campaignStatus,settlementPeriod,settlementPreview} from './business-management.js?v=14.4.1';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';

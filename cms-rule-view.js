@@ -2,7 +2,7 @@ import {wagerOverview} from './game-wagers.js?v=14.4.2';
 import {gameFunding} from './jackpot-partnership.js?v=14.4.1';
 import {escape as e,money} from './core.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
-import {managementTable as table,managementMetric as metric,accessLabels} from './game-management-view.js?v=14.4.2';
+import {managementTable as table,managementMetric as metric,accessLabels} from './game-management-view.js?v=14.4.3';
 import {gameAccess,effectiveRtp,operationsTime} from './game-operations.js?v=14.4.1';
 import {ruleKindLabels,gameEvent,defaultRuleSettings,assignedRule,syncCounts,deployedRtp} from './cms-configuration.js?v=14.4.1';
 
