@@ -1,7 +1,7 @@
 import {escape as e,money} from './core.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
 import {chartTipAttrs} from './chart-interactions.js?v=14.4.1';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.3';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.5';
 import {poolPartnership} from './jackpot-partnership.js?v=14.4.1';
 const net=value=>'<strong class="'+(value>0?'positive':value<0?'negative':'')+'">'+(value>0?'+':'')+money(value)+'</strong>';
 const pair=(label,value)=>'<div><small>'+label+'</small><strong>'+money(value)+'</strong></div>';

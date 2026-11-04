@@ -1,6 +1,7 @@
 import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfitLoss} from './net-win.js?v=14.4.1';
 import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4.1';
 import {installAccountingController} from './accounting-controller.js?v=14.4.1';
+import {installInfoCards} from './info-card-controller.js?v=14.4.5';
 import {BUSINESS_SECTIONS} from './business-management.js?v=14.4.1';
 import {installBusinessController} from './business-management-controller.js?v=14.4.3';
 import {PLAYER_SECTIONS} from './player-management.js?v=14.4.1';
@@ -10,7 +11,7 @@ import {installSystemController} from './system-controller.js?v=14.4.3';
 import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.3';
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4.1';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4.1';
-import {localize,translate,languageNames} from './i18n.js?v=14.4.1';
+import {localize,translate,languageNames} from './i18n.js?v=14.4.5';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.1';
 import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.1';
@@ -28,7 +29,7 @@ import {animateRegion,animateExit,cancelRegion} from './motion.js?v=14.4.1';
 import {installSelectControls} from './select-control.js?v=14.4.1';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=14.4.1';
 import {GAME_SECTIONS,RTP_PROFILES,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.4.1';
-import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4.3';
+import {managementPage,impactView,gameAccessView,versionUsageView,rtpLabels} from './game-management-view.js?v=14.4.5';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=14.4.1';
 import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4.3';
@@ -69,7 +70,8 @@ let gameOperations=normalizeOperations(savedGameOperations);
 let cmsController=null,systemController=null,playersController=null,businessController=null,accountingController=null;
 try{localStorage.setItem(gameStorageKey,JSON.stringify(compactGameOperations(DATA,gameOperations)));}catch{}
 const tr=text=>translate(text,locale);
-const localized=root=>localize(root,locale);
+let infoCards=null;
+const localized=root=>{infoCards?.enhance(root);return localize(root,locale);};
 let tabs=Array.isArray(saved?.tabs)&&saved.tabs.length?saved.tabs.filter(t=>t&&typeof t.id==='string'&&(defs.has(t.key)||t.key==='dashboard'||t.key==='new'||t.key==='player-detail'||t.key.startsWith('draft:'))).map(t=>({...tab(t.key,t.title),...t,filters:{...defaultFilters(),...t.filters},draft:{...defaultFilters(),...t.draft}})):[tab('dashboard','儀表板')];
 if(!tabs.length)tabs=[tab('dashboard','儀表板')];
 for(const t of tabs)if(['electronic','chess'].includes(t.key))for(const field of ['filters','draft']){const game=DATA.games.find(g=>g.name===t[field].type);if(game){t[field].game=game.name;t[field].type=game.family;}}
@@ -118,7 +120,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/包網|現金網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.4</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.5</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -325,7 +327,7 @@ function showDialog(title,html,{drawer=false,subtitle='',footer='',management=fa
   localized(dialog);
   selectControls.enhance();dialog.showModal();animateCharts(dialog,previousCharts,tr);animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
-function closeDialog({animated=false}={}){if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});cancelChartMotion($('#modal'));chartInteractions.hide();selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];clockDraft=null;$('.header-clock')?.setAttribute('aria-expanded','false');};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
+function closeDialog({animated=false}={}){infoCards?.close({animated:false,restoreFocus:false});if(siteOperationState)closeSiteOperation({animated:false,restoreFocus:false});cancelChartMotion($('#modal'));chartInteractions.hide();selectControls.close();closeDate();clearTimeout(columnTimer);const dialog=$('#modal'),finish=()=>{if(dialog.open)dialog.close();dialogState=null;detailTrail=[];clockDraft=null;$('.header-clock')?.setAttribute('aria-expanded','false');};if(animated&&dialog.open)animateExit(dialog,dialog.classList.contains('drawer')?'drawer':'popover',finish);else{cancelRegion(dialog);finish();}}
 function finishDialog(){if($('#site-operation-modal').open){closeSiteOperation();return;}if(dialogState?.type==='accounting-display'){accountingController.cancelDisplay();return;}if(['business-editor','business-confirm'].includes(dialogState?.type)){businessController.cancel();return;}if(dialogState?.type==='player-policy'){playersController.cancelPolicy();return;}if(dialogState?.type==='column')applyColumnFilter({close:false});if(dialogState?.type==='date')applyDate();closeDialog({animated:true});}
 function miniTable(headers,rows,rich={},totalValues=null){
   totalValues??=detailTableTotals(headers,rows);
@@ -780,6 +782,7 @@ document.addEventListener('change',event=>{
 });
 document.addEventListener('click',event=>{
   const target=event.target.closest('button,a');if(!target)return;
+  if(infoCards?.handleClick(target))return;
   if(handleManagementClick(target))return;
   if(target.dataset.assistantQuestion){askAssistant(target.dataset.assistantQuestion);return;}
   if(target.dataset.filterMulti){showMulti(target.dataset.filterMulti);return;}
@@ -903,6 +906,7 @@ $('#site-operation-modal').addEventListener('click',event=>{const dialog=$('#sit
 window.addEventListener('beforeunload',saveView);
 const selectControls=installSelectControls({onOpen:()=>{closeDate();closeMulti();closeLanguage();}});
 const chartInteractions=installChartInteractions({translate:tr});
+infoCards=installInfoCards({pageScope:()=>current().key,translate:tr,localize:root=>localize(root,locale),toast});
 installRegionCharts({beforeChange:()=>chartInteractions.hide(),translate:tr});
 cmsController=installCmsController({data:DATA,getState:()=>gameOperations,loadState:readLatestOperations,commitState:commitOperations,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},localize:localized,translate:tr,toast,enhance:()=>selectControls.enhance(),currentTab:current,openManager:(kind,gameId)=>{if(kind==='game')openGameManagement('rules',gameId);else openJackpotPage('rules');current().ruleUI={gameId};render();}});
 systemController=installSystemController({data:DATA,playerEvents:()=>[...(playersController?.audit()||[]),...(businessController?.audit()||[])],operations:()=>gameOperations,showDialog,closeDialog,setDialog:value=>{dialogState=value;},getDialog:()=>dialogState,currentTab:current,renderMain:()=>render(),preferences:()=>({timeZone,locale,theme:document.documentElement.dataset.theme||'dark'}),setPreferences:values=>{if(values.locale&&languageNames[values.locale])locale=values.locale;if(['light','dark'].includes(values.theme))document.documentElement.dataset.theme=values.theme;persist();render();},showClock:showClockSettings,localize:localized,toast});

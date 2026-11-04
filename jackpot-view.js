@@ -4,7 +4,7 @@ import {partnershipCardDetails,partnershipOverview} from './jackpot-partnership-
 import {escape as e,money,signed,tone} from './core.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.1';
 import {chartTipAttrs} from './chart-interactions.js?v=14.4.1';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.3';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.5';
 import {jackpotEligibility} from './cms-configuration.js?v=14.4.1';
 import {gameAccess} from './game-operations.js?v=14.4.1';
 import {JACKPOT_SECTIONS,jackpotOverview,poolSummary,jackpotHours,filterJackpotWins} from './jackpot-analytics.js?v=14.4.1';
