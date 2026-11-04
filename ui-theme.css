@@ -420,3 +420,6 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 .scope-empty{font-size:12px;color:var(--muted);padding:16px 12px;margin:0}
 .scope-trigger:focus-visible,.scope-search:focus-visible,.scope-choice:focus-within{outline:2px solid var(--action);outline-offset:2px}
 @media(max-width:620px){.biz-scope-selects{grid-template-columns:1fr;gap:14px}.scope-popover{gap:8px}.scope-choice{padding:9px 10px}}
+
+/* Detail tables keep their intrinsic height inside scrolling flex drawers. */
+.dialog-body>.biz-scroll{flex:none;min-height:0}
