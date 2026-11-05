@@ -6,10 +6,10 @@ export function popularitySelection(games,metric='count',hidden=[]){
  const ranked=[...games].sort((a,b)=>b[metric]-a[metric]);
  const slices=ranked.slice(0,5).map(g=>({...g,games:1}));
  const rest=ranked.slice(5);
- if(rest.length)slices.push({name:'其他遊戲',games:rest.length,count:rest.reduce((n,g)=>n+g.count,0),bet:rest.reduce((n,g)=>n+g.bet,0)});
+ if(rest.length)slices.push({name:'其他遊戲',games:rest.length,players:new Set(rest.flatMap(g=>g.playerKeys||[])).size,paid:rest.reduce((n,g)=>n+(g.paid||0),0),count:rest.reduce((n,g)=>n+g.count,0),bet:rest.reduce((n,g)=>n+g.bet,0)});
  const shown=slices.filter(s=>!hidden.includes(s.name)),total=shown.reduce((n,s)=>n+s[metric],0);
  let offset=0;
- return {total,games:shown.reduce((n,s)=>n+s.games,0),allGames:games.length,count:shown.reduce((n,s)=>n+s.count,0),bet:shown.reduce((n,s)=>n+s.bet,0),slices:slices.map((s,i)=>{const enabled=!hidden.includes(s.name),fraction=enabled&&total?s[metric]/total:0,start=offset;offset+=fraction;return {...s,index:i,enabled,fraction,start,end:offset,percent:fraction*100};})};
+ return {total,games:shown.reduce((n,s)=>n+s.games,0),allGames:games.length,count:shown.reduce((n,s)=>n+s.count,0),bet:shown.reduce((n,s)=>n+s.bet,0),slices:slices.map((s,i)=>{const enabled=!hidden.includes(s.name),fraction=enabled&&total?s[metric]/total:0,start=offset;offset+=fraction;return {...s,average:s.paid?s.bet/s.paid:null,index:i,enabled,fraction,start,end:offset,percent:fraction*100};})};
 }
 export function playerProfitLoss(records){
  const profit=records.reduce((n,r)=>n+Math.max(0,r.net),0),loss=records.reduce((n,r)=>n+Math.min(0,r.net),0);
@@ -33,10 +33,10 @@ export function statisticsModel(records,{start,end}){
  for(const r of records){
   const key=granularity==='hour'?r.time.slice(0,2):granularity==='day'?r.date:r.date.slice(0,7),bucket=byKey.get(key);
   if(bucket){bucket.players.add(recordPlayerKey(r));bucket.bet+=r.bet;bucket.payout+=r.payout;bucket.count++;}
-  if(!games.has(r.game))games.set(r.game,{name:r.game,kind:r.kind,players:new Set(),count:0,bet:0,payout:0,net:0});
-  const g=games.get(r.game);g.players.add(recordPlayerKey(r));g.count++;g.bet+=r.bet;g.payout+=r.payout;g.net+=r.net;
+  if(!games.has(r.game))games.set(r.game,{name:r.game,kind:r.kind,players:new Set(),paid:0,count:0,bet:0,payout:0,net:0});
+  const g=games.get(r.game);g.players.add(recordPlayerKey(r));if(r.bet>0)g.paid++;g.count++;g.bet+=r.bet;g.payout+=r.payout;g.net+=r.net;
   bet+=r.bet;payout+=r.payout;jackpot+=r.jackpotAward||0;if(r.jackpotAward>0)triggers++;
  }
  const series=buckets.map(b=>({...b,players:b.players.size}));
- return {granularity,series,games:[...games.values()].map(g=>({...g,players:g.players.size})),players:new Set(records.map(recordPlayerKey)).size,count:records.length,bet,payout,difference:bet-payout,rtp:bet?payout/bet*100:null,jackpot,triggers,peak:series.reduce((a,b)=>b.players>a.players?b:a,{label:'無記錄',players:0})};
+ return {granularity,series,games:[...games.values()].map(g=>({...g,players:g.players.size,playerKeys:[...g.players]})),players:new Set(records.map(recordPlayerKey)).size,count:records.length,bet,payout,difference:bet-payout,rtp:bet?payout/bet*100:null,jackpot,triggers,peak:series.reduce((a,b)=>b.players>a.players?b:a,{label:'無記錄',players:0})};
 }

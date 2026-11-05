@@ -150,3 +150,9 @@ test('settlement report examples retain ledger-derived snapshots across reloads 
  const reloaded=createBusinessState(data,JSON.parse(JSON.stringify(business)));assert.equal(reloaded.statements.length,business.statements.length);
  assert.equal(new Set(reloaded.statements.map(r=>r.id)).size,reloaded.statements.length);
 });
+
+test('global region fixtures include Europe and America without changing wager balances',()=>{
+ for(const region of ['美國','加拿大','英國','德國','法國','西班牙','義大利','荷蘭','巴西','墨西哥'])assert.ok(data.records.some(r=>r.siteRegion===region),region);
+ assert.equal(new Set(data.records.map(r=>r.siteRegion)).size,22);
+ assert.equal(wagerMetrics(data.records).total,951240);
+});

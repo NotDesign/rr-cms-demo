@@ -1,5 +1,5 @@
 import {gameFunding,validateFunding} from './jackpot-partnership.js?v=14.4.1';
-import {parseRtp,RTP_ERROR,gameAccess} from './game-operations.js?v=14.4.6';
+import {parseRtp,RTP_ERROR,gameAccess} from './game-operations.js?v=14.5.2';
 import {cents} from './jackpot-analytics.js?v=14.4.1';
 
 const copy=value=>JSON.parse(JSON.stringify(value));

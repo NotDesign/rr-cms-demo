@@ -16,7 +16,7 @@ export function installCurrencyDisplay({render,showDialog,closeDialog,enhanceSel
  }
  function enhance(root){
   labels(root);const content=document.getElementById('content');if(!content||!(root===content||root.contains?.(content)))return;
-  const page=content.querySelector('.page'),heading=page?.querySelector('.page-heading');if(!heading)return;
+  const page=content.querySelector('.page'),heading=page?.querySelector('.page-heading');if(!heading)return;if(page.hasAttribute('data-native-currency')){page.querySelector('.currency-display-bar')?.remove();return;}
   const old=page.querySelector('.currency-display-bar');if(old)old.remove();const state=currencyPreferences(),code=state.currency;
   const bar=document.createElement('div');bar.className='currency-display-bar';bar.setAttribute('data-currency-original','');
   bar.innerHTML='<label for="display-currency">顯示幣別</label><select id="display-currency" aria-label="顯示幣別">'+CURRENCIES.map(([id,name])=>'<option value="'+id+'"'+(id===code?' selected':'')+'>'+id+' · '+name+'</option>').join('')+'</select><span class="currency-rate-note">原幣 USDT'+(code==='USDT'?'':' · 1 USDT = '+state.rates[code].toLocaleString('en-US',{maximumFractionDigits:6})+' '+code)+' <small>示例匯率</small></span><button type="button" class="button small" data-fx-settings>'+uiIcon('sliders')+'匯率設定</button>';

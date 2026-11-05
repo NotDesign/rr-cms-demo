@@ -11,7 +11,7 @@ const cashNames=[
 ];
 const existingSiteIds=['A1','A2','B1','B2','A3','B3','C1','C2','C3','D1','D2','D3','E1','E2','E3','F1','F2','F3'];
 const originalRegions=['未標示地區','越南','泰國','多地區','多地區','越南','台灣','越南','多地區','泰國','多地區','台灣','越南','泰國','多地區','台灣','泰國','多地區'];
-const regions=['台灣','越南','泰國','馬來西亞','菲律賓','印尼'];
+const regions=['台灣','越南','泰國','馬來西亞','菲律賓','印尼','美國','加拿大','英國','德國','法國','西班牙','義大利','荷蘭','瑞典','挪威','巴西','墨西哥','澳洲','紐西蘭'];
 const integratorNames=['寰宇','天際','聯創','匯通','卓聯'];
 
 function organizationsForDemo(source) {
@@ -193,6 +193,6 @@ export function expandDemoScenarios(source) {
   for(const pool of jackpotPools)pool.closing=running.get(pool.id)/100;
   const organizationAliases=Object.fromEntries(source.organizations.map(org=>[org.name,organizations.find(next=>next.id===org.id)?.name||org.name]));
   organizationAliases['示例遊戲集成商']=integratorNames[0]+'遊戲集成商';
-  return {...source,revision:'discussion-5-20-50-100-500-optional-parents',games:gameCatalog,organizations,organizationAliases,records,
+  return {...source,revision:'discussion-5-20-50-100-500-global-regions',games:gameCatalog,organizations,organizationAliases,records,
     jackpotPools,reports:rebuildReports(source,records),totals:totals(records)};
 }

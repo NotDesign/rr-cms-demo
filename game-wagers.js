@@ -1,7 +1,7 @@
 import {infoCard} from './metric-card.js?v=14.5.0';
 import {escape as e, money, signed, tone, recordPlayerKey} from './core.js?v=14.5.0';
 import {netWinsFor} from './net-win.js?v=14.4.1';
-import {regionChart} from './region-chart.js?v=14.5.0';
+import {regionChart,regionTable} from './region-chart.js?v=14.5.2';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 
 export function wagerMetrics(records) {
@@ -54,17 +54,13 @@ export function wagerTableTotals(records,label='合計'){
   '玩家淨盈虧 USDT':signed(wins.playerNetWin),'營運淨輸贏 USDT':signed(wins.operatorNetWin)}};
 }
 
-export function wagerRegionTable(records, organizations) {
-  const groups = wagerRegions(records, organizations), total = {...wagerMetrics(records),...netWinsFor(records)};
-  const cells = row => '<td class="num">'+row.players+'</td><td class="num">'+row.paid+'</td><td class="num">'+money(row.total)+'</td><td class="num">'+
-    (row.average === null ? '—' : money(row.average))+'</td><td class="num '+tone(row.playerNetWin)+'">'+signed(row.playerNetWin)+'</td><td class="num '+tone(row.operatorNetWin)+'">'+signed(row.operatorNetWin)+'</td>';
-  const headings = ['地區', '遊玩人數', '實扣投注筆數', '總投注額 USDT', '平均每筆投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT'];
-  return '<section class="analytics-card wager-regions"><div class="analytics-card-head"><div><h2>'+uiIcon('globe')+
-    '地區遊玩統計</h2><p>依現金網所屬地區統計 · 遊玩人數按現金網玩家帳號去重</p></div></div>'+
-    '<div class="wager-region-layout">'+regionChart(groups)+'<div class="mini-scroll" tabindex="0" role="region" aria-label="地區遊玩統計"><table class="mini-table"><thead><tr>'+
-    headings.map((title,i) => '<th scope="col"'+(i?' class="num"':'')+'>'+title+'</th>').join('')+
-    '</tr></thead><tbody><tr class="mini-totals"><th scope="row">合計</th>'+cells(total)+'</tr>'+
-    groups.map(group => '<tr><th scope="row">'+e(group.region)+'</th>'+cells(group)+'</tr>').join('')+
-    '</tbody></table></div></div>'+(groups.length ? '' : '<p class="notice">此篩選範圍沒有遊玩記錄</p>')+
-    '<p class="detail-note">平均每筆投注額＝總投注額 ÷ 實扣投注筆數。免費回合計入遊玩人數。</p></section>';
+export function wagerRegionTable(records, organizations, filters={}) {
+ const groups=wagerRegions(records,organizations),total={...wagerMetrics(records),...netWinsFor(records)};
+ const dates=records.map(r=>r.date).filter(Boolean).sort(),start=filters.start||dates[0],end=filters.end||dates.at(-1);
+ const period=start?(start===end?start:start+' — '+end).replaceAll('-','/') : '';
+ return '<section class="analytics-card wager-regions"><div class="analytics-card-head"><div><h2>'+uiIcon('globe')+
+  '地區遊玩統計</h2><p>依現金網所屬地區統計 · 遊玩人數按現金網玩家帳號去重</p></div></div>'+
+  '<div class="wager-region-layout">'+regionChart(groups,period)+regionTable(groups,total)+'</div>'+
+  (groups.length?'':'<p class="notice">此篩選範圍沒有遊玩記錄</p>')+
+  '<p class="detail-note">平均每筆投注額＝所選區間總投注額 ÷ 實扣投注筆數。免費回合計入遊玩人數；合計與圓環圖涵蓋全部地區，不受表格分頁影響。</p></section>';
 }

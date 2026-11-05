@@ -1,12 +1,12 @@
 import {infoCard} from './metric-card.js?v=14.5.0';
 import {cashWrapperName,cashWrapper} from './organization-hierarchy.js?v=14.4.9';
 import {SLOT_GAMEPLAYS} from './slot-gameplay.js?v=14.4.1';
-import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './game-wagers.js?v=14.5.0';
+import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './game-wagers.js?v=14.5.2';
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {escape as e,money,signed,tone} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.4.6';
-import {GAME_SECTIONS,gameAccess,effectiveRtp,availabilityImpact,operationsTime} from './game-operations.js?v=14.4.6';
+import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.5.2';
+import {GAME_SECTIONS,gameAccess,effectiveRtp,availabilityImpact,operationsTime} from './game-operations.js?v=14.5.2';
 
 export const accessLabels={'playable':'可遊玩','global-off':'全域下架','game-maintenance':'遊戲維護中','site-off':'現金網未啟用','site-maintenance':'現金網維護中'};
 export const rtpLabels={inherited:'繼承規則基準',active:'生效中',pending:'待生效',expired:'已到期・恢復規則基準'};
@@ -40,11 +40,12 @@ export function rtpRows(games,sites,ui={}){
  return {games:selected,rows,total,pages,page,size};
 }
 export function rtpInput(id,value,{optional=false}={}){return '<div class="rtp-number-control"><input id="'+e(id)+'" type="number" inputmode="decimal" min="0" max="100" step="0.01" value="'+(value===null||value===undefined?'':Number(value).toFixed(2))+'"'+(optional?' placeholder="繼承遊戲預設"':' required')+'><span aria-hidden="true">%</span></div>';}
+export function filteredManagementGames(data,state,ui={}){const q=(ui.query||'').trim().toLowerCase();return data.games.filter(g=>(!q||(g.name+' '+g.id).toLowerCase().includes(q))&&(!ui.type||g.type===ui.type)&&(!ui.slotGameplay||g.slotGameplay===ui.slotGameplay)&&(!ui.status||(ui.status==='on')===state.games[g.id].listed));}
 export function managementPage(data,state,section,ui={},now=new Date()){
  if(section==='versions')section='catalog';
  const sites=data.organizations.filter(o=>o.level==='現金網'),label=GAME_SECTIONS.find(([key])=>key===section)?.[1]||'遊戲列表';
  const all=data.games,listed=all.filter(g=>state.games[g.id].listed).length;
- const query=(ui.query||'').trim().toLowerCase(),games=all.filter(g=>(!query||(g.name+' '+g.id).toLowerCase().includes(query))&&(!ui.type||g.type===ui.type)&&(!ui.slotGameplay||g.slotGameplay===ui.slotGameplay)&&(!ui.status||(ui.status==='on')===state.games[g.id].listed));
+ const games=filteredManagementGames(data,state,ui);
  const rtpModel=rtpRows(all,sites,ui),shownGames=section==='rtp'?rtpModel.games:section==='categories'?all:games;
  const gameIds=new Set(shownGames.map(g=>g.id)),records=data.records.filter(r=>gameIds.has(r.gameId));
  const gameAmount=gameId=>wagerResultCells(records.filter(r=>r.gameId===gameId));
@@ -53,7 +54,13 @@ export function managementPage(data,state,section,ui={},now=new Date()){
  if(['catalog','availability','maintenance'].includes(section)){
   body='<div class="mg-filters">'+field('搜尋遊戲','gm-query','<input id="gm-query" placeholder="遊戲名稱或 ID" value="'+e(ui.query||'')+'" autocomplete="off">')+field('遊戲類型','gm-type',select('gm-type',[['','全部類型'],...['電子遊戲','老虎機','捕魚','棋牌'].map(v=>[v,v])],ui.type||''))+(ui.type==='老虎機'?field('遊戲玩法','gm-slot-gameplay',select('gm-slot-gameplay',[['','全部玩法'],...SLOT_GAMEPLAYS],ui.slotGameplay||'')):'')+field('全域狀態','gm-status',select('gm-status',[['','全部狀態'],['on','已上架'],['off','已下架']],ui.status||''))+'</div>';
   if(section==='catalog')body+=table(['遊戲','類型','全域狀態','可遊玩現金網','預設 RTP','獎池','總投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT','操作'],games.map(g=>{const o=state.games[g.id];return '<tr><td>'+identity(g)+'</td><td>'+e(g.type)+'</td><td>'+status(o)+'</td><td>'+playableLink(state,g,sites,true)+'</td><td>'+o.defaultRtp.toFixed(2)+'%</td><td>'+badge(g.hasJackpot?'支援獎池':'—',g.hasJackpot?'gold':'')+'</td><td>'+gameAmount(g.id)+'</td><td>'+action('管理','data-gm-inspect="'+g.id+'"')+'</td></tr>';}),'遊戲列表','沒有符合條件的遊戲',wagerTableTotals(records,'合計 · '+games.length+' 款遊戲'));
-  if(section==='availability')body+=table(['遊戲','遊戲總開關','目前可遊玩','影響範圍','總投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT','操作'],games.map(g=>{const o=state.games[g.id];return '<tr><td>'+identity(g)+'</td><td>'+status(o)+(o.maintenance?badge('遊戲維護中','gold'):'')+'</td><td>'+playableLink(state,g,sites)+'</td><td>全部 '+sites.length+' 家現金網</td><td>'+gameAmount(g.id)+'</td><td>'+action(o.listed?'下架遊戲':'上架遊戲','data-gm-availability="'+g.id+'"',o.listed?'mg-danger':'primary')+' '+action('查看現金網','data-gm-inspect="'+g.id+'"')+'</td></tr>';}),'遊戲全域上下架','沒有符合條件的遊戲',wagerTableTotals(records,'合計 · '+games.length+' 款遊戲'))+'<p class="mg-note">下架前會列出本次受影響的現金網。回合與未結算訂單的處置需由正式服務端按遊戲規則處理。</p>';
+  if(section==='availability'){
+   const selected=new Set((ui.selection||[]).filter(id=>state.games[id]));
+   body+='<div class="availability-bulk"><span>已選 <strong>'+selected.size+'</strong> 款遊戲</span>'+action('全選目前 '+games.length+' 款','data-gm-bulk-select="all"')+action('清除選取','data-gm-bulk-select="none"')+action('批次上架','data-gm-bulk-action="on"'+(!selected.size?' disabled':''),'primary')+action('批次下架','data-gm-bulk-action="off"'+(!selected.size?' disabled':''),'mg-danger')+'</div>';
+   body+=table(['選取','遊戲','遊戲總開關','目前可遊玩','影響範圍','總投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT','操作'],games.map(g=>{const o=state.games[g.id];return '<tr><td><input type="checkbox" data-gm-select="'+g.id+'" aria-label="選取 '+e(g.name)+'"'+(selected.has(g.id)?' checked':'')+'></td><td>'+identity(g)+'</td><td>'+status(o)+(o.maintenance?badge('遊戲維護中','gold'):'')+'</td><td>'+playableLink(state,g,sites)+'</td><td>全部 '+sites.length+' 家現金網</td><td>'+gameAmount(g.id)+'</td><td><div class="mg-detail-actions">'+action(o.listed?'下架遊戲':'上架遊戲','data-gm-availability="'+g.id+'"',o.listed?'mg-danger':'primary')+action('排程','data-gm-schedule="'+g.id+'"')+action('查看現金網','data-gm-inspect="'+g.id+'"')+'</div></td></tr>';}),'遊戲全域上下架','沒有符合條件的遊戲',{...wagerTableTotals(records),label:'',values:{...wagerTableTotals(records).values,'遊戲':'合計 · '+games.length+' 款遊戲'}});
+   const plans=state.availabilitySchedules||[],names=ids=>ids.map(id=>data.games.find(g=>g.id===id)?.name||id),states={pending:'待生效',active:'生效中',completed:'已完成',cancelled:'已取消'};
+   body+='<div class="availability-plans"><h2>'+uiIcon('calendar')+'上下架排程</h2>'+table(['排程 ID','遊戲','範圍','執行動作','生效時間 · UTC+8','結束時間 · UTC+8','狀態','操作'],plans.map(p=>'<tr><td>'+e(p.id)+'</td><td><details><summary>'+p.gameIds.length+' 款遊戲</summary><p class="availability-target-names">'+e(names(p.gameIds).join('、'))+'</p></details></td><td>'+(p.siteIds.length?p.siteIds.length+' 家指定現金網':'全部 '+sites.length+' 家現金網')+'</td><td>'+badge(p.listed?'上架':'下架',p.listed?'good':'gold')+'</td><td>'+operationsTime(p.start)+'</td><td>'+(p.end?operationsTime(p.end)+' · '+(p.listed?'下架':'上架'):'不設結束時間')+'</td><td>'+badge(states[p.status],p.status==='active'?'good':'')+'</td><td>'+(['pending','active'].includes(p.status)?action('取消排程','data-availability-cancel="'+e(p.id)+'"'):'—')+'</td></tr>'),'上下架排程','尚無上下架排程')+'</div>';
+  }
   if(section==='maintenance')body+=table(['遊戲','全域狀態','維護狀態','目前可遊玩','總投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT','操作'],games.map(g=>{const o=state.games[g.id];return '<tr><td>'+identity(g)+'</td><td>'+status(o)+'</td><td>'+badge(o.maintenance?'維護中':'正常',o.maintenance?'gold':'good')+'</td><td>'+playableLink(state,g,sites)+'</td><td>'+gameAmount(g.id)+'</td><td>'+action(o.maintenance?'結束維護':'進入維護','data-gm-maintenance="'+g.id+'"')+'</td></tr>';}),'遊戲維護管理','沒有符合條件的遊戲',wagerTableTotals(records,'合計 · '+games.length+' 款遊戲'));
 
  }else if(section==='categories'){
