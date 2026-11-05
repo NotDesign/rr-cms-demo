@@ -1,5 +1,6 @@
+import {formatCurrencyAmount} from './currency-display.js?v=14.5.0';
 import {hasSlotScope} from './slot-gameplay.js?v=14.4.1';
-export const money = value => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export const money = value => formatCurrencyAmount(value);
 export const signed = value => (value > 0 ? '+' : value < 0 ? '−' : '') + money(Math.abs(value));
 export const number = value => Number(String(value).replaceAll(',', '').replace('−', '-').replace(/×$/, '').replace(/（[^）]*）$/, ''));
 export const tone = value => number(value) > 0 ? 'positive' : number(value) < 0 ? 'negative' : 'neutral';
@@ -255,6 +256,7 @@ export function detailTableTotals(headers,rows){
   const values=rows.map(r=>String(r[i]??'').replaceAll(',','').replace('−','-').replace('＋','+'));
   if(!values.every(v=>/^[+-]?\d+(\.\d+)?$/.test(v)))return '';
   const value=values.reduce((s,v)=>s+Number(v),0);
-  return /發數|筆數|數量/.test(h)?String(number(value)):/盈虧/.test(h)?signed(value):money(value);
+  const text=Math.abs(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  return /發數|筆數|數量/.test(h)?String(number(value)):/盈虧/.test(h)?(value>0?'+':value<0?'−':'')+text:(value<0?'−':'')+text;
  });
 }

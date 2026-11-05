@@ -1,9 +1,9 @@
-import {infoCard} from './metric-card.js?v=14.4.8';
+import {infoCard} from './metric-card.js?v=14.5.0';
 import {cashWrapperName} from './organization-hierarchy.js?v=14.4.9';
-import {escape as e,money} from './core.js?v=14.4.1';
+import {escape as e,money} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.4.9';
+import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.5.0';
 import {poolPartnership} from './jackpot-partnership.js?v=14.4.1';
 const net=value=>'<strong class="'+(value>0?'positive':value<0?'negative':'')+'">'+(value>0?'+':'')+money(value)+'</strong>';
 const pair=(label,value)=>'<div><small>'+label+'</small><strong>'+money(value)+'</strong></div>';

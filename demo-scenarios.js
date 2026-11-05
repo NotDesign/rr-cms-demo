@@ -1,5 +1,5 @@
 import {gameCatalog} from './game-catalog.js?v=14.4.1';
-import {money,signed,totals,rowsFor,summaryFor,tableTotals,chessDetail} from './core.js?v=14.4.1';
+import {money,signed,totals,rowsFor,summaryFor,tableTotals,chessDetail} from './core.js?v=14.5.0';
 
 const wrapperNames=['星河','遠航','極光','天域','藍海','金曜','宏宇','鼎盛','雲端','盛世','天啟','環球','智匯','富邦','卓越','領航','星瀚','博遠','眾鑫','新銳'];
 const cashNames=[

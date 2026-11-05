@@ -1,9 +1,9 @@
-import {infoCard} from './metric-card.js?v=14.4.8';
+import {infoCard} from './metric-card.js?v=14.5.0';
 import {cashWrapperName,cashWrapper} from './organization-hierarchy.js?v=14.4.9';
 import {SLOT_GAMEPLAYS} from './slot-gameplay.js?v=14.4.1';
-import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './game-wagers.js?v=14.4.9';
+import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './game-wagers.js?v=14.5.0';
 import {netWinsFor} from './net-win.js?v=14.4.1';
-import {escape as e,money,signed,tone} from './core.js?v=14.4.1';
+import {escape as e,money,signed,tone} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.4.6';
 import {GAME_SECTIONS,gameAccess,effectiveRtp,availabilityImpact,operationsTime} from './game-operations.js?v=14.4.6';

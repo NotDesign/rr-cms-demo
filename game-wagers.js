@@ -1,7 +1,7 @@
-import {infoCard} from './metric-card.js?v=14.4.8';
-import {escape as e, money, signed, tone, recordPlayerKey} from './core.js?v=14.4.1';
+import {infoCard} from './metric-card.js?v=14.5.0';
+import {escape as e, money, signed, tone, recordPlayerKey} from './core.js?v=14.5.0';
 import {netWinsFor} from './net-win.js?v=14.4.1';
-import {regionChart} from './region-chart.js?v=14.4.1';
+import {regionChart} from './region-chart.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 
 export function wagerMetrics(records) {

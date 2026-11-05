@@ -1,7 +1,9 @@
-import {escape as e} from './core.js?v=14.4.1';
+import {currencyCode} from './currency-display.js?v=14.5.0';
+import {escape as e} from './core.js?v=14.5.0';
 
 // Shared by SVG charts, HTML bars and the charts inside detail drawers.
 export function chartTipAttrs(title,rows,{focusable=false,note=''}={}){
+ const unit=value=>String(value).replaceAll('USDT',currencyCode());title=unit(title);note=unit(note);rows=rows.map(row=>({...row,label:unit(row.label),value:unit(row.value)}));
  const data={title,rows,note};
  const label=[title,...rows.map(r=>r.label+' '+r.value),note].filter(Boolean).join(' · ');
  return ' data-chart-tip="'+e(JSON.stringify(data))+'"'+(focusable?' tabindex="0" role="img"':'')+' aria-label="'+e(label)+'"';

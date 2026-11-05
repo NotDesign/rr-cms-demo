@@ -1,4 +1,4 @@
-import {escape as e} from './core.js?v=14.4.1';
+import {escape as e} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 // Keep the full range available while avoiding repeated dates in a narrow control.
 export function dateRangeLabel(start,end){

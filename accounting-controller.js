@@ -1,8 +1,8 @@
-import {ACCOUNTING_DISPLAY_KEY,normalizeAccountingDisplay,moveAccountingCard} from './accounting-display.js?v=14.4.1';
-import {accountingLines,accountingModelFromLines} from './accounting.js?v=14.4.1';
-import {accountingPage,accountingDetail,accountingCsvRows,accountingDisplaySettings} from './accounting-view.js?v=14.4.8';
-import {createBusinessState} from './business-management.js?v=14.4.9';
-import {selectionValues,csv} from './core.js?v=14.4.1';
+import {ACCOUNTING_DISPLAY_KEY,normalizeAccountingDisplay,moveAccountingCard} from './accounting-display.js?v=14.5.0';
+import {accountingLines,accountingModelFromLines} from './accounting.js?v=14.5.0';
+import {accountingPage,accountingDetail,accountingCsvRows,accountingDisplaySettings} from './accounting-view.js?v=14.5.0';
+import {createBusinessState} from './business-management.js?v=14.5.0';
+import {selectionValues,csv} from './core.js?v=14.5.0';
 export function installAccountingController({data,currentTab,renderMain,showDialog,closeDialog,saveView,queryForm,setDialog,rememberDetail,detailNavigation,organizations,toast,localize=root=>root}){
  let pricingKey='',lines=[],displayDraft=null;
  const isAccounting=()=>currentTab().key==='draft:reports:總帳務';

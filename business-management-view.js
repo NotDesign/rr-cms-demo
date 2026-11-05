@@ -1,11 +1,12 @@
-import {wagerOverview} from './game-wagers.js?v=14.4.9';
-import {escape as e,money,signed,tone,totals,organizationRecords} from './core.js?v=14.4.1';
+import {withOriginalCurrency} from './currency-display.js?v=14.5.0';
+import {wagerOverview} from './game-wagers.js?v=14.5.0';
+import {escape as e,money,signed,tone,totals,organizationRecords} from './core.js?v=14.5.0';
 import {cashWrapper,cashWrapperName,organizationParents,organizationSections,optionalOrganizationParent} from './organization-hierarchy.js?v=14.4.9';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {gameIdentity} from './detail-views.js?v=14.4.8';
-import {managementMetric as metric} from './game-management-view.js?v=14.4.9';
+import {gameIdentity} from './detail-views.js?v=14.5.0';
+import {managementMetric as metric} from './game-management-view.js?v=14.5.0';
 import {operationsTime} from './game-operations.js?v=14.4.6';
-import {BUSINESS_SECTIONS,campaignTypes,businessStatus,businessOrganizations,campaignStatus,settlementPeriod,settlementPreview} from './business-management.js?v=14.4.9';
+import {BUSINESS_SECTIONS,campaignTypes,businessStatus,businessOrganizations,campaignStatus,settlementPeriod,settlementPreview} from './business-management.js?v=14.5.0';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
 const badge=value=>'<span class="mg-status '+(['active','confirmed'].includes(value)?'good':['paused','review','held'].includes(value)?'gold':'')+'">'+e(businessStatus[value]||value)+'</span>';
 const table=(headers,rows,empty='目前沒有資料')=>'<div class="biz-scroll" role="region" aria-label="資料列表" tabindex="0"><table class="biz-table"><thead><tr>'+headers.map(([h,n])=>'<th scope="col"'+(n?' class="num"':'')+'>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table>'+(rows.length?'':'<p class="biz-empty">'+empty+'</p>')+'</div>';
@@ -70,7 +71,7 @@ export function businessPage(data,state,category,section,ui={}){
 function scopeSelect(label,group,items,selected=[]){return '<div class="field"><label for="be-'+group+'">'+label+'</label><select multiple data-search-multi data-placeholder="選擇'+label+'" id="be-'+group+'" name="be-'+group+'">'+items.map(([id,label,meta])=>'<option value="'+e(id)+'" data-meta="'+e(meta||'')+'"'+(selected.includes(id)?' selected':'')+'>'+e(label)+'</option>').join('')+'</select></div>';}
 function assignedSitesTable(orgs,siteIds){return table([['現金網'],['現金網 ID'],['包網商'],['包網商 ID'],['狀態']],siteIds.map(id=>{const site=orgs.find(o=>o.id===id),wrapper=cashWrapper(orgs,site);return '<tr>'+td(orgButton(orgs,id))+td(e(id))+td(wrapper?orgButton(orgs,wrapper.id):'無包網商')+td(e(wrapper?.id||'—'))+td(badge(site.status))+'</tr>';}));}
 
-export function businessEditor(data,state,type,id,kind){
+function businessEditorContent(data,state,type,id,kind){
  const orgs=businessOrganizations(data,state),sites=orgs.filter(o=>o.level==='現金網'),wrappers=orgs.filter(o=>o.level==='包網商'),row=type==='org'?orgs.find(o=>o.id===id):state[({gateway:'gateways',campaign:'campaigns',commission:'commissions',pricing:'pricing'})[type]]?.find(r=>r.id===id),input=(key,value='',kind='text',attrs='')=>'<input class="mg-input" id="be-'+key+'" type="'+kind+'" value="'+e(value)+'" '+attrs+'>',f=(label,key,value,kind,attrs)=>field(label,'be-'+key,input(key,value,kind,attrs));let html='<div class="cms-form-grid">';
  if(type==='org'){
   const level=row?.level||kind||'現金網',parents=organizationParents(orgs,level),optional=optionalOrganizationParent(level),parentChoices=[...(optional?[['','無上層機構']]:[]),...parents.map(o=>[o.id,o.name+' · '+o.level+' · '+o.id])],parentValue=row?(row.parent||''):(optional?'':parents[0]?.id);
@@ -94,5 +95,7 @@ export function businessDetail(data,state,type,id){
  if(type==='gateway'){const row=state.gateways.find(r=>r.id===id);return '<div class="biz-detail-title">'+uiIcon('api')+'<h3>'+e(row.name)+'</h3>'+badge(row.status)+'</div><p><code>'+e(row.url)+'</code></p>'+table([['套用機構'],['類型'],['狀態']],orgs.filter(o=>o.gatewayId===id).map(o=>'<tr>'+td(orgButton(orgs,o.id))+td(e(o.level))+td(badge(o.status))+'</tr>'));}
  if(type==='commission'){const row=state.commissions.find(r=>r.id===id);return '<h3>'+e(row.name)+'</h3><p>各現金網正向 GGR × '+row.rate.toFixed(2)+'%</p>'+assignedSitesTable(orgs,row.sites);}
  const row=state.campaigns.find(r=>r.id===id),records=data.records.filter(r=>matchesCampaignWager(row,r)),t=totals(records);
- return '<div class="biz-detail-title">'+uiIcon('promotion')+'<h3>'+e(row.name)+'</h3>'+badge(campaignStatus(row))+'</div><p>'+e(row.start.replace('T',' '))+' — '+e(row.end.replace('T',' '))+' · UTC+8</p>'+wagerOverview(records,data.date,'活動範圍總投注額')+'<div class="biz-values"><div><small>設定值</small><strong>'+row.value+(row.type==='rtp'?'%':row.type==='free'?' 次':' USDT')+'</strong></div><div><small>預算</small><strong>'+money(row.budget)+' USDT</strong></div></div><h3 class="cms-section-title">參與遊戲</h3><div class="biz-game-list">'+row.games.map(id=>{const game=data.games.find(g=>g.id===id);return '<button class="biz-game-item" data-game="'+e(game.name)+'">'+gameIdentity(game.name,44)+'</button>';}).join('')+'</div><h3 class="cms-section-title">套用現金網</h3>'+assignedSitesTable(orgs,row.sites)+'<p class="mg-note">活動期間、遊戲與現金網範圍內有 '+t.count+' 筆示例投注，'+t.players+' 位玩家；不代表實際參與、發放或 RTP 已套用。</p>'+(row.type==='rtp'?button('前往 RTP 設定檔','data-gm-section="rtp"'):'');
+ return '<div class="biz-detail-title">'+uiIcon('promotion')+'<h3>'+e(row.name)+'</h3>'+badge(campaignStatus(row))+'</div><p>'+e(row.start.replace('T',' '))+' — '+e(row.end.replace('T',' '))+' · UTC+8</p>'+wagerOverview(records,data.date,'活動範圍總投注額')+'<div class="biz-values"><div><small>設定值</small><strong>'+(row.type==='bonus'?money(row.value):row.value)+(row.type==='rtp'?'%':row.type==='free'?' 次':' USDT')+'</strong></div><div><small>預算</small><strong>'+money(row.budget)+' USDT</strong></div></div><h3 class="cms-section-title">參與遊戲</h3><div class="biz-game-list">'+row.games.map(id=>{const game=data.games.find(g=>g.id===id);return '<button class="biz-game-item" data-game="'+e(game.name)+'">'+gameIdentity(game.name,44)+'</button>';}).join('')+'</div><h3 class="cms-section-title">套用現金網</h3>'+assignedSitesTable(orgs,row.sites)+'<p class="mg-note">活動期間、遊戲與現金網範圍內有 '+t.count+' 筆示例投注，'+t.players+' 位玩家；不代表實際參與、發放或 RTP 已套用。</p>'+(row.type==='rtp'?button('前往 RTP 設定檔','data-gm-section="rtp"'):'');
 }
+
+export function businessEditor(...args){return '<div data-currency-original>'+withOriginalCurrency(()=>businessEditorContent(...args))+'</div>';}

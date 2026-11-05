@@ -1,46 +1,48 @@
-import {infoCard} from './metric-card.js?v=14.4.8';
+import {installCurrencyDisplay} from './currency-controller.js?v=14.5.0';
+import {withOriginalCurrency} from './currency-display.js?v=14.5.0';
+import {infoCard} from './metric-card.js?v=14.5.0';
 import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfitLoss} from './net-win.js?v=14.4.1';
-import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4.1';
-import {installAccountingController} from './accounting-controller.js?v=14.4.9';
-import {installInfoCards} from './info-card-controller.js?v=14.4.8';
-import {BUSINESS_SECTIONS} from './business-management.js?v=14.4.9';
-import {installBusinessController} from './business-management-controller.js?v=14.4.9';
-import {PLAYER_SECTIONS} from './player-management.js?v=14.4.9';
-import {installPlayerController} from './player-management-controller.js?v=14.4.9';
-import {SYSTEM_SECTIONS} from './system-management.js?v=14.4.1';
-import {installSystemController} from './system-controller.js?v=14.4.9';
-import {poolPartnersView} from './jackpot-partnership-view.js?v=14.4.9';
-import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.4.1';
-import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.4.8';
+import {ACCOUNTING_ITEMS} from './accounting.js?v=14.5.0';
+import {installAccountingController} from './accounting-controller.js?v=14.5.0';
+import {installInfoCards} from './info-card-controller.js?v=14.5.0';
+import {BUSINESS_SECTIONS} from './business-management.js?v=14.5.0';
+import {installBusinessController} from './business-management-controller.js?v=14.5.0';
+import {PLAYER_SECTIONS} from './player-management.js?v=14.5.0';
+import {installPlayerController} from './player-management-controller.js?v=14.5.0';
+import {SYSTEM_SECTIONS} from './system-management.js?v=14.5.0';
+import {installSystemController} from './system-controller.js?v=14.5.0';
+import {poolPartnersView} from './jackpot-partnership-view.js?v=14.5.0';
+import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.5.0';
+import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.5.0';
 import {localize,translate,languageNames} from './i18n.js?v=14.4.5';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.8';
 import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.9';
-import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.4.9';
+import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.5.0';
 import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4.1';
-import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.4.9';
-import {statisticsDashboard} from './statistics-view.js?v=14.4.9';
+import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.5.0';
+import {statisticsDashboard} from './statistics-view.js?v=14.5.0';
 import {captureChartState,animateCharts,cancelChartMotion} from './chart-motion.js?v=14.4.1';
-import {installRegionCharts} from './region-chart.js?v=14.4.1';
-import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=14.4.6';
-import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=14.4.8';
-import {answerQuestion} from './assistant.js?v=14.4.1';
-import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.4.1';
+import {installRegionCharts} from './region-chart.js?v=14.5.0';
+import {chartTipAttrs,installChartInteractions} from './chart-interactions.js?v=14.5.0';
+import {datePickerHtml,shiftMonth,dateRangeLabel} from './date-picker.js?v=14.5.0';
+import {answerQuestion} from './assistant.js?v=14.5.0';
+import {multiNames,multiFieldHtml,matchingChoices,multiOptionsHtml} from './filter-multi.js?v=14.5.0';
 import {animateRegion,animateExit,cancelRegion} from './motion.js?v=14.4.1';
 import {installSearchMultiSelect} from './search-multi-select.js?v=14.4.8';
 import {installSelectControls} from './select-control.js?v=14.4.8';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=14.4.1';
 import {GAME_SECTIONS,parseRtp,RTP_ERROR,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.4.6';
-import {managementPage,impactView,gameAccessView,rtpLabels,rtpInput} from './game-management-view.js?v=14.4.9';
+import {managementPage,impactView,gameAccessView,rtpLabels,rtpInput} from './game-management-view.js?v=14.5.0';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=14.4.1';
-import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.4.9';
+import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.5.0';
 
 import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.4.6';
-import {ruleManagerPage} from './cms-rule-view.js?v=14.4.9';
-import {installCmsController} from './cms-controller.js?v=14.4.9';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.5.0';
+import {installCmsController} from './cms-controller.js?v=14.5.0';
 
-const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(expandDemoScenarios);
+const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(data=>withOriginalCurrency(()=>expandDemoScenarios(data)));
 const defs=new Map(DATA.reports.map(d=>[d.key,d]));
 const icons={dashboard:'6398b.svg',reports:'8ec9b.svg',promotion:'5783c.svg',jackpot:'a4bc9.svg',games:'e6435.svg',merchant:'7aa63.svg',players:'a24ad.svg',settlement:'59865.svg',system:'8a8c6.svg'};
 const menus=[
@@ -72,8 +74,8 @@ let gameOperations=normalizeOperations(savedGameOperations);
 let cmsController=null,systemController=null,playersController=null,businessController=null,accountingController=null;
 try{localStorage.setItem(gameStorageKey,JSON.stringify(compactGameOperations(DATA,gameOperations)));}catch{}
 const tr=text=>translate(text,locale);
-let infoCards=null;
-const localized=root=>{infoCards?.enhance(root);return localize(root,locale);};
+let infoCards=null,currencyDisplay=null;
+const localized=root=>{infoCards?.enhance(root);const result=localize(root,locale);currencyDisplay?.enhance(root);return result;};
 let tabs=Array.isArray(saved?.tabs)&&saved.tabs.length?saved.tabs.filter(t=>t&&typeof t.id==='string'&&t.key!=='draft:games:版本管理'&&(defs.has(t.key)||t.key==='dashboard'||t.key==='new'||t.key==='player-detail'||t.key.startsWith('draft:'))).map(t=>({...tab(t.key,t.title),...t,filters:{...defaultFilters(),...t.filters},draft:{...defaultFilters(),...t.draft}})):[tab('dashboard','儀表板')];
 if(!tabs.length)tabs=[tab('dashboard','儀表板')];
 for(const t of tabs)if(['electronic','chess'].includes(t.key))for(const field of ['filters','draft']){const game=DATA.games.find(g=>g.name===t[field].type);if(game){t[field].game=game.name;t[field].type=game.family;}}
@@ -122,7 +124,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/現金網/.test(label)?'wallet':/包網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.4.9</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.5.0</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -178,7 +180,7 @@ function filtersHtml(def){
   if(def.key==='fishing')extra=textField('魚種／魚隻實例 ID','fish','例如 F9006')+textField('射擊 ID','shot','例如 SH-0301-090')+selectField('道具／技能','tool',[['','全部類型'],'雷射炮',['無道具','無道具']])+selectField('觸發事件','event',[['','全部事件'],['雷射炮','雷射炮'],['金龍','首領事件'],['獎池觸發','獎池觸發'],['未捕獲','未捕獲']])+selectField('結算／對帳','recon',[['','全部狀態'],'已核對','補單已核對']);
   const category={electronic:'電子遊戲',slots:'老虎機',fishing:'捕魚',chess:'棋牌'}[def.key];
   const games=DATA.games.filter(g=>(!category||g.type===category)&&matchesSelection(f.type,[g.type,g.family,g.name])&&matchesSelection(f.slotGameplay,[g.slotGameplay]));
-  return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部現金網'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+gameSelect+slotGameplayFilter(f,def.key)+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field currency"><label for="currency">幣別</label><select id="currency" aria-label="幣別"><option>USDT</option></select></div><div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
+  return '<form id="query-form" class="filters">'+dateToolbar(f)+'<div class="filter-row">'+selectField('包網商','wrapper',[['','全部包網商'],...DATA.organizations.filter(o=>o.level==='包網商').map(o=>[o.id,o.name])])+selectField('現金網','merchant',[['','全部現金網'],...DATA.organizations.filter(o=>o.level==='現金網'&&matchesSelection(f.wrapper,[o.parent])).map(o=>[o.name,o.name])])+gameSelect+slotGameplayFilter(f,def.key)+selectField('遊戲名稱','game',[['','全部遊戲'],...games.map(g=>[g.name,g.name])])+textField('投注單號／玩家','query','輸入單號、帳號或玩家 ID','search')+'<div class="field filter-reset"><label class="filter-live" role="status">即時篩選</label><button class="button" type="button" data-action="reset">重設</button></div></div>'+(extra?'<div class="filter-row extra-filters">'+extra+'</div>':'')+'</form>';
 }
 function totals(records){return {...baseTotals(records),...netWinsFor(records)};}
 function resultTone(label,value){return /Net Win|淨輸贏/.test(label)?tone(value):financialTone(label,value);}
@@ -186,10 +188,12 @@ function metricCard(label,value,caption=''){const side=label.startsWith(NET_WIN.
 function summaryHtml(def,rs){const wins=netWinsFor(rs),items=summaryFor(def,rs).filter(([label])=>!/玩家淨盈虧|投注派彩差額/.test(label));const {average}=wagerMetrics(rs),averageLabel='平均每筆投注額 '+(average===null?'—':money(average)+' USDT');if(!items.some(([label])=>/派彩/.test(label)))items.push(['結算派彩（USDT）',money(totals(rs).payout)]);else items.push(['退款（USDT）',money(wins.refund)]);items.push([NET_WIN.player.label+'（USDT）',signed(wins.playerNetWin)],[NET_WIN.operator.label+'（USDT）',signed(wins.operatorNetWin)]);return '<div class="summary net-win-summary">'+items.map(([label,value])=>metricCard(label,value,/^(實扣投注|總投注額)/.test(label)?averageLabel:'')).join('')+'</div>';}
 function statsViewControl(){const mode=current().statsView||'visual';return '<div class="view-toggle" role="group" aria-label="統計呈現方式">'+[['visual','視覺總覽'],['table','傳統表格']].map(([v,label])=>'<button data-stats-view="'+v+'" aria-pressed="'+(v===mode)+'">'+uiIcon(v==='visual'?'dashboard':'receipt')+label+'</button>').join('')+'</div>';}
 function getReport(){
-  const t=current(),d=defs.get(t.key),base=filterRecords(DATA.records,t.key,t.filters),result=filterReportColumns(d,base,t.columnFilters,tr);
+  const t=current(),d=defs.get(t.key),base=filterRecords(DATA.records,t.key,t.filters),result=withOriginalCurrency(()=>filterReportColumns(d,base,t.columnFilters,tr));
   return {t,d,rs:result.records,rows:sortedRows(result.rows,t.sort)};
 }
+function displayCell(d,value,index){return ['money','signed'].includes(d.columnTypes[index])&&/^[+−\-]?[\d,.]+$/.test(String(value))?(d.columnTypes[index]==='signed'?signed(number(value)):money(number(value))):value;}
 function linkCell(d,row,index,text){
+  text=displayCell(d,text,index);
   if(index===d.headers.length-1)return '<button class="detail-link" data-row-detail="'+e(rowId(d,row))+'">'+e(text)+'</button>';
   if(d.key==='stats'&&d.headers[index]==='玩家 ID')return text.split('、').map(id=>'<button class="text-link" data-player="'+e(DATA.records.find(r=>playerId(r.player)===id)?.player||id)+'">'+e(id)+'</button>').join('、');
   if(d.headers[index].includes('玩家帳號')||d.headers[index].includes('玩家 ID')){
@@ -209,7 +213,7 @@ function columnFilterDescription(d,index,rule){
   return [rule.query?'包含「'+rule.query+'」':'',Array.isArray(rule.values)?'已選 '+rule.values.length+' 項':'',rule.min!==undefined&&rule.min!==''?'≥ '+rule.min:'',rule.max!==undefined&&rule.max!==''?'≤ '+rule.max:''].filter(Boolean).join('；');
 }
 const widthCache=new Map(),measureContext=document.createElement('canvas').getContext('2d');
-function reportColumnWidth(d,col,rows){const font=getComputedStyle(document.body).fontFamily,measure=(value,size)=>{const text=tr(value),key=locale+'|'+size+'|'+font+'|'+text;if(!widthCache.has(key)){measureContext.font=size+'px '+font;widthCache.set(key,measureContext.measureText(text).width);}return widthCache.get(key);};return Math.ceil(Math.max(d.widths[col],measure(d.headers[col],12)+106,...rows.map(row=>measure(row[col],13)+40)));}
+function reportColumnWidth(d,col,rows){const font=getComputedStyle(document.body).fontFamily,measure=(value,size)=>{const text=tr(value),key=locale+'|'+size+'|'+font+'|'+text;if(!widthCache.has(key)){measureContext.font=size+'px '+font;widthCache.set(key,measureContext.measureText(text).width);}return widthCache.get(key);};return Math.ceil(Math.max(d.widths[col],measure(d.headers[col],12)+106,...rows.map(row=>measure(displayCell(d,row[col],col),13)+40)));}
 function tableHtml(d,rs,rows){
   const t=current(),visible=t.columns.filter(i=>i>=0&&i<d.headers.length);
   if(!visible.length)t.columns=[0];
@@ -224,7 +228,7 @@ function tableHtml(d,rs,rows){
   const heads=cols.map((col,i)=>'<th scope="col" data-column="'+col+'" aria-sort="'+(t.sort?.index===col?(t.sort.direction==='asc'?'ascending':'descending'):'none')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+(t.sort?.index===col?'sorted ':'')+(hasColumnFilter(t.columnFilters[col])?'filtered':'')+'"'+tdStyle(style[i],i)+'><div class="header-content"><button data-sort="'+col+'" title="'+e(tr(d.headers[col]))+'"><span class="header-label">'+e(d.headers[col])+'</span><span class="sort-mark">'+(t.sort?.index===col?(t.sort.direction==='asc'?'↑':'↓'):'↕')+'</span></button><button class="column-trigger" data-column-menu="'+col+'" title="'+e(tr('欄位操作：'+d.headers[col]))+'" aria-label="'+e(tr('欄位操作：'+d.headers[col]))+'" aria-haspopup="dialog">'+(col===d.headers.length-1?'⋯':filterIcon)+'<span class="filter-dot" aria-hidden="true"></span></button></div></th>').join('');
   const totalsRow=tableTotals(d,rs,rows);
   const total='<tr class="totals-row" aria-label="查詢結果合計">'+cols.map((col,i)=>'<td title="'+e(totalsRow[col]||'此欄不適用加總')+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+financialTone(d.headers[col],totalsRow[col])+'"'+tdStyle(style[i],i)+'>'+e(totalsRow[col])+'</td>').join('')+'</tr>';
-  const body=pageRows.map(row=>'<tr>'+cols.map((col,i)=>'<td title="'+e(tr(row[col]))+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+financialTone(d.headers[col],row[col])+'"'+tdStyle(style[i],i)+'>'+linkCell(d,row,col,row[col])+'</td>').join('')+'</tr>').join('');
+  const body=pageRows.map(row=>'<tr>'+cols.map((col,i)=>'<td title="'+e(tr(displayCell(d,row[col],col)))+'" class="'+(isNumeric(d,col)?'num ':'')+(style[i].left!==null?'frozen ':'')+(style[i].last?'freeze-end ':'')+financialTone(d.headers[col],row[col])+'"'+tdStyle(style[i],i)+'>'+linkCell(d,row,col,row[col])+'</td>').join('')+'</tr>').join('');
   const note=rows.length?'顯示 '+((t.page-1)*t.pageSize+1)+'–'+Math.min(rows.length,t.page*t.pageSize)+' 筆，共 '+rows.length+' 筆 · USDT · 表頭漏斗可搜尋、篩選與凍結欄位':'符合條件的記錄為 0 筆';
   const chips=Object.entries(t.columnFilters).filter(([,r])=>hasColumnFilter(r)).map(([col,r])=>'<button class="filter-chip" data-column-menu="'+col+'" title="'+e(tr(columnFilterDescription(d,Number(col),r)))+'">'+e(d.headers[col])+' · '+e(columnFilterDescription(d,Number(col),r))+'</button><button class="chip-remove" data-clear-column="'+col+'" aria-label="'+e(tr('清除此欄篩選：'+d.headers[col]))+'">×</button>').join('');
   const filterBar='<div class="column-filter-bar"><span class="freeze-status" data-freeze-status>'+freezeDescription(t.freeze,freeze)+'</span>'+(chips?'<div class="active-column-filters">'+chips+'</div>'+button('清除欄位篩選','column-clear-all','text-button'):'<span class="muted">表頭漏斗可搜尋、篩選與凍結欄位</span>')+'</div>';
@@ -326,6 +330,7 @@ function showDialog(title,html,{drawer=false,subtitle='',footer='',management=fa
   dialog.style.cssText='';
   dialog.className=drawer?'drawer':management?'management-dialog':'';
   dialog.innerHTML='<div class="dialog-header"><div><h2 id="dialog-title">'+title+'</h2>'+(subtitle?'<small>'+subtitle+'</small>':'')+'</div><button class="icon-button close" data-action="close-dialog" aria-label="關閉視窗">×</button></div><div class="dialog-body">'+html+'</div>'+(footer?'<div class="dialog-footer">'+footer+'</div>':'');
+  dialog.toggleAttribute('data-currency-original',html.includes('data-currency-original'));
   localized(dialog);
   selectControls.enhance();dialog.showModal();animateCharts(dialog,previousCharts,tr);animateRegion(drilling?dialog.querySelector('.dialog-body'):dialog,drilling?'detail':drawer?'drawer':'popover');
 }
@@ -491,15 +496,15 @@ function showColumns(){
 }
 function showColumnMenu(index,anchor){
   const t=current(),d=defs.get(t.key),rule=structuredClone(t.columnFilters[index]||{}),others={...t.columnFilters};delete others[index];
-  const rows=filterReportColumns(d,filterRecords(DATA.records,t.key,t.filters),others,tr).rows,counts=new Map();
+  const rows=withOriginalCurrency(()=>filterReportColumns(d,filterRecords(DATA.records,t.key,t.filters),others,tr).rows),counts=new Map();
   for(const row of rows){const value=String(row[index]);counts.set(value,(counts.get(value)||0)+1);}
   const numeric=['money','signed','number'].includes(d.columnTypes[index]),time=/時間/.test(d.headers[index]);
   const s=dialogState={type:'column',index,query:rule.query||'',values:rule.values??null,min:rule.min??'',max:rule.max??'',kind:time?'time':numeric?'number':'text',options:[...counts].sort((a,b)=>numeric?number(a[0])-number(b[0]):tr(a[0]).localeCompare(tr(b[0]),locale,{numeric:true})),anchor:anchor?.getBoundingClientRect()};
   const pos=t.columns.indexOf(index),filterable=index<d.headers.length-1;
   const range=numeric||time?'<div class="column-range"><label>'+(time?'開始時間':'最小值')+'<input id="column-min" type="'+(time?'time':'number')+'" '+(time?'step="1"':'step="any"')+' value="'+e(s.min)+'"></label><label>'+(time?'結束時間':'最大值')+'<input id="column-max" type="'+(time?'time':'number')+'" '+(time?'step="1"':'step="any"')+' value="'+e(s.max)+'"></label></div>':'';
-  const html='<div class="column-freeze"><button class="button small" data-freeze="'+(pos+1)+'">凍結至此欄</button><button class="button small" data-freeze="0" '+(!t.freeze?'disabled':'')+'>取消凍結</button></div><p class="notice">凍結依目前欄位順序；窄螢幕會保留可捲動區域。</p>'+(filterable?'<div class="column-filter-form"><label for="column-query">搜尋此欄</label><input id="column-query" value="'+e(s.query)+'" placeholder="輸入關鍵字" autocomplete="off">'+range+'<div class="column-value-toolbar"><strong>篩選值</strong><button data-action="column-select-all">全選</button><button data-action="column-select-none">清空</button></div><small id="column-selection" aria-live="polite"></small><div id="column-values" class="column-values"></div><p class="column-error" role="alert" id="column-error"></p></div>':'');
+  const html='<div data-currency-original><p class="mg-note">金額欄位篩選使用原幣 USDT</p></div><div class="column-freeze"><button class="button small" data-freeze="'+(pos+1)+'">凍結至此欄</button><button class="button small" data-freeze="0" '+(!t.freeze?'disabled':'')+'>取消凍結</button></div><p class="notice">凍結依目前欄位順序；窄螢幕會保留可捲動區域。</p>'+(filterable?'<div class="column-filter-form"><label for="column-query">搜尋此欄</label><input id="column-query" value="'+e(s.query)+'" placeholder="輸入關鍵字" autocomplete="off">'+range+'<div class="column-value-toolbar"><strong>篩選值</strong><button data-action="column-select-all">全選</button><button data-action="column-select-none">清空</button></div><small id="column-selection" aria-live="polite"></small><div id="column-values" class="column-values"></div><p class="column-error" role="alert" id="column-error"></p></div>':'');
   showDialog('欄位操作 · '+e(d.headers[index]),html,{footer:filterable?button('清除此欄','column-clear')+button('完成','column-apply','primary'):''});
-  const dialog=$('#modal');dialog.classList.add('column-popover');
+  const dialog=$('#modal');dialog.classList.add('column-popover');dialog.setAttribute('data-currency-original','');
   if(filterable)renderColumnValues();
   const rect=s.anchor||{left:12,bottom:12};const left=Math.max(12,Math.min(rect.left,innerWidth-dialog.offsetWidth-12)),top=Math.max(12,Math.min(rect.bottom+6,innerHeight-dialog.offsetHeight-12));
   dialog.style.left=left+'px';dialog.style.top=top+'px';
@@ -721,7 +726,7 @@ function showGameSites(gameId,filter='all',replace=false){
 }
 function handleManagementClick(target){
  if(target.hasAttribute('data-accounting-open')){openAccounting();return true;}
- if(cmsController?.handleClick(target)||systemController?.handleClick(target)||playersController?.handleClick(target)||businessController?.handleClick(target)||accountingController?.handleClick(target))return true;
+ if(currencyDisplay?.handleClick(target)||cmsController?.handleClick(target)||systemController?.handleClick(target)||playersController?.handleClick(target)||businessController?.handleClick(target)||accountingController?.handleClick(target))return true;
  if(target.hasAttribute('data-clock-zone')){clockDraft.timeZone=normalizeTimeZone(target.dataset.clockZone);renderClockChoices($('#clock-zone-search').value);$$('[data-clock-zone]').find(b=>b.dataset.clockZone===clockDraft.timeZone)?.focus({preventScroll:true});updateClock();return true;}
  if(target.dataset.jpPartners){showPoolPartners(target.dataset.jpPartners);return true;}
  if(target.dataset.gmSiteToggle){showSiteAvailability(target.dataset.gmSiteToggle,target.dataset.gmSite);return true;}
@@ -904,12 +909,13 @@ $('#site-operation-modal').addEventListener('cancel',event=>{event.preventDefaul
 $('#site-operation-modal').addEventListener('click',event=>{const dialog=$('#site-operation-modal');if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeSiteOperation();}});
 window.addEventListener('beforeunload',saveView);
 const selectControls=installSelectControls({onOpen:()=>{scopeSelects.close();closeDate();closeMulti();closeLanguage();}});
+currencyDisplay=installCurrencyDisplay({render:()=>render(),showDialog,closeDialog,enhanceSelects:()=>selectControls.enhance(),toast});
 const scopeSelects=installSearchMultiSelect({onOpen:()=>{selectControls.close();closeDate();closeMulti();closeLanguage();}});
 const chartInteractions=installChartInteractions({translate:tr});
 infoCards=installInfoCards({pageScope:()=>current().key,translate:tr,localize:root=>localize(root,locale),toast});
 installRegionCharts({beforeChange:()=>chartInteractions.hide(),translate:tr});
 cmsController=installCmsController({data:DATA,getState:()=>gameOperations,loadState:readLatestOperations,commitState:commitOperations,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},localize:localized,translate:tr,toast,enhance:()=>selectControls.enhance(),currentTab:current,openManager:(kind,gameId)=>{if(kind==='game')openGameManagement('rules',gameId);else openJackpotPage('rules');current().ruleUI={gameId};render();}});
-systemController=installSystemController({data:DATA,playerEvents:()=>[...(playersController?.audit()||[]),...(businessController?.audit()||[])],operations:()=>gameOperations,showDialog,closeDialog,setDialog:value=>{dialogState=value;},getDialog:()=>dialogState,currentTab:current,renderMain:()=>render(),preferences:()=>({timeZone,locale,theme:document.documentElement.dataset.theme||'dark'}),setPreferences:values=>{if(values.locale&&languageNames[values.locale])locale=values.locale;if(['light','dark'].includes(values.theme))document.documentElement.dataset.theme=values.theme;persist();render();},showClock:showClockSettings,localize:localized,toast});
+systemController=installSystemController({data:DATA,playerEvents:()=>[...(playersController?.audit()||[]),...(businessController?.audit()||[])],operations:()=>gameOperations,showDialog,closeDialog,setDialog:value=>{dialogState=value;},getDialog:()=>dialogState,currentTab:current,renderMain:()=>render(),preferences:()=>({timeZone,locale,theme:document.documentElement.dataset.theme||'dark'}),setPreferences:values=>{if(values.locale&&languageNames[values.locale])locale=values.locale;if(['light','dark'].includes(values.theme))document.documentElement.dataset.theme=values.theme;persist();render();},showClock:showClockSettings,localize:localized,enhance:()=>selectControls.enhance(),toast});
 playersController=installPlayerController({data:DATA,currentTab:current,renderMain:()=>render(),showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},openPlayer,openPlayerPage,saveView,onAudit:()=>systemController?.refresh(),toast,localize:localized});
 businessController=installBusinessController({data:DATA,currentTab:current,showDialog,closeDialog,getDialog:()=>dialogState,setDialog:value=>{dialogState=value;},renderMain:()=>render(),saveView,onAudit:()=>systemController?.refresh(),toast,localize:localized});
 accountingController=installAccountingController({data:DATA,currentTab:current,renderMain:()=>render(),showDialog,closeDialog,saveView,queryForm,setDialog:value=>{dialogState=value;},rememberDetail,detailNavigation,organizations:liveOrganizations,toast,localize:localized});

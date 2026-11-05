@@ -1,5 +1,6 @@
-import {escape as e,money} from './core.js?v=14.4.1';
-import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
+import {currencyCode} from './currency-display.js?v=14.5.0';
+import {escape as e,money} from './core.js?v=14.5.0';
+import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';
 import {donutArc,captureChartState,animateCharts} from './chart-motion.js?v=14.4.1';
 
 const palette=['#E6C066','#65e3b6','#79cfdc','#e7a68c','#a8bfbd','#a0adb9','#c8d0c6','#d4bd98'];
@@ -26,7 +27,7 @@ export function regionDonut(groups,metric='players',hidden=[]){
   '<div class="donut-summary" aria-live="polite"><span>目前顯示 <strong>'+regions+' / '+groups.length+'</strong> 個地區</span><span>'+(isBet?'總投注額':'遊玩人數')+' <strong>'+(isBet?money(total)+' USDT':total+' 位')+'</strong></span></div>';
 }
 export function regionChart(groups){
- return '<div class="region-chart" data-region-chart="'+e(JSON.stringify(groups))+'" data-region-metric="players" data-region-hidden="[]">'+regionDonut(groups)+'</div>';
+ return ('<div class="region-chart" data-region-chart="'+e(JSON.stringify(groups))+'" data-region-metric="players" data-region-hidden="[]">'+regionDonut(groups)+'</div>').replaceAll('USDT',currencyCode());
 }
 export function installRegionCharts({beforeChange=()=>{},translate=v=>v}={}){
  document.addEventListener('click',event=>{
@@ -35,7 +36,7 @@ export function installRegionCharts({beforeChange=()=>{},translate=v=>v}={}){
   if(mode)root.dataset.regionMetric=mode;
   else{const index=hidden.indexOf(button.dataset.regionKey);if(index<0)hidden.push(button.dataset.regionKey);else hidden.splice(index,1);}
   const focusKey=mode?'data-region-mode':'data-region-key',focusValue=button.getAttribute(focusKey),previous=captureChartState(root);
-  beforeChange();root.dataset.regionHidden=JSON.stringify(hidden);root.innerHTML=regionDonut(groups,root.dataset.regionMetric,hidden);
+  beforeChange();root.dataset.regionHidden=JSON.stringify(hidden);root.innerHTML=regionDonut(groups,root.dataset.regionMetric,hidden).replaceAll('USDT',currencyCode());
   animateCharts(root,previous,translate);root.querySelector('['+focusKey+'="'+CSS.escape(focusValue)+'"]')?.focus({preventScroll:true});
  });
 }

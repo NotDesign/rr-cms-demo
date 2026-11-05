@@ -1,4 +1,4 @@
-import {ACCOUNTING_ITEMS} from './accounting.js?v=14.4.1';
+import {ACCOUNTING_ITEMS} from './accounting.js?v=14.5.0';
 const keys=ACCOUNTING_ITEMS.map(([key])=>key),featured=['chess','bullet','tool','bonus-buy','free-spin','jackpot'];
 export const ACCOUNTING_DISPLAY_KEY='rr-cms-accounting-display-v1';
 export function normalizeAccountingDisplay(value,legacyAll=false){

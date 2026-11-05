@@ -142,3 +142,11 @@ test('parentless wrapper and cash-network examples retain real relationships and
  for(const root of roots){const records=organizationRecords(data.records,data.organizations,root.id);assert.ok(records.length);assert.ok(records.every(r=>r.integratorId===null));}
  assert.equal(Math.round(totals(data.records).bet*100),95124000);
 });
+
+test('settlement report examples retain ledger-derived snapshots across reloads and status changes',()=>{
+ const business=createBusinessState(data),examples=business.statements.filter(row=>row.demo);
+ assert.equal(examples.length,4);assert.deepEqual(examples.map(r=>r.status),['draft','review','confirmed','held']);
+ for(const row of examples){const preview=settlementPreview(data,business,row.orgId,{start:row.start,end:row.end});assert.equal(row.bet,preview.bet);assert.equal(row.payout,preview.payout);assert.equal(row.net,preview.net);assert.ok(row.count>0);}
+ const reloaded=createBusinessState(data,JSON.parse(JSON.stringify(business)));assert.equal(reloaded.statements.length,business.statements.length);
+ assert.equal(new Set(reloaded.statements.map(r=>r.id)).size,reloaded.statements.length);
+});

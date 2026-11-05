@@ -1,4 +1,4 @@
-import {organizationRecords,totals} from './core.js?v=14.4.1';
+import {organizationRecords,totals} from './core.js?v=14.5.0';
 import {cashWrapper,DEMO_INTEGRATOR_ID,organizationParents,organizationSections,optionalOrganizationParent} from './organization-hierarchy.js?v=14.4.9';
 export const BUSINESS_SECTIONS={promotion:[['center','活動中心'],['rtp','RTP 活動'],['free','免費旋轉'],['bonus','紅利／獎勵'],['logs','活動紀錄']],merchant:[['all','全部機構'],...organizationSections,['gateways','API 中介']],settlement:[['rules','傭金規則'],['pricing','渠道價差'],['ggr','GGR 結算'],['periods','週結／月結'],['reports','結算報表']]};
 export const campaignTypes={rtp:'RTP 活動',free:'免費旋轉',bonus:'紅利／獎勵'};
@@ -7,10 +7,16 @@ const clone=x=>JSON.parse(JSON.stringify(x)),round=n=>Math.round((n+Number.EPSIL
 export function createBusinessState(data,raw={}){
  const sites=data.organizations.filter(o=>o.level==='現金網'),wrappers=data.organizations.filter(o=>o.level==='包網商'),direct=sites.filter(s=>!cashWrapper(data.organizations,s));
  const directExample={id:'ACT-DIRECT',name:'直營現金網回饋',type:'bonus',games:data.games.filter(g=>g.type==='電子遊戲').slice(0,2).map(g=>g.id),sites:direct.map(s=>s.id),start:data.date+'T00:00',end:'2026-11-30T23:59',value:30,budget:2000,status:'draft'};
- return {schema:1,revision:Number.isSafeInteger(raw?.revision)?raw.revision:0,entities:raw?.entities||[],orgConfig:raw?.orgConfig||{},gateways:raw?.gateways||[{id:'GW-APAC',name:'亞太遊戲閘道',url:'https://apac.example.com/rr-api',region:'亞太',status:'active'},{id:'GW-SEA',name:'東南亞遊戲閘道',url:'https://sea.example.com/rr-api',region:'東南亞',status:'active'},{id:'GW-DR',name:'備援遊戲閘道',url:'https://backup.example.com/rr-api',region:'備援',status:'paused'}],campaigns:raw?.campaigns?(direct.length&&!raw.campaigns.some(c=>c.id==='ACT-DIRECT')?[...raw.campaigns,directExample]:raw.campaigns):[
+ const state={schema:1,revision:Number.isSafeInteger(raw?.revision)?raw.revision:0,entities:raw?.entities||[],orgConfig:raw?.orgConfig||{},gateways:raw?.gateways||[{id:'GW-APAC',name:'亞太遊戲閘道',url:'https://apac.example.com/rr-api',region:'亞太',status:'active'},{id:'GW-SEA',name:'東南亞遊戲閘道',url:'https://sea.example.com/rr-api',region:'東南亞',status:'active'},{id:'GW-DR',name:'備援遊戲閘道',url:'https://backup.example.com/rr-api',region:'備援',status:'paused'}],campaigns:raw?.campaigns?(direct.length&&!raw.campaigns.some(c=>c.id==='ACT-DIRECT')?[...raw.campaigns,directExample]:raw.campaigns):[
  {id:'ACT-001',name:'週末闖關回饋',type:'rtp',games:data.games.filter(g=>g.type==='電子遊戲').slice(0,2).map(g=>g.id),sites:sites.slice(0,4).map(s=>s.id),start:'2026-11-01T00:00',end:'2026-11-30T23:59',value:97,budget:10000,status:'active'},
  {id:'ACT-002',name:'翡翠免費旋轉',type:'free',games:data.games.filter(g=>g.type==='老虎機').slice(0,2).map(g=>g.id),sites:sites.slice(3,7).map(s=>s.id),start:'2026-11-01T00:00',end:'2026-11-30T23:59',value:20,budget:5000,status:'draft'},
  {id:'ACT-003',name:'新玩家紅利計畫',type:'bonus',games:data.games.slice(0,3).map(g=>g.id),sites:sites.slice(0,3).map(s=>s.id),start:'2026-11-01T00:00',end:'2026-11-30T23:59',value:50,budget:3000,status:'paused'},...(direct.length?[directExample]:[])],commissions:raw?.commissions||[{id:'COM-001',name:'標準正向 GGR 傭金',sites:sites.map(s=>s.id),rate:15,status:'active'}],pricing:raw?.pricing||wrappers.map((w,i)=>({id:'PRICE-'+w.id,wrapperId:w.id,costRate:.5,saleRate:.8+i*.05,status:'active'})),statements:raw?.statements||[],audit:raw?.audit||[]};
+ const statuses=['draft','review','confirmed','held'],range=settlementPeriod(data.date);
+ const examples=['PKG-Q','PKG-R','PKG-S','PKG-T'].flatMap((id,index)=>{
+  if(!data.organizations.some(o=>o.id===id)||state.statements.some(row=>row.id==='DEMO-ST-'+id||row.orgId===id&&row.start<=range.end&&row.end>=range.start))return [];
+  const snapshot=settlementPreview(data,state,id,range);return snapshot.count?[{...snapshot,id:'DEMO-ST-'+id,status:statuses[index],createdAt:data.date+'T12:00:00Z',demo:true}]:[];
+ });
+ return {...state,statements:[...state.statements,...examples]};
 }
 export function businessOrganizations(data,state){
  const demoIntegrator=data.organizations.find(org=>org.id===DEMO_INTEGRATOR_ID);

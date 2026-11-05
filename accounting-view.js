@@ -1,10 +1,10 @@
-import {infoCard} from './metric-card.js?v=14.4.8';
+import {infoCard} from './metric-card.js?v=14.5.0';
 import {NET_WIN,netWinCents} from './net-win.js?v=14.4.1';
-import {normalizeAccountingDisplay,visibleAccountingCards} from './accounting-display.js?v=14.4.1';
-import {escape as e,money,signed,tone,selectionValues} from './core.js?v=14.4.1';
+import {normalizeAccountingDisplay,visibleAccountingCards} from './accounting-display.js?v=14.5.0';
+import {escape as e,money,signed,tone,selectionValues} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
-import {ACCOUNTING_ITEMS,accountingTotals} from './accounting.js?v=14.4.1';
+import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';
+import {ACCOUNTING_ITEMS,accountingTotals} from './accounting.js?v=14.5.0';
 const amount=n=>money(n/100),net=n=>signed(n/100),itemName=k=>ACCOUNTING_ITEMS.find(([id])=>id===k)?.[1]||k;
 const metric=(icon,label,value,small='',cls='')=>infoCard({icon,label,valueHtml:String(value),tone:cls,caption:small,className:'acct-metric',tag:'article'});
 function scopeCell(ids,orgs,kind,attribute){if(ids.length===1&&!ids[0])return '無包網商';if(ids.length===1){const o=orgs.find(o=>o.id===ids[0]);return '<button class="text-link" data-'+attribute+'="'+e(attribute==='game'?o?.name||ids[0]:ids[0])+'">'+e(o?.name||ids[0])+'</button>';}return ids.filter(Boolean).length+' '+kind+(ids.some(id=>!id)?' · 含直營現金網':'');}

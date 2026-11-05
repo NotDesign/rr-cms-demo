@@ -1,0 +1,10 @@
+.currency-display-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-4px 0 18px;min-width:0;font-size:12px}
+.currency-display-bar>label{color:var(--muted);flex:none}
+.currency-display-bar>.select-trigger{width:180px;max-width:100%;min-width:0;height:36px;min-height:36px;border-radius:12px;font-size:12px}
+.currency-rate-note{color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.currency-rate-note small{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:var(--action-fill);color:var(--accent-gold-ink);font-size:10px}
+.currency-display-bar>.button{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap}
+.currency-display-bar .ui-icon{width:17px;height:17px}
+.fx-rate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
+.fx-rate-grid>.field{min-width:0}.fx-rate-grid input{width:100%;min-width:0;font-variant-numeric:tabular-nums}
+@media(max-width:760px){.currency-display-bar{gap:8px}.currency-rate-note{order:3;flex-basis:100%}.currency-display-bar>.select-trigger{width:150px}.fx-rate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
