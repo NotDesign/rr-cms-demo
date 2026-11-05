@@ -1,4 +1,4 @@
-import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {animateRegion,animateExit} from './motion.js?v=14.4.1';
 
 // Keep the form's native value/change contract while presenting one shared menu.

@@ -1,0 +1,37 @@
+/* All icon metrics share this component, including compact embedded cards. */
+.metric-card.metric-card{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;min-width:0;min-height:112px;padding:18px 20px;background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:inset 0 1px 0 #ffffff05;text-align:left;container-type:inline-size}
+.metric-card>.metric-card-head{display:flex;align-items:center;gap:10px;min-width:0;margin:0 0 12px;min-height:28px}
+.metric-card .metric-card-head>.ui-icon{display:block;flex:none;width:26px;height:26px;margin:0;color:var(--accent-gold-ink);grid-row:auto}
+.metric-card .metric-card-label{display:block;min-width:0;margin:0;padding:0;color:var(--muted);font-size:12px;line-height:20px;font-weight:500;overflow-wrap:anywhere}
+.metric-card>.metric-card-value,.metric-card-secondary>.metric-card-value{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 7px;min-width:0;font-variant-numeric:tabular-nums}
+.metric-card .metric-card-value>strong{display:block;margin:0;font-size:26px;font-weight:600;line-height:1.3;letter-spacing:-.3px;white-space:nowrap;color:var(--text);max-width:100%}
+.metric-card .metric-card-value>strong.positive,.metric-card .metric-card-value .positive{color:var(--positive)}
+.metric-card .metric-card-value>strong.negative,.metric-card .metric-card-value .negative{color:var(--negative)}
+.metric-card .metric-card-value>.metric-card-unit{display:block;font-size:11px;line-height:18px;font-weight:400;color:var(--muted);white-space:nowrap;margin:0}
+.metric-card>.metric-card-caption{display:block;margin:8px 0 0;font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.metric-card>.metric-card-secondary{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.metric-card-secondary>.metric-card-value{margin-top:4px}
+.metric-card .metric-card-secondary strong{font-size:20px}
+.metric-card.metric-card--compact{min-height:96px;padding:12px 14px;border-radius:14px}
+.metric-card--compact>.metric-card-head{margin-bottom:8px;gap:8px;min-height:24px}
+.metric-card--compact .metric-card-head>.ui-icon{width:23px;height:23px}
+.metric-card--compact .metric-card-value>strong{font-size:22px}
+.game-card-metrics>.metric-card.metric-card{background:none;border:0;padding:0;min-height:0;box-shadow:none;border-radius:0}
+.game-card-metrics>.metric-card .metric-card-head{margin-bottom:6px;gap:8px}
+.game-card-metrics>.metric-card .metric-card-head>.ui-icon{width:21px;height:21px}
+.game-card-metrics>.metric-card .metric-card-value>strong{font-size:21px}
+.mg-category-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,680px),1fr))}
+.mg-category-card{container-type:inline-size}
+.mg-category-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:16px 0}
+.mg-category-metrics>.metric-card{grid-column:span 2}
+.mg-category-metrics>.metric-card:nth-child(n+4){grid-column:span 3}
+.mg-category-metrics>.metric-card{background:var(--paper)}
+.jp-partner-figures>.metric-card.metric-card{background:color-mix(in srgb,var(--bg) 68%,transparent)}
+.info-combined-grid>.metric-card.metric-card{min-height:112px}
+@container (max-width:520px){.mg-category-metrics>.metric-card{grid-column:span 3}.mg-category-metrics>.metric-card:nth-child(3){grid-column:1/-1}}
+@media(max-width:760px){.metric-card.metric-card{padding:14px;min-height:104px;border-radius:16px}.metric-card>.metric-card-head{gap:8px;margin-bottom:10px}.metric-card .metric-card-value>strong{font-size:21px}.metric-card.metric-card--compact{padding:12px;min-height:92px}.mg-category-metrics{gap:10px}}
+
+.mg-default-rtp>.metric-card.metric-card{background:none;border:0;box-shadow:none;padding:0;min-height:0;flex:1}
+@container (max-width:200px){.metric-card .metric-card-value>strong{font-size:21px}.metric-card .metric-card-label{font-size:11px}}
+@container (max-width:155px){.metric-card .metric-card-value>strong{font-size:18px}.metric-card .metric-card-head{gap:8px}.metric-card .metric-card-head>.ui-icon{width:23px;height:23px}}
+@container (max-width:115px){.metric-card .metric-card-value>strong{font-size:15px}}

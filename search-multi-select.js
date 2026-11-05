@@ -1,4 +1,4 @@
-import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {animateRegion,animateExit} from './motion.js?v=14.4.1';
 
 // Opt-in enhancement: the native selectedOptions remain the form's source of truth.
@@ -23,7 +23,7 @@ export function installSearchMultiSelect({onOpen=()=>{}}={}){
  function matching(){const q=norm(opened.search.value);return opened.options.filter(o=>!q||norm(o.textContent+' '+o.value+' '+(o.dataset.meta||'')).includes(q));}
  function syncSelection(){
   if(!opened)return;const selected=opened.select.selectedOptions.length;
-  opened.count.textContent='已選 '+selected+' / '+opened.options.length+' 項';
+  opened.count.textContent=!selected&&opened.select.dataset.emptyMeansAll?'所有 '+opened.options.length+' 項':'已選 '+selected+' / '+opened.options.length+' 項';
   opened.all.textContent=opened.search.value.trim()?'全選結果':'全選';
   const matches=matching();opened.all.disabled=!matches.length||matches.every(o=>o.selected);
   opened.clear.disabled=!selected;
@@ -73,8 +73,8 @@ export function installSearchMultiSelect({onOpen=()=>{}}={}){
    button.setAttribute('aria-label',name);button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-expanded','false');
    const copy=document.createElement('span'),count=document.createElement('span');copy.className='select-value';count.className='multi-count';button.append(copy,count);button.insertAdjacentHTML('beforeend',uiIcon('chevronDown'));
    function sync(){
-    const selected=[...select.selectedOptions],text=selected.length?selected.slice(0,2).map(o=>o.textContent).join('、'):select.dataset.placeholder||'請選擇';
-    if(copy.textContent!==text)copy.textContent=text;if(count.textContent!==String(selected.length))count.textContent=String(selected.length);count.hidden=!selected.length;
+    const selected=[...select.selectedOptions],all=select.dataset.allLabel&&selected.length===select.options.length,text=all?select.dataset.allLabel:selected.length?selected.slice(0,2).map(o=>o.textContent).join('、'):select.dataset.placeholder||'請選擇';
+    if(copy.textContent!==text)copy.textContent=text;if(count.textContent!==String(selected.length))count.textContent=String(selected.length);count.hidden=!selected.length||Boolean(all);
     const title=selected.map(o=>o.textContent+'（'+o.value+'）').join('、');if(button.title!==title)button.title=title;
     button.disabled=select.disabled;
    }

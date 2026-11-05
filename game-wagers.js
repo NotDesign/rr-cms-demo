@@ -1,7 +1,8 @@
+import {infoCard} from './metric-card.js?v=14.4.8';
 import {escape as e, money, signed, tone, recordPlayerKey} from './core.js?v=14.4.1';
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {regionChart} from './region-chart.js?v=14.4.1';
-import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.8';
 
 export function wagerMetrics(records) {
   let cents = 0;
@@ -43,11 +44,7 @@ export function wagerOverview(records, date, label = '總投注額', {compact=fa
   ];
   const meta='<small class="wager-meta">'+e(date)+' · 模擬投注 · 平均按實扣投注筆數計算</small>';
   if(compact)return '<div class="wager-overview wager-overview--compact">'+metrics.map(m=>'<span class="wager-metric"><span>'+e(m.label)+'</span><strong class="'+m.tone+'">'+e(m.value)+(m.value==='—'?'':' USDT')+'</strong></span>').join('')+meta+'</div>';
-  return '<div class="wager-overview"><div class="wager-card-grid">'+metrics.map(m=>
-    '<article class="wager-info-card" data-wager-card="'+m.key+'" role="group" aria-label="'+e(m.label+' '+m.value+(m.value==='—'?'':' USDT'))+'">'+
-    '<div class="wager-card-head"><span class="wager-info-icon">'+uiIcon(m.icon)+'</span><span class="wager-card-label">'+e(m.label)+'</span></div>'+
-    '<div class="wager-card-value"><strong class="'+m.tone+'">'+e(m.value)+'</strong>'+(m.value==='—'?'':'<small>USDT</small>')+'</div></article>'
-  ).join('')+'</div>'+meta+'</div>';
+  return '<div class="wager-overview"><div class="wager-card-grid">'+metrics.map(m=>infoCard({icon:m.icon,label:m.label,value:m.value,unit:m.value==='—'?'':'USDT',tone:m.tone,className:'wager-info-card',tag:'article',attrs:'data-wager-card="'+m.key+'" role="group" aria-label="'+e(m.label+' '+m.value+(m.value==='—'?'':' USDT'))+'"'})).join('')+'</div>'+meta+'</div>';
 }
 
 // Sum underlying records for the same filter scope; percentages and versions stay blank.

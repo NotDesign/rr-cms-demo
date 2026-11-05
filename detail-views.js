@@ -1,7 +1,8 @@
+import {infoCard} from './metric-card.js?v=14.4.8';
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=14.4.1';
 import {gameCatalog} from './game-catalog.js?v=14.4.1';
-import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {chartTipAttrs} from './chart-interactions.js?v=14.4.6';
 export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));
 export function gameIdentity(name,size=64){const g=games[name];if(!g)return '<span>'+e(name)+'</span>';return '<span class="game-identity"><img class="game-cover" width="'+size+'" height="'+size+'" src="assets/games/'+g.cover+'.jpg" alt="'+e(name)+'" loading="lazy"><span><strong>'+e(name)+'</strong><small>'+g.type+'</small></span></span>';}
@@ -11,7 +12,7 @@ export function gameCards(records){
  return '<div class="game-cards">'+groups.filter(g=>g.t.count).sort((a,b)=>b.t.bet-a.t.bet).map(({name,t,jackpot},i)=>{
   const share=total?t.bet/total*100:0;
   const metrics=[['coins','投注 USDT',money(t.bet),''],['players','玩家淨盈虧',signed(t.playerNetWin),tone(t.playerNetWin)],['profit','營運淨輸贏',signed(t.operatorNetWin),tone(t.operatorNetWin)]];
-  return '<button class="game-card" data-game="'+e(name)+'"'+chartTipAttrs(name,[{label:'實扣投注',value:money(t.bet)+' USDT'},{label:'玩家淨盈虧',value:signed(t.playerNetWin)+' USDT',tone:tone(t.playerNetWin)},{label:'營運淨輸贏',value:signed(t.operatorNetWin)+' USDT',tone:tone(t.operatorNetWin)},{label:'遊玩筆數',value:t.count+' 筆記錄'},{label:'投注佔比',value:share.toFixed(1)+'%'}])+'><div class="game-card-top">'+gameIdentity(name,88)+'<span class="rank">'+(i+1)+'</span></div><div class="game-card-metrics">'+metrics.map(([icon,label,value,color])=>'<span><small>'+uiIcon(icon)+label+'</small><strong class="'+color+'">'+value+'</strong></span>').join('')+'</div><div class="share-track"><span style="width:'+share+'%"></span></div><div class="card-foot"><small>'+t.count+' 筆記錄</small><small>投注佔比 '+share.toFixed(1)+'%</small>'+(jackpot?'<small>獎池 '+money(jackpot)+' USDT</small>':'')+'<span class="game-card-arrow" aria-hidden="true">'+uiIcon('arrow')+'</span></div></button>';
+  return '<button class="game-card" data-game="'+e(name)+'"'+chartTipAttrs(name,[{label:'實扣投注',value:money(t.bet)+' USDT'},{label:'玩家淨盈虧',value:signed(t.playerNetWin)+' USDT',tone:tone(t.playerNetWin)},{label:'營運淨輸贏',value:signed(t.operatorNetWin)+' USDT',tone:tone(t.operatorNetWin)},{label:'遊玩筆數',value:t.count+' 筆記錄'},{label:'投注佔比',value:share.toFixed(1)+'%'}])+'><div class="game-card-top">'+gameIdentity(name,88)+'<span class="rank">'+(i+1)+'</span></div><div class="game-card-metrics">'+metrics.map(([icon,label,value,color])=>infoCard({icon,label,value,tone:color,tag:'span',compact:true})).join('')+'</div><div class="share-track"><span style="width:'+share+'%"></span></div><div class="card-foot"><small>'+t.count+' 筆記錄</small><small>投注佔比 '+share.toFixed(1)+'%</small>'+(jackpot?'<small>獎池 '+money(jackpot)+' USDT</small>':'')+'<span class="game-card-arrow" aria-hidden="true">'+uiIcon('arrow')+'</span></div></button>';
  }).join('')+'</div>';
 }
 export function trendChart(records,dateLabel="2026/10/15"){

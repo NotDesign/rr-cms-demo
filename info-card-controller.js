@@ -1,6 +1,6 @@
 import {INFO_CARDS_KEY,normalizeCardLayout,moveCard,placeCard} from './info-cards.js?v=14.4.5';
 import {escape as e} from './core.js?v=14.4.1';
-import {uiIcon} from './ui-icons.js?v=14.4.1';
+import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {animateRegion,animateExit,cancelRegion} from './motion.js?v=14.4.1';
 
 // Only summary metrics are included. Data rows, charts, filters and entity cards keep their meaning.
@@ -14,6 +14,7 @@ const definitions=[
  ['.acct-metrics','accounting','帳務摘要','.acct-metric','small'],
  ['.acct-detail-summary','accounting-detail','來源摘要','.acct-metric','small'],
  ['.cms-trial-metrics','trial','規則試算',':scope > div','small'],
+ ['.mg-category-metrics','category-metrics','遊戲分類資訊',':scope > div','.metric-card-label'],
  ['.game-card-metrics','game-metrics','遊戲卡片資訊',':scope > span','small']
 ];
 const selector=definitions.map(([s])=>s).join(',');
