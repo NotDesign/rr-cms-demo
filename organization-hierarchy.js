@@ -16,6 +16,8 @@ const parentLevels = {
   '第二層代理': '第一層代理'
 };
 
+export const optionalOrganizationParent=level=>['包網商','現金網'].includes(level);
+
 export function organizationParents(organizations, level) {
   if(level==='現金網')return organizations.filter(org=>['包網商','遊戲集成商','遊戲商'].includes(org.level));
   const expected = parentLevels[level];

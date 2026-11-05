@@ -35,3 +35,6 @@
 @container (max-width:200px){.metric-card .metric-card-value>strong{font-size:21px}.metric-card .metric-card-label{font-size:11px}}
 @container (max-width:155px){.metric-card .metric-card-value>strong{font-size:18px}.metric-card .metric-card-head{gap:8px}.metric-card .metric-card-head>.ui-icon{width:23px;height:23px}}
 @container (max-width:115px){.metric-card .metric-card-value>strong{font-size:15px}}
+
+.summary.net-win-summary,.accounting-page .acct-metrics,.acct-detail-summary,.player-management-page .pm-financials{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.metric-card .metric-card-value>strong{word-break:normal;overflow-wrap:normal}

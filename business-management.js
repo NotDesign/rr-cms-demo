@@ -1,5 +1,5 @@
 import {organizationRecords,totals} from './core.js?v=14.4.1';
-import {cashWrapper,DEMO_INTEGRATOR_ID,organizationParents,organizationSections} from './organization-hierarchy.js?v=14.4.7';
+import {cashWrapper,DEMO_INTEGRATOR_ID,organizationParents,organizationSections,optionalOrganizationParent} from './organization-hierarchy.js?v=14.4.9';
 export const BUSINESS_SECTIONS={promotion:[['center','活動中心'],['rtp','RTP 活動'],['free','免費旋轉'],['bonus','紅利／獎勵'],['logs','活動紀錄']],merchant:[['all','全部機構'],...organizationSections,['gateways','API 中介']],settlement:[['rules','傭金規則'],['pricing','渠道價差'],['ggr','GGR 結算'],['periods','週結／月結'],['reports','結算報表']]};
 export const campaignTypes={rtp:'RTP 活動',free:'免費旋轉',bonus:'紅利／獎勵'};
 export const businessStatus={draft:'草稿',active:'啟用中',paused:'已暫停',ended:'已結束',disabled:'停用',review:'待覆核',confirmed:'已確認',held:'暫緩'};
@@ -37,16 +37,17 @@ export function saveBusinessRecord(data,state,type,id,values,reason,{revision=st
   before=id?orgs.find(o=>o.id===id):null;if(id&&!before)throw Error('找不到機構');
   const level=before?.level||values.level;
   if(!organizationSections.some(([,label])=>label===level))throw Error('請選擇機構類型');
-  if(before&&values.parent!==before.parent)throw Error('既有機構的歷史隸屬關係不可直接移動');
-  const parent=organizationParents(orgs,level).find(o=>o.id===values.parent);
-  if(!parent)throw Error('上層機構不符合層級');
+  const parentId=String(values.parent||'').trim()||null;
+  if(before&&parentId!==(before.parent||null))throw Error('既有機構的歷史隸屬關係不可直接移動');
+  const parent=organizationParents(orgs,level).find(o=>o.id===parentId);
+  if(parentId&&!parent||!parentId&&!optionalOrganizationParent(level))throw Error('上層機構不符合層級');
   const isAgent=level==='第一層代理'||level==='第二層代理';
   const gatewayId=isAgent?null:values.gatewayId;
   const region=isAgent?parent.region:required(values.region);
   if(!['active','disabled'].includes(values.status))throw Error('無效的機構狀態');
   if(!isAgent&&!state.gateways.some(g=>g.id===gatewayId))throw Error('請選擇 API 中介');
-  const name=required(values.name);if(orgs.some(o=>o.id!==id&&o.parent===parent.id&&o.name===name))throw Error('相同層級已有此機構名稱');
-  after={id:id||'ORG-'+(state.revision+1),name,level,parent:parent.id,status:values.status,region,gatewayId,currency:'USDT'};
+  const name=required(values.name);if(orgs.some(o=>o.id!==id&&(o.parent||null)===(parent?.id||null)&&o.level===level&&o.name===name))throw Error('相同層級已有此機構名稱');
+  after={id:id||'ORG-'+(state.revision+1),name,level,parent:parent?.id||null,status:values.status,region,gatewayId,currency:'USDT'};
   if(id){next.orgConfig={...state.orgConfig,[id]:after};}else next.entities=[...state.entities,after];module='merchant';
  }else if(type==='gateway'){
   before=id?state.gateways.find(r=>r.id===id):null;if(id&&!before)throw Error('找不到 API 中介');

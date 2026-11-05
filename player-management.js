@@ -1,7 +1,7 @@
 import {matchesSelection,totals} from './core.js?v=14.4.1';
 import {playerSourceProfile} from './analytics.js?v=14.4.7';
 import {playerResultTotals as playerProfitLoss} from './net-win.js?v=14.4.1';
-import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.7';
+import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.9';
 export const PLAYER_SECTIONS=[['overview','玩家總覽'],['directory','玩家列表'],['risk','風險與 BOT'],['restrictions','凍結與封鎖'],['audit','玩家操作紀錄']];
 export const accessLabels={active:'正常',frozen:'已凍結',blocked:'已封鎖'};
 export const botLabels={unreviewed:'尚未判定',watch:'觀察中',bot:'人工判定為 BOT',human:'正常玩家'};

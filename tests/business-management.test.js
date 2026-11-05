@@ -22,3 +22,14 @@ test('all business changes preserve the original ledger and require a reason',()
 test('business views escape user names and keep financial columns aligned',()=>{const s=save(fresh(),'campaign',null,{...campaign,name:'<script>test</script>'}),html=businessPage(data,s,'promotion','center');assert.ok(html.includes('&lt;script&gt;'));assert.ok(!html.includes('<script>test'));assert.match(businessPage(data,s,'settlement','ggr'),/<th scope="col" class="num">GGR USDT/);for(const type of ['org','gateway','campaign','commission','pricing'])assert.ok(businessEditor(data,s,type).includes('be-reason'));});
 
 test('positive GGR commission is rounded per site and reconciles the net',()=>{const sample={...data,records:[{...data.records[0],bet:100,payout:50,net:-50}]},p=settlementPreview(sample,createBusinessState(sample),'SITE-A1',{start:data.date,end:data.date});assert.equal(p.ggr,50);assert.equal(p.commission,7.5);assert.equal(p.net,42.5);});
+
+test('new wrappers and cash networks accept no parent and retain it on metadata edits',()=>{
+ for(const level of ['包網商','現金網']){
+  const state=save(fresh(),'org',null,{name:'無上層'+level,level,parent:'',status:'active',region:'台灣',gatewayId:'GW-APAC'}),row=state.entities.at(-1);
+  assert.equal(row.parent,null);const updated=save(state,'org',row.id,{...row,parent:'',name:row.name+'更新'});
+  assert.equal(updated.orgConfig[row.id].parent,null);
+  const html=businessEditor(data,updated,'org',row.id);assert.match(html,/<option value="" selected>無上層機構/);
+ }
+ assert.throws(()=>save(fresh(),'org',null,{name:'無上層代理',level:'第一層代理',parent:'',status:'active'}),/上層機構/);
+ assert.throws(()=>save(fresh(),'org',null,{name:'錯誤上層',level:'現金網',parent:'missing',status:'active',region:'台灣',gatewayId:'GW-APAC'}),/上層機構/);
+});

@@ -61,10 +61,10 @@ export function wagerRegionTable(records, organizations) {
   const headings = ['地區', '遊玩人數', '實扣投注筆數', '總投注額 USDT', '平均每筆投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT'];
   return '<section class="analytics-card wager-regions"><div class="analytics-card-head"><div><h2>'+uiIcon('globe')+
     '地區遊玩統計</h2><p>依現金網所屬地區統計 · 遊玩人數按現金網玩家帳號去重</p></div></div>'+
-    regionChart(groups)+'<div class="mini-scroll" tabindex="0" role="region" aria-label="地區遊玩統計"><table class="mini-table"><thead><tr>'+
+    '<div class="wager-region-layout">'+regionChart(groups)+'<div class="mini-scroll" tabindex="0" role="region" aria-label="地區遊玩統計"><table class="mini-table"><thead><tr>'+
     headings.map((title,i) => '<th scope="col"'+(i?' class="num"':'')+'>'+title+'</th>').join('')+
     '</tr></thead><tbody><tr class="mini-totals"><th scope="row">合計</th>'+cells(total)+'</tr>'+
     groups.map(group => '<tr><th scope="row">'+e(group.region)+'</th>'+cells(group)+'</tr>').join('')+
-    '</tbody></table></div>'+(groups.length ? '' : '<p class="notice">此篩選範圍沒有遊玩記錄</p>')+
+    '</tbody></table></div></div>'+(groups.length ? '' : '<p class="notice">此篩選範圍沒有遊玩記錄</p>')+
     '<p class="detail-note">平均每筆投注額＝總投注額 ÷ 實扣投注筆數。免費回合計入遊玩人數。</p></section>';
 }

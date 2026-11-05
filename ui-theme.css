@@ -423,3 +423,20 @@ dialog::before,.date-popover::before,.language-menu::before,.filter-popover::bef
 
 /* Detail tables keep their intrinsic height inside scrolling flex drawers. */
 .dialog-body>.biz-scroll{flex:none;min-height:0}
+
+/* Regional distribution and the corresponding figures share one compact row. */
+.wager-regions{container-type:inline-size}
+.wager-region-layout{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);gap:16px;align-items:start}
+.wager-region-layout>.region-chart{margin:0;padding:16px}
+.wager-region-layout .region-chart-heading{gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.wager-region-layout .region-chart .donut-layout{grid-template-columns:128px minmax(0,1fr);gap:10px;align-items:center}
+.wager-region-layout .region-chart .donut-chart{max-width:148px}
+.wager-region-layout .region-chart .donut-legend{gap:2px}
+.wager-region-layout .region-chart .donut-legend button{padding:6px 10px;gap:8px;min-height:30px;font-size:11px}
+.wager-region-layout .region-chart .donut-summary{gap:6px;margin-top:12px;padding-top:10px;font-size:11px}
+.wager-region-layout>.mini-scroll{margin:0;min-width:0;max-height:420px;overflow:auto;overscroll-behavior:contain}
+.wager-region-layout .mini-table{min-width:830px}
+.wager-region-layout .mini-table th,.wager-region-layout .mini-table td{padding:12px 16px;white-space:nowrap}
+.wager-region-layout .mini-table thead{position:sticky;top:0;z-index:2;background:var(--paper)}
+@container (max-width:800px){.wager-region-layout{grid-template-columns:1fr}.wager-region-layout .region-chart .donut-layout{grid-template-columns:160px minmax(0,1fr)}.wager-region-layout .region-chart .donut-chart{max-width:160px}}
+@container (max-width:390px){.wager-region-layout .region-chart .donut-layout{grid-template-columns:110px minmax(0,1fr);gap:8px}.wager-region-layout .region-chart{padding:12px}.wager-region-layout .region-chart .donut-legend button{padding:6px;gap:6px}.wager-region-layout .region-chart .chart-toggle button{padding:6px 8px;font-size:11px}}

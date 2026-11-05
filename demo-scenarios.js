@@ -20,12 +20,12 @@ function organizationsForDemo(source) {
     id:index===0?'INT-DEMO':'INT-'+(index+1),name:name+'遊戲集成商',level:'遊戲集成商',parent:supplier.id
   }));
   const wrappers=wrapperNames.map((name,index)=>({
-    id:'PKG-'+String.fromCharCode(65+index),name:name+'包網商',level:'包網商',parent:integrators[Math.floor(index/4)].id
+    id:'PKG-'+String.fromCharCode(65+index),name:name+'包網商',level:'包網商',parent:index>=18?null:integrators[Math.floor(index/4)].id
   }));
   const sites=cashNames.map((name,index)=>{
     const oldId=existingSiteIds[index],wrapper=index<18?wrappers.find(org=>org.id==='PKG-'+oldId[0]):wrappers[6+(index-18)%14];
     return {id:oldId?'SITE-'+oldId:'SITE-'+String(index+1).padStart(3,'0'),name:name+(index>=48?'直營':'')+'現金網',
-      level:'現金網',parent:index===48?supplier.id:index===49?integrators[4].id:wrapper.id,region:originalRegions[index]||regions[(index-18)%regions.length]};
+      level:'現金網',parent:index===46||index===47?null:index===48?supplier.id:index===49?integrators[4].id:wrapper.id,region:originalRegions[index]||regions[(index-18)%regions.length]};
   });
   const agents=sites.flatMap(site=>{
     const first={id:'AG1-'+site.id,name:site.name+'一級代理',level:'第一層代理',parent:site.id};
@@ -193,6 +193,6 @@ export function expandDemoScenarios(source) {
   for(const pool of jackpotPools)pool.closing=running.get(pool.id)/100;
   const organizationAliases=Object.fromEntries(source.organizations.map(org=>[org.name,organizations.find(next=>next.id===org.id)?.name||org.name]));
   organizationAliases['示例遊戲集成商']=integratorNames[0]+'遊戲集成商';
-  return {...source,revision:'discussion-5-20-50-100-500-direct',games:gameCatalog,organizations,organizationAliases,records,
+  return {...source,revision:'discussion-5-20-50-100-500-optional-parents',games:gameCatalog,organizations,organizationAliases,records,
     jackpotPools,reports:rebuildReports(source,records),totals:totals(records)};
 }

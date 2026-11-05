@@ -1,7 +1,7 @@
 import {infoCard} from './metric-card.js?v=14.4.8';
-import {cashWrapperName,cashWrapper} from './organization-hierarchy.js?v=14.4.7';
+import {cashWrapperName,cashWrapper} from './organization-hierarchy.js?v=14.4.9';
 import {SLOT_GAMEPLAYS} from './slot-gameplay.js?v=14.4.1';
-import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './game-wagers.js?v=14.4.8';
+import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './game-wagers.js?v=14.4.9';
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {escape as e,money,signed,tone} from './core.js?v=14.4.1';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
@@ -76,7 +76,7 @@ export function impactView(data,state,gameId,listed){
 export function gameAccessView(data,state,gameId,now=new Date(),filter='all'){
  const game=data.games.find(g=>g.id===gameId),sites=data.organizations.filter(o=>o.level==='現金網'),o=state.games[gameId],wrappers=new Map(data.organizations.map(o=>[o.id,o.name]));
  const playable=sites.filter(s=>gameAccess(state,gameId,s.id).canPlay),jackpot=sites.filter(s=>jackpotEligibility(state,gameId,s.id).participates),shown=filter==='jackpot'?jackpot:filter==='playable'?playable:filter==='blocked'?sites.filter(s=>!gameAccess(state,gameId,s.id).canPlay):sites;
- shown.sort((a,b)=>a.parent.localeCompare(b.parent)||a.id.localeCompare(b.id));
+ shown.sort((a,b)=>String(a.parent||'').localeCompare(String(b.parent||''))||a.id.localeCompare(b.id));
  const shownIds=new Set(shown.map(s=>s.id)),records=data.records.filter(r=>r.gameId===gameId&&shownIds.has(r.cashId));
  return '<section class="mg-access-view"><div class="mg-impact-heading">'+identity(game)+status(o)+'</div>'+wagerOverview(records,data.date)+'<div class="mg-detail-actions">'+action('全域上下架','data-gm-availability="'+gameId+'"')+action('現金網 RTP','data-gm-section="rtp" data-gm-game="'+gameId+'"')+action('CMS 遊戲規則','data-cms-open="'+gameId+'" data-cms-kind="game"')+'</div><div class="mg-list-filters" role="group" aria-label="現金網篩選">'+[['playable','可遊玩',playable.length],['blocked','不可遊玩',sites.length-playable.length],['all','全部',sites.length],...(game.hasJackpot?[['jackpot','可參與獎池',jackpot.length]]:[])].map(([value,label,count])=>'<button aria-pressed="'+(filter===value)+'" data-gm-sites="'+gameId+'" data-gm-site-filter="'+value+'">'+label+'<strong>'+count+'</strong></button>').join('')+'</div>'+table(['現金網','包網商','可用狀態','最終 RTP','總投注額 USDT','玩家淨盈虧 USDT','營運淨輸贏 USDT','此現金網遊戲開關'],shown.map(s=>{const a=gameAccess(state,gameId,s.id);return '<tr><td><button class="text-link" data-org="'+s.id+'">'+e(s.name)+'</button><small class="mg-sub">'+e(s.id)+'</small></td><td>'+e(cashWrapperName(data.organizations,s))+'</td><td>'+badge(accessLabels[a.reason],a.canPlay?'good':'')+'</td><td>'+effectiveRtp(state,gameId,s.id,now).value.toFixed(2)+'%</td><td>'+wagerResultCells(records.filter(r=>r.cashId===s.id))+'</td><td>'+siteToggle(game,s,o.sites[s.id].enabled)+'</td></tr>';}),'各現金網遊戲可用狀態','目前沒有符合此狀態的現金網',wagerTableTotals(records,'合計 · '+shown.length+' 家現金網'))+wagerRegionTable(records,data.organizations)+'</section>';
 }

@@ -108,22 +108,22 @@ test('compact operation storage preserves pending application across reloading a
 });
 
 test('direct cash-network scenarios skip the wrapper without inventing organization identities',()=>{
- const direct=sites.filter(site=>!cashWrapper(data.organizations,site));assert.equal(direct.length,2);
- assert.deepEqual(direct.map(site=>data.organizations.find(o=>o.id===site.parent).level).sort(),['遊戲商','遊戲集成商'].sort());
+ const direct=sites.filter(site=>!cashWrapper(data.organizations,site));assert.equal(direct.length,4);
+ assert.deepEqual(direct.map(site=>data.organizations.find(o=>o.id===site.parent)?.level||'無上層機構').sort(),['遊戲商','遊戲集成商','無上層機構','無上層機構'].sort());
  for(const site of direct){
   const records=organizationRecords(data.records,data.organizations,site.id);assert.ok(records.length);assert.ok(records.every(r=>r.wrapperId===null));
-  const parent=data.organizations.find(o=>o.id===site.parent);assert.ok(records.every(r=>r.integratorId===(parent.level==='遊戲集成商'?parent.id:null)));
-  const player=createPlayerCatalog(data).find(p=>p.siteId===site.id);assert.ok(player);assert.ok(!player.chain.some(o=>o.level==='包網商'));assert.equal(player.chain[0].level,'遊戲商');assert.ok(player.chain.some(o=>o.level==='第二層代理'));
+  const parent=data.organizations.find(o=>o.id===site.parent);assert.ok(records.every(r=>r.integratorId===(parent?.level==='遊戲集成商'?parent.id:null)));
+  const player=createPlayerCatalog(data).find(p=>p.siteId===site.id);assert.ok(player);assert.ok(!player.chain.some(o=>o.level==='包網商'));assert.equal(player.chain[0].level,site.parent?'遊戲商':'現金網');assert.ok(player.chain.some(o=>o.level==='第二層代理'));
   assert.ok(impactView(data,state,'EG-01',false).includes(site.name));
  }
  const scopes=[...data.organizations.filter(o=>o.level==='包網商'),...direct],counts=scopes.flatMap(o=>organizationRecords(data.records,data.organizations,o.id));assert.equal(counts.length,data.records.length);assert.equal(new Set(counts.map(r=>r.id)).size,data.records.length);
  const business=createBusinessState(data),range=settlementPeriod(data.date),sum=scopes.reduce((n,o)=>n+Math.round(settlementPreview(data,business,o.id,range).bet*100),0);assert.equal(sum,Math.round(wagerMetrics(data.records).total*100));
 });
-test('direct campaign persists both sites and displays independent IDs with an empty wrapper identity',()=>{
- const business=createBusinessState(data),example=business.campaigns.find(c=>c.id==='ACT-DIRECT');assert.equal(example.sites.length,2);
+test('direct campaign persists independent sites and displays independent IDs with an empty wrapper identity',()=>{
+ const business=createBusinessState(data),example=business.campaigns.find(c=>c.id==='ACT-DIRECT');assert.equal(example.sites.length,4);
  const html=businessDetail(data,business,'campaign',example.id);assert.match(html,/>現金網 ID<\/th>/);assert.match(html,/>包網商 ID<\/th>/);
  for(const id of example.sites){assert.ok(html.includes('>'+id+'<'));assert.ok(!cashWrapper(data.organizations,id));}
- assert.equal((html.match(/無包網商/g)||[]).length,2);assert.equal((html.match(/>—<\/td>/g)||[]).length,2);
+ assert.equal((html.match(/無包網商/g)||[]).length,4);assert.equal((html.match(/>—<\/td>/g)||[]).length,4);
  const changed=saveBusinessRecord(data,business,'campaign',example.id,{...example,games:data.games.slice(0,5).map(g=>g.id)},'測試複選範圍'),reloaded=createBusinessState(data,JSON.parse(JSON.stringify(changed)));
  assert.deepEqual(reloaded.campaigns.find(c=>c.id===example.id).sites,example.sites);assert.equal(reloaded.campaigns.find(c=>c.id===example.id).games.length,5);assert.equal(reloaded.campaigns.filter(c=>c.id==='ACT-DIRECT').length,1);
  const legacy={campaigns:business.campaigns.filter(c=>c.id!=='ACT-DIRECT')};assert.equal(createBusinessState(data,legacy).campaigns.filter(c=>c.id==='ACT-DIRECT').length,1);
@@ -134,4 +134,11 @@ test('new cash networks can connect to a wrapper, an integrator or the game supp
   const business=saveBusinessRecord(data,createBusinessState(data),'org',null,{name:level+'直連測試現金網',level:'現金網',parent:parent.id,status:'active',region:'台灣',gatewayId:'GW-APAC'},'測試可選層級');
   assert.equal(business.entities.at(-1).parent,parent.id);
  }
+});
+
+test('parentless wrapper and cash-network examples retain real relationships and financial totals',()=>{
+ const roots=data.organizations.filter(o=>!o.parent&&o.level!=='遊戲商');
+ assert.equal(roots.filter(o=>o.level==='包網商').length,2);assert.equal(roots.filter(o=>o.level==='現金網').length,2);
+ for(const root of roots){const records=organizationRecords(data.records,data.organizations,root.id);assert.ok(records.length);assert.ok(records.every(r=>r.integratorId===null));}
+ assert.equal(Math.round(totals(data.records).bet*100),95124000);
 });
