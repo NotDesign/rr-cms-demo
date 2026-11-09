@@ -5,7 +5,7 @@ import {wagerMetrics,wagerOverview,wagerRegionTable,wagerTableTotals} from './ga
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {escape as e,money,signed,tone} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.5.2';
+import {jackpotEligibility,deployedRtp} from './cms-configuration.js?v=14.5.3';
 import {GAME_SECTIONS,gameAccess,effectiveRtp,availabilityImpact,operationsTime} from './game-operations.js?v=14.5.2';
 
 export const accessLabels={'playable':'可遊玩','global-off':'全域下架','game-maintenance':'遊戲維護中','site-off':'現金網未啟用','site-maintenance':'現金網維護中'};
@@ -40,7 +40,7 @@ export function rtpRows(games,sites,ui={}){
  return {games:selected,rows,total,pages,page,size};
 }
 export function rtpInput(id,value,{optional=false}={}){return '<div class="rtp-number-control"><input id="'+e(id)+'" type="number" inputmode="decimal" min="0" max="100" step="0.01" value="'+(value===null||value===undefined?'':Number(value).toFixed(2))+'"'+(optional?' placeholder="繼承遊戲預設"':' required')+'><span aria-hidden="true">%</span></div>';}
-export function filteredManagementGames(data,state,ui={}){const q=(ui.query||'').trim().toLowerCase();return data.games.filter(g=>(!q||(g.name+' '+g.id).toLowerCase().includes(q))&&(!ui.type||g.type===ui.type)&&(!ui.slotGameplay||g.slotGameplay===ui.slotGameplay)&&(!ui.status||(ui.status==='on')===state.games[g.id].listed));}
+export function filteredManagementGames(data,state,ui={}){const q=(ui.query||'').trim().toLowerCase();return data.games.filter(g=>(!q||(g.name+' '+g.id+' '+(g.legacyName||'')).toLowerCase().includes(q))&&(!ui.type||g.type===ui.type)&&(!ui.slotGameplay||g.slotGameplay===ui.slotGameplay)&&(!ui.status||(ui.status==='on')===state.games[g.id].listed)).sort((a,b)=>(a.featuredOrder??1000)-(b.featuredOrder??1000));}
 export function managementPage(data,state,section,ui={},now=new Date()){
  if(section==='versions')section='catalog';
  const sites=data.organizations.filter(o=>o.level==='現金網'),label=GAME_SECTIONS.find(([key])=>key===section)?.[1]||'遊戲列表';

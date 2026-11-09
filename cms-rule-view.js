@@ -4,9 +4,9 @@ import {wagerOverview} from './game-wagers.js?v=14.5.2';
 import {gameFunding} from './jackpot-partnership.js?v=14.4.1';
 import {escape as e,money} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {managementTable as table,managementMetric as metric,accessLabels,rtpInput} from './game-management-view.js?v=14.5.2';
+import {managementTable as table,managementMetric as metric,accessLabels,rtpInput} from './game-management-view.js?v=14.5.3';
 import {gameAccess,effectiveRtp,operationsTime} from './game-operations.js?v=14.5.2';
-import {ruleKindLabels,gameEvent,defaultRuleSettings,rulePreviewContext,assignedRule,syncCounts,deployedRtp} from './cms-configuration.js?v=14.5.2';
+import {ruleKindLabels,gameEvent,defaultRuleSettings,rulePreviewContext,assignedRule,syncCounts,deployedRtp} from './cms-configuration.js?v=14.5.3';
 
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
 const status=(text,tone='')=>'<span class="mg-status '+tone+'">'+e(text)+'</span>';

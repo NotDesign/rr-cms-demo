@@ -1,7 +1,7 @@
 import {infoCard} from './metric-card.js?v=14.5.0';
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {money,signed,tone,escape as e,totals,fishingDetail} from './core.js?v=14.5.0';
-import {gameCatalog} from './game-catalog.js?v=14.4.1';
+import {gameCatalog} from './game-catalog.js?v=14.5.3';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';
 export const games=Object.fromEntries(gameCatalog.map(g=>[g.name,g]));

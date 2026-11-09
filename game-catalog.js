@@ -1,4 +1,5 @@
-// Fictional demo games. Skins in a family share the same documented demo rules.
+// Stable seed identities keep the original demonstration records reproducible.
+// Display names and supplied artwork are applied to gameCatalog below.
 export const baseGameCatalog=[
  ['EG-01','星際闖關','電子遊戲','progression','electronic',true],
  ['EG-02','烈焰階梯','電子遊戲','progression','electronic',false],
@@ -37,4 +38,21 @@ const additions=Object.entries(additionalNames).flatMap(([type,names])=>{
   return {...template,id:prefixes[type]+'-'+String(existing.length+index+1).padStart(2,'0'),name,hasJackpot:index%3!==2&&family!=='landlord'};
  });
 });
-export const gameCatalog=[...baseGameCatalog,...additions].map(game=>({...game,cover:game.id.toLowerCase()})).map(game=>game.type==='老虎機'?{...game,slotGameplay:['classic','paylines','ways','cascade','megaways'][(Number(game.id.slice(3))-1)%5]}:game);
+// Supplied primary slot titles. IDs retain their existing demo wagers and configuration.
+export const featuredSlotGames=[
+ ["SL-01", "Golden Legacy", "A01"],
+ ["SL-02", "Panda Fist", "B01"],
+ ["SL-03", "Taste of Empire", "B02"],
+ ["SL-04", "Ebisu Fortune", "B03"],
+ ["SL-05", "Lucky Cat", "C01"],
+ ["SL-06", "Poker Wars", "C02"],
+ ["SL-07", "Fitness Lady", "C03"],
+ ["SL-08", "Glory of the Colosseum", "D01"],
+ ["SL-09", "Dragon King", "D02"],
+ ["SL-10", "Mafia Legacy", "D03"],
+ ["SL-11", "Goddess of Eternal Gold", "E01"],
+ ["SL-12", "Legends of Lubu & Diaochan", "E02"],
+ ["SL-13", "Royal Pirates", "E03"],
+].map(([id,name,assetCode],featuredOrder)=>({id,name,assetCode,cover:'rr-'+assetCode.toLowerCase(),featuredOrder}));
+const featuredById=new Map(featuredSlotGames.map(game=>[game.id,game]));
+export const gameCatalog=[...baseGameCatalog,...additions].map(game=>({...game,cover:game.id.toLowerCase()})).map(game=>{const featured=featuredById.get(game.id);return featured?{...game,...featured,legacyName:game.name}:game;}).map(game=>game.type==='老虎機'?{...game,slotGameplay:['classic','paylines','ways','cascade','megaways'][(Number(game.id.slice(3))-1)%5]}:game);

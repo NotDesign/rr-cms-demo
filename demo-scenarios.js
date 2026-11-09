@@ -1,4 +1,4 @@
-import {gameCatalog} from './game-catalog.js?v=14.4.1';
+import {gameCatalog} from './game-catalog.js?v=14.5.3';
 import {money,signed,totals,rowsFor,summaryFor,tableTotals,chessDetail} from './core.js?v=14.5.0';
 
 const wrapperNames=['星河','遠航','極光','天域','藍海','金曜','宏宇','鼎盛','雲端','盛世','天啟','環球','智匯','富邦','卓越','領航','星瀚','博遠','眾鑫','新銳'];
@@ -107,15 +107,19 @@ function rebuildReports(source,records) {
 
 export function migrateDemoNames(workspace,data) {
   if(!workspace)return workspace;
-  const rename=value=>typeof value==='string'?(data.organizationAliases[value]||value):Array.isArray(value)?value.map(rename):value;
+  const rename=(value,aliases)=>typeof value==='string'?(aliases?.[value]||value):Array.isArray(value)?value.map(item=>rename(item,aliases)):value;
   return {...workspace,tabs:workspace.tabs?.map(tab=>{
     const next={...tab};
-    for(const field of ['filters','draft'])if(next[field])next[field]={...next[field],merchant:rename(next[field].merchant)};
-    const def=data.reports.find(report=>report.key===tab.key),column=def?.headers.indexOf('現金網');
-    if(column>=0&&next.columnFilters?.[column]){
-      const rule=next.columnFilters[column];
-      next.columnFilters={...next.columnFilters,[column]:{...rule,query:rename(rule.query),values:rename(rule.values)}};
+    for(const field of ['filters','draft'])if(next[field])next[field]={...next[field],merchant:rename(next[field].merchant,data.organizationAliases),game:rename(next[field].game,data.gameAliases)};
+    const def=data.reports.find(report=>report.key===tab.key);
+    for(const [label,aliases] of [['現金網',data.organizationAliases],['遊戲名稱',data.gameAliases]]){
+      const column=def?.headers.indexOf(label);
+      if(column>=0&&next.columnFilters?.[column]){
+        const rule=next.columnFilters[column];
+        next.columnFilters={...next.columnFilters,[column]:{...rule,query:rename(rule.query,aliases),values:rename(rule.values,aliases)}};
+      }
     }
+    if(next.managementUI)next.managementUI={...next.managementUI,query:rename(next.managementUI.query,data.gameAliases)};
     return next;
   })};
 }
@@ -123,7 +127,7 @@ export function expandDemoScenarios(source) {
   const organizations=organizationsForDemo(source),sites=organizations.filter(org=>org.level==='現金網');
   const siteMap=new Map(sites.map(site=>[site.id,site]));
   const records=source.records.map(record=>recordWithOrganization({
-    ...record,slotGameplay:gameCatalog.find(game=>game.id===record.gameId)?.slotGameplay
+    ...record,game:gameCatalog.find(game=>game.id===record.gameId)?.name||record.game,slotGameplay:gameCatalog.find(game=>game.id===record.gameId)?.slotGameplay
   },siteMap.get(record.cashId),organizations));
   const templates=new Map(source.records.filter(record=>record.id===record.seedId).map(record=>[record.id,record]));
   const gamesByType=Object.fromEntries(['電子遊戲','老虎機','捕魚','棋牌'].map(type=>[type,gameCatalog.filter(game=>game.type===type)]));
@@ -169,7 +173,7 @@ export function expandDemoScenarios(source) {
   }
   const originalPools=new Map(source.jackpotPools.map(pool=>[pool.game,pool]));
   const jackpotPools=gameCatalog.filter(game=>game.hasJackpot).map(game=>({
-    ...(originalPools.get(game.name)||{id:'JP-'+game.id,game:game.name,name:game.name+'共用獎池',opening:100000,contributionRate:.02,ruleVersion:'DEMO-JP-1.0'})
+    ...(originalPools.get(game.legacyName||game.name)||{id:'JP-'+game.id,opening:100000,contributionRate:.02,ruleVersion:'DEMO-JP-1.0'}),game:game.name,name:game.name+'共用獎池'
   }));
   const poolsByGame=new Map(jackpotPools.map(pool=>[pool.game,pool]));
   const running=new Map(jackpotPools.map(pool=>[pool.id,Math.round(pool.opening*100)]));
@@ -193,6 +197,7 @@ export function expandDemoScenarios(source) {
   for(const pool of jackpotPools)pool.closing=running.get(pool.id)/100;
   const organizationAliases=Object.fromEntries(source.organizations.map(org=>[org.name,organizations.find(next=>next.id===org.id)?.name||org.name]));
   organizationAliases['示例遊戲集成商']=integratorNames[0]+'遊戲集成商';
-  return {...source,revision:'discussion-5-20-50-100-500-global-regions',games:gameCatalog,organizations,organizationAliases,records,
+  const gameAliases=Object.fromEntries(gameCatalog.filter(game=>game.legacyName).map(game=>[game.legacyName,game.name]));
+  return {...source,revision:'discussion-5-20-50-100-500-primary-slots',games:gameCatalog,organizations,organizationAliases,gameAliases,records,
     jackpotPools,reports:rebuildReports(source,records),totals:totals(records)};
 }

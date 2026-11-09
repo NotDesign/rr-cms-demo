@@ -2,7 +2,7 @@ import {infoCard} from './metric-card.js?v=14.5.0';
 import {NET_WIN,netWinsFor} from './net-win.js?v=14.4.1';
 import {escape as e,money,signed,tone,totals} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {statisticsDashboard} from './statistics-view.js?v=14.5.2';
+import {statisticsDashboard} from './statistics-view.js?v=14.5.3';
 import {operationsTime} from './game-operations.js?v=14.5.2';
 import {PLAYER_SECTIONS,accessLabels,botLabels,playerPolicy,playerAccess,playerEvidence} from './player-management.js?v=14.5.2';
 const metric=(icon,label,value,cls='',caption='')=>infoCard({icon,label,valueHtml:String(value),tone:cls,caption,className:'mg-metric'});

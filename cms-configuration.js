@@ -60,8 +60,15 @@ function seededConfiguration(data,state){
 export function hydrateConfiguration(data,state,saved=state.configuration){
  const seed=seededConfiguration(data,state);if(!saved||saved.schema!==1||!saved.rules||!saved.bindings||!saved.applied)return {...state,configuration:seed};
  const config=copy(saved);config.seq=Number.isInteger(config.seq)?config.seq:0;config.syncRevision=Number.isInteger(config.syncRevision)?config.syncRevision:0;config.rules={...seed.rules,...config.rules};config.bindings={...seed.bindings,...config.bindings};config.applied={...seed.applied,...config.applied};config.desired||={};config.batches=Array.isArray(config.batches)?config.batches.slice(0,50):[];config.history=Array.isArray(config.history)?config.history.slice(0,200):[];
- for(const rule of Object.values(config.rules)){const original=seed.rules[rule.id];if(original){if(rule.draft.systemName===undefined)rule.draft.systemName=rule.draft.name===original.name;for(const v of rule.versions)if(v.systemName===undefined)v.systemName=v.name===original.name;}}
- for(const g of data.games)for(const site of sitesOf(data))for(const kind of ['game','jackpot']){const a=config.applied[g.id]?.[site.id]?.[kind],original=seed.rules[a?.binding?.ruleId];if(a?.snapshot&&a.snapshot.systemName===undefined)a.snapshot.systemName=Boolean(original&&a.snapshot.name===original.name);}
+ // Rename only generated default labels. Custom names and all rule settings stay intact.
+ const migrateLabel=(snapshot,original)=>{
+  if(!snapshot||!original)return;
+  const game=data.games.find(g=>g.id===original.gameId),legacy=game?.legacyName?game.legacyName+'・預設'+(original.kind==='game'?'遊戲規則':'獎池規則'):null;
+  if(snapshot.systemName===undefined)snapshot.systemName=snapshot.name===original.name||Boolean(legacy&&snapshot.name===legacy);
+  if(snapshot.systemName&&legacy&&snapshot.name===legacy)snapshot.name=original.name;
+ };
+ for(const rule of Object.values(config.rules)){const original=seed.rules[rule.id];if(original){migrateLabel(rule.draft,original);for(const v of rule.versions)migrateLabel(v,original);if(rule.draft.systemName&&rule.name===data.games.find(g=>g.id===rule.gameId)?.legacyName+'・預設'+(rule.kind==='game'?'遊戲規則':'獎池規則'))rule.name=original.name;}}
+ for(const g of data.games)for(const site of sitesOf(data))for(const kind of ['game','jackpot']){const a=config.applied[g.id]?.[site.id]?.[kind];migrateLabel(a?.snapshot,seed.rules[a?.binding?.ruleId]);}
  for(const g of data.games){config.bindings[g.id]={...seed.bindings[g.id],...config.bindings[g.id]};config.applied[g.id]={...seed.applied[g.id],...config.applied[g.id]};for(const site of sitesOf(data))config.applied[g.id][site.id]={...seed.applied[g.id][site.id],...config.applied[g.id][site.id]};}
  return {...state,configuration:config};
 }
