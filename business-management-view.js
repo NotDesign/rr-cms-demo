@@ -1,12 +1,12 @@
 import {withOriginalCurrency} from './currency-display.js?v=14.5.0';
 import {wagerOverview} from './game-wagers.js?v=14.5.2';
 import {escape as e,money,signed,tone,totals,organizationRecords} from './core.js?v=14.5.0';
-import {cashWrapper,cashWrapperName,organizationParents,organizationSections,optionalOrganizationParent} from './organization-hierarchy.js?v=14.4.9';
+import {cashWrapper,cashWrapperName,organizationParents,organizationSections,optionalOrganizationParent} from './organization-hierarchy.js?v=14.5.5';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {gameIdentity} from './detail-views.js?v=14.5.3';
-import {managementMetric as metric} from './game-management-view.js?v=14.5.3';
+import {managementMetric as metric} from './game-management-view.js?v=14.5.5';
 import {operationsTime} from './game-operations.js?v=14.5.2';
-import {BUSINESS_SECTIONS,campaignTypes,businessStatus,businessOrganizations,campaignStatus,settlementPeriod,settlementPreview} from './business-management.js?v=14.5.0';
+import {BUSINESS_SECTIONS,campaignTypes,businessStatus,businessOrganizations,campaignStatus,settlementPeriod,settlementPreview} from './business-management.js?v=14.5.5';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
 const badge=value=>'<span class="mg-status '+(['active','confirmed'].includes(value)?'good':['paused','review','held'].includes(value)?'gold':'')+'">'+e(businessStatus[value]||value)+'</span>';
 const table=(headers,rows,empty='目前沒有資料')=>'<div class="biz-scroll" role="region" aria-label="資料列表" tabindex="0"><table class="biz-table"><thead><tr>'+headers.map(([h,n])=>'<th scope="col"'+(n?' class="num"':'')+'>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table>'+(rows.length?'':'<p class="biz-empty">'+empty+'</p>')+'</div>';
@@ -50,7 +50,7 @@ export function businessPage(data,state,category,section,ui={}){
    const newLevels=level?[level]:['包網商','現金網'];
    action=newLevels.map(label=>create('org','新增'+label,'data-biz-level="'+e(label)+'"')).join('');
    tools=topTools(ui,field('狀態','biz-status',select('biz-status',[['','全部狀態'],['active','啟用中'],['disabled','停用']],ui.status||'')));
-   body=table([['機構／ID'],['類型'],['上層機構'],['狀態'],['下層機構',true],['玩家',true],['投注 USDT',true],['GGR USDT',true],['操作']],entities.filter(o=>!ui.status||o.status===ui.status).map(o=>{const t=totals(organizationRecords(data.records,orgs,o.id));return '<tr>'+td(orgButton(orgs,o.id)+'<small>'+e(o.id)+'</small>')+td(e(o.level))+td(o.parent?orgButton(orgs,o.parent):'無上層機構')+td(badge(o.status))+td(String(orgs.filter(r=>r.parent===o.id).length),true)+td(String(t.players),true)+td(money(t.bet),true)+td(signed(-t.net),true,tone(-t.net))+td('<div class="biz-actions">'+button('詳情','data-org="'+o.id+'"')+(o.level!=='遊戲商'?button('編輯','data-biz-edit="org" data-biz-id="'+o.id+'"'):'')+'</div>')+'</tr>'; }));
+   body=table([['機構／ID'],['類型'],['上層機構'],['狀態'],['下層機構',true],['玩家',true],['投注 USDT',true],['GGR USDT',true],['操作']],entities.filter(o=>!ui.status||o.status===ui.status).map(o=>{const t=totals(organizationRecords(data.records,orgs,o.id));return '<tr>'+td(orgButton(orgs,o.id)+'<small>'+e(o.id)+'</small>')+td(e(o.level))+td(o.parent?orgButton(orgs,o.parent):'-')+td(badge(o.status))+td(String(orgs.filter(r=>r.parent===o.id).length),true)+td(String(t.players),true)+td(money(t.bet),true)+td(signed(-t.net),true,tone(-t.net))+td('<div class="biz-actions">'+button('詳情','data-org="'+o.id+'"')+(o.level!=='遊戲商'?button('編輯','data-biz-edit="org" data-biz-id="'+o.id+'"'):'')+'</div>')+'</tr>'; }));
   }
  }else{
   const range=settlementPeriod(data.date,ui.period||'week'),wrappers=orgs.filter(o=>o.level==='包網商'||o.level==='現金網'&&!cashWrapper(orgs,o)),previews=wrappers.map(o=>settlementPreview(data,state,o.id,range));
@@ -69,7 +69,7 @@ export function businessPage(data,state,category,section,ui={}){
  return '<div class="page business-page"><div class="page-heading"><h1>'+title+'</h1><div class="biz-heading-actions">'+action+'<span class="badge">互動示範</span></div></div><div class="mg-metrics">'+metrics+'</div><section class="mg-surface">'+tools+body+'</section><p class="page-note">'+(category==='promotion'?'活動設定及啟停為本機示範，未實際變更 RTP 或發放獎勵。':category==='merchant'?'機構與連線設定為本機示範；新增現金網尚無遊戲部署，不會自動開放遊戲。':'示例規則試算 · GGR＝投注−派彩；傭金按各站正向 GGR 計算，遊戲商淨額＝GGR−傭金。未含稅費及其他合約調整，確認結算單不執行付款。')+'</p></div>';
 }
 function scopeSelect(label,group,items,selected=[]){return '<div class="field"><label for="be-'+group+'">'+label+'</label><select multiple data-search-multi data-placeholder="選擇'+label+'" id="be-'+group+'" name="be-'+group+'">'+items.map(([id,label,meta])=>'<option value="'+e(id)+'" data-meta="'+e(meta||'')+'"'+(selected.includes(id)?' selected':'')+'>'+e(label)+'</option>').join('')+'</select></div>';}
-function assignedSitesTable(orgs,siteIds){return table([['現金網'],['現金網 ID'],['包網商'],['包網商 ID'],['狀態']],siteIds.map(id=>{const site=orgs.find(o=>o.id===id),wrapper=cashWrapper(orgs,site);return '<tr>'+td(orgButton(orgs,id))+td(e(id))+td(wrapper?orgButton(orgs,wrapper.id):'無包網商')+td(e(wrapper?.id||'—'))+td(badge(site.status))+'</tr>';}));}
+function assignedSitesTable(orgs,siteIds){return table([['現金網'],['現金網 ID'],['包網商'],['包網商 ID'],['狀態']],siteIds.map(id=>{const site=orgs.find(o=>o.id===id),wrapper=cashWrapper(orgs,site);return '<tr>'+td(orgButton(orgs,id))+td(e(id))+td(wrapper?orgButton(orgs,wrapper.id):'-')+td(e(wrapper?.id||'-'))+td(badge(site.status))+'</tr>';}));}
 
 function businessEditorContent(data,state,type,id,kind){
  const orgs=businessOrganizations(data,state),sites=orgs.filter(o=>o.level==='現金網'),wrappers=orgs.filter(o=>o.level==='包網商'),row=type==='org'?orgs.find(o=>o.id===id):state[({gateway:'gateways',campaign:'campaigns',commission:'commissions',pricing:'pricing'})[type]]?.find(r=>r.id===id),input=(key,value='',kind='text',attrs='')=>'<input class="mg-input" id="be-'+key+'" type="'+kind+'" value="'+e(value)+'" '+attrs+'>',f=(label,key,value,kind,attrs)=>field(label,'be-'+key,input(key,value,kind,attrs));let html='<div class="cms-form-grid">';

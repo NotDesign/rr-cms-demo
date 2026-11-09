@@ -1,9 +1,9 @@
 import {escape as e,money} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.5.3';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.5.5';
 import {operationsTime} from './game-operations.js?v=14.5.2';
 import {PERMISSIONS,ROLE_LEVELS,rolePermissionKeys,roleOrganizationIds,systemLabels,SYSTEM_SECTIONS,apiLogFixtures,systemAuditEvents} from './system-management.js?v=14.5.0';
-import {syncView} from './cms-rule-view.js?v=14.5.3';
+import {syncView} from './cms-rule-view.js?v=14.5.5';
 import {syncCounts} from './cms-configuration.js?v=14.5.3';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';
 const status=value=>'<span class="mg-status '+(value==='active'?'good':value==='disabled'||value==='revoked'?'off':'gold')+'">'+(systemLabels[value]||value)+'</span>';

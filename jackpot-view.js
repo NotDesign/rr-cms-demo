@@ -1,10 +1,10 @@
 import {netWinsFor} from './net-win.js?v=14.4.1';
 import {wagerMetrics,wagerOverview,wagerTableTotals} from './game-wagers.js?v=14.5.2';
-import {partnershipCardDetails,partnershipOverview} from './jackpot-partnership-view.js?v=14.5.3';
+import {partnershipCardDetails,partnershipOverview} from './jackpot-partnership-view.js?v=14.5.5';
 import {escape as e,money,signed,tone} from './core.js?v=14.5.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';
-import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.5.3';
+import {managementTable as table,managementMetric as metric} from './game-management-view.js?v=14.5.5';
 import {jackpotEligibility} from './cms-configuration.js?v=14.5.3';
 import {gameAccess} from './game-operations.js?v=14.5.2';
 import {JACKPOT_SECTIONS,jackpotOverview,poolSummary,jackpotHours,filterJackpotWins} from './jackpot-analytics.js?v=14.4.1';

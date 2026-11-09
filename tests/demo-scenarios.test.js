@@ -123,7 +123,7 @@ test('direct campaign persists independent sites and displays independent IDs wi
  const business=createBusinessState(data),example=business.campaigns.find(c=>c.id==='ACT-DIRECT');assert.equal(example.sites.length,4);
  const html=businessDetail(data,business,'campaign',example.id);assert.match(html,/>現金網 ID<\/th>/);assert.match(html,/>包網商 ID<\/th>/);
  for(const id of example.sites){assert.ok(html.includes('>'+id+'<'));assert.ok(!cashWrapper(data.organizations,id));}
- assert.equal((html.match(/無包網商/g)||[]).length,4);assert.equal((html.match(/>—<\/td>/g)||[]).length,4);
+ assert.equal((html.match(/無包網商/g)||[]).length,0);assert.equal((html.match(/>-<\/td>/g)||[]).length,8);
  const changed=saveBusinessRecord(data,business,'campaign',example.id,{...example,games:data.games.slice(0,5).map(g=>g.id)},'測試複選範圍'),reloaded=createBusinessState(data,JSON.parse(JSON.stringify(changed)));
  assert.deepEqual(reloaded.campaigns.find(c=>c.id===example.id).sites,example.sites);assert.equal(reloaded.campaigns.find(c=>c.id===example.id).games.length,5);assert.equal(reloaded.campaigns.filter(c=>c.id==='ACT-DIRECT').length,1);
  const legacy={campaigns:business.campaigns.filter(c=>c.id!=='ACT-DIRECT')};assert.equal(createBusinessState(data,legacy).campaigns.filter(c=>c.id==='ACT-DIRECT').length,1);

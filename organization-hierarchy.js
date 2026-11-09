@@ -69,4 +69,4 @@ export function cashWrapper(organizations,site){
  const node=typeof site==='string'?organizations.find(o=>o.id===site):site;
  const parent=organizations.find(o=>o.id===node?.parent);return parent?.level==='包網商'?parent:null;
 }
-export function cashWrapperName(organizations,site){return cashWrapper(organizations,site)?.name||'無包網商';}
+export function cashWrapperName(organizations,site){return cashWrapper(organizations,site)?.name||'-';}

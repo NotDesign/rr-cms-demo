@@ -3,21 +3,21 @@ import {withOriginalCurrency} from './currency-display.js?v=14.5.0';
 import {infoCard} from './metric-card.js?v=14.5.0';
 import {NET_WIN,netWinsFor,netWinsFromAmounts,playerResultTotals as playerProfitLoss} from './net-win.js?v=14.4.1';
 import {ACCOUNTING_ITEMS} from './accounting.js?v=14.5.0';
-import {installAccountingController} from './accounting-controller.js?v=14.5.0';
+import {installAccountingController} from './accounting-controller.js?v=14.5.5';
 import {installInfoCards} from './info-card-controller.js?v=14.5.0';
-import {BUSINESS_SECTIONS} from './business-management.js?v=14.5.0';
-import {installBusinessController} from './business-management-controller.js?v=14.5.3';
-import {PLAYER_SECTIONS} from './player-management.js?v=14.5.2';
-import {installPlayerController} from './player-management-controller.js?v=14.5.3';
+import {BUSINESS_SECTIONS} from './business-management.js?v=14.5.5';
+import {installBusinessController} from './business-management-controller.js?v=14.5.5';
+import {PLAYER_SECTIONS} from './player-management.js?v=14.5.5';
+import {installPlayerController} from './player-management-controller.js?v=14.5.5';
 import {SYSTEM_SECTIONS} from './system-management.js?v=14.5.0';
-import {installSystemController} from './system-controller.js?v=14.5.3';
-import {poolPartnersView} from './jackpot-partnership-view.js?v=14.5.3';
+import {installSystemController} from './system-controller.js?v=14.5.5';
+import {poolPartnersView} from './jackpot-partnership-view.js?v=14.5.5';
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.5.0';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.5.3';
 import {localize,translate,languageNames} from './i18n.js?v=14.4.5';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.8';
-import {recordOrganizationId} from './organization-hierarchy.js?v=14.4.9';
+import {recordOrganizationId} from './organization-hierarchy.js?v=14.5.5';
 import {expandDemoScenarios,migrateDemoNames} from './demo-scenarios.js?v=14.5.3';
 import {SLOT_GAMEPLAYS,hasSlotScope} from './slot-gameplay.js?v=14.4.1';
 import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.5.2';
@@ -36,14 +36,14 @@ import {installSelectControls} from './select-control.js?v=14.4.8';
 import {normalizeTimeZone,clockSnapshot,timeZoneChoices} from './time-preferences.js?v=14.4.1';
 import {applyAvailability,scheduleAvailability,cancelAvailability,dueAvailability,advanceAvailability} from './availability-schedules.js?v=14.5.3';
 import {GAME_SECTIONS,parseRtp,RTP_ERROR,createGameOperations,effectiveRtp,setGameSiteAvailability,setGameAvailability,setGameMaintenance,setRtpOverride,setDefaultRtp,fromOperationsTime,operationsTime} from './game-operations.js?v=14.5.2';
-import {filteredManagementGames,managementPage,impactView,gameAccessView,rtpLabels,rtpInput} from './game-management-view.js?v=14.5.3';
+import {filteredManagementGames,managementPage,impactView,gameAccessView,rtpLabels,rtpInput} from './game-management-view.js?v=14.5.5';
 
 import {JACKPOT_SECTIONS} from './jackpot-analytics.js?v=14.4.1';
-import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.5.3';
+import {jackpotPage,poolDetailView,jackpotTrend} from './jackpot-view.js?v=14.5.5';
 
 import {hydrateConfiguration,queueLegacyChange,deployedRtp,compactGameOperations} from './cms-configuration.js?v=14.5.3';
-import {ruleManagerPage} from './cms-rule-view.js?v=14.5.3';
-import {installCmsController} from './cms-controller.js?v=14.5.3';
+import {ruleManagerPage} from './cms-rule-view.js?v=14.5.5';
+import {installCmsController} from './cms-controller.js?v=14.5.5';
 
 const DATA=await fetch('./data/demo-data.json?v=9').then(r=>{if(!r.ok)throw Error('資料載入失敗');return r.json();}).then(data=>withOriginalCurrency(()=>expandDemoScenarios(data)));
 const CLIENT_PARAMETERS=await fetch('./data/customer-parameters.json?v=14.5.2').then(r=>{if(!r.ok)throw Error('逐筆示例資料載入失敗');return r.json();});
@@ -136,7 +136,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/現金網/.test(label)?'wallet':/包網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.5.4</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.5.5</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
