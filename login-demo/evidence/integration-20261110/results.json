@@ -1,0 +1,39 @@
+{
+  "desktop": {
+    "redirectPreservesReport": true,
+    "validationRejectsEmpty": true,
+    "loginOpensCms": "/rr-cms-demo/#slots",
+    "refreshRetainsSession": true,
+    "logoutReturnsLogin": "/rr-cms-demo/login-demo/"
+  },
+  "logoutBlocksDirectCms": true,
+  "tablet": {
+    "width": 834,
+    "height": 1112,
+    "noLoginHorizontalOverflow": true,
+    "loginReachedCms": true,
+    "logoutVisible": true,
+    "logoutReturnedLogin": true
+  },
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "noLoginHorizontalOverflow": true,
+    "loginReachedCms": true,
+    "logoutVisible": true,
+    "profileBounds": {
+      "height": 44,
+      "right": 374,
+      "width": 44,
+      "x": 330
+    },
+    "logoutReturnedLogin": true
+  },
+  "errors": [],
+  "revision": "v14.6.0",
+  "unitTests": {
+    "passed": 220,
+    "failed": 0
+  },
+  "scope": "Chromium viewport tests for desktop, tablet and mobile; not physical-device certification. Front-end demo session only."
+}

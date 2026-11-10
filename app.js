@@ -14,7 +14,7 @@ import {installSystemController} from './system-controller.js?v=14.5.5';
 import {poolPartnersView} from './jackpot-partnership-view.js?v=14.5.5';
 import {money,signed,number,tone,financialTone,organizationRecords,escape as e,playerId,scenario,columnIndex,rowRecordId,defaultFilters,filterRecords,filterReportColumns,hasColumnFilter,visibleFreezeCount,totals as baseTotals,rowsFor,summaryFor,tableTotals,migrateWorkspace,sortedRows,csv,balances,fishingDetail,chessDetail,datePresetRange,detailTableTotals,defaultFreezeCount,selectionValues,matchesSelection,reconcileFilters} from './core.js?v=14.5.0';
 import {gameIdentity,gameCards,trendChart,gameMetrics} from './detail-views.js?v=14.5.3';
-import {localize,translate,languageNames} from './i18n.js?v=14.4.5';
+import {localize,translate,languageNames} from './i18n.js?v=14.6.0';
 
 import {uiIcon,metricIcon} from './ui-icons.js?v=14.4.8';
 import {recordOrganizationId} from './organization-hierarchy.js?v=14.5.5';
@@ -136,7 +136,7 @@ function submenuIcon(label,def){
  return uiIcon(category==='dashboard'?({'總覽':'dashboard','遊戲表現':'reports','最近投注':'clock'})[label]:def?reportIcons[def.key]:/獎池|中獎/.test(label)?'jackpot':/帳號|玩家/.test(label)?'players':/權限|白名單|金鑰/.test(label)?'shield':/日誌|紀錄|記錄|報表/.test(label)?'receipt':/現金網/.test(label)?'wallet':/包網|機構|API|渠道/.test(label)?'channels':/遊戲|RTP/.test(label)?'games':/傭金|結算|價差/.test(label)?'wallet':/活動|紅利|免費/.test(label)?'promotion':'settings');
 }
 function renderRail(){
-  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.5.5</small></div>';
+  $('#rail').innerHTML='<a class="brand" href="#dashboard" data-action="home" aria-label="R&R 儀表板">'+'<img src="assets/rr-logo.svg" alt="R&R" width="108" height="82">'+'</a><nav class="nav-categories">'+menus.map(([key,label])=>'<button class="category '+(category===key?'active':'')+'" data-category="'+key+'" aria-label="'+label+'" aria-expanded="'+(category===key&&submenuOpen)+'">'+navIcon(key)+'<span>'+label+'</span></button>').join('')+'</nav><div class="rail-footer"><button class="language-trigger" data-action="language" aria-expanded="'+languageOpen+'" aria-haspopup="menu">'+img('f6d64.svg')+'<span>繁體中文</span><span class="chevron">'+uiIcon('chevronDown')+'</span></button><small class="version">DEMO · v14.6.0</small></div>';
   const trigger=$('.language-trigger');trigger.querySelector('span').textContent=languageNames[locale];trigger.title=languageNames[locale];
   let old=$('.language-menu');if(old)old.remove();
   if(languageOpen)document.body.insertAdjacentHTML('beforeend','<div class="language-menu" role="menu">'+Object.entries(languageNames).map(([code,name])=>'<button data-lang="'+code+'" role="menuitemradio" aria-checked="'+(locale===code)+'">'+(locale===code?'✓　':'　　')+(code==='vi'?'VN · ':code==='th'?'TH · ':'')+name+'</button>').join('')+'</div>');
@@ -956,7 +956,8 @@ document.addEventListener('click',event=>{
     case 'clock-settings':showClockSettings();break;
     case 'clock-save':saveClockSettings();break;
     case 'game-operation-save':saveGameOperation();break;
-    case 'profile':showDialog('平台管理員',button(uiIcon('clock')+'時區與時間設定','clock-settings','clock-profile-link')+kv([['使用者','平台管理員'],['環境','互動 Demo'],['資料來源','USDT 模擬資料']])+'<p class="notice">操作與分頁設定儲存在目前瀏覽器。此示範未連接正式帳號與資金系統。</p>');break;
+    case 'logout':saveView();window.RRDemoSession.logout();break;
+    case 'profile':showDialog('平台管理員',button(uiIcon('clock')+'時區與時間設定','clock-settings','clock-profile-link')+button(uiIcon('power')+'登出','logout','clock-profile-link')+kv([['使用者','平台管理員'],['環境','互動 Demo'],['資料來源','USDT 模擬資料']])+'<p class="notice">操作與分頁設定儲存在目前瀏覽器。此示範未連接正式帳號與資金系統。</p>');break;
   }
 });
 document.addEventListener('click',event=>{if(datePanel&&!event.composedPath().some(n=>n.id==='date-popover'||n.id==='date-preset'||n.dataset?.action==='date'))closeDate({animated:true});if(multiPanel&&!event.target.closest('#filter-popover,[data-filter-multi]'))closeMulti({animated:true});if(languageOpen&&!event.target.closest('.language-menu,.language-trigger')){closeLanguage();}});

@@ -1,0 +1,102 @@
+{
+  "revision": "2026-11-09",
+  "figma_file": "cfU4KXLPSlXTbCwM8Tr1Iz",
+  "figma_frame": "444:43692",
+  "assets": [
+    {
+      "path": "assets/figma-login-background-20261109.png",
+      "role": "active portrait background",
+      "size_bytes": 3014047,
+      "sha256": "303b44d174b3542caef25edba0e5a5e0c1c0b784df79b2a1d2a3d9914be91dbf",
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "path": "assets/portal-detailed-1920x1080.png",
+      "role": "active portal background, original version 2",
+      "size_bytes": 2806086,
+      "sha256": "e95769ac96f3dbd82a20ddf478515c12d0d3c0ce861ede75341ba395b7df6cdf",
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "path": "assets/figma-login-logo.svg",
+      "role": "active logo",
+      "size_bytes": 18398,
+      "sha256": "67b770254803732d01d44034e217352b3b9123829af236c9341ad274f05c190a",
+      "dimensions": [
+        291.24,
+        72.6754
+      ]
+    },
+    {
+      "path": "assets/figma-password.svg",
+      "role": "active password icon",
+      "size_bytes": 979,
+      "sha256": "08cd49e41a09670961745b5f73ff9356aa3d5b79eb0413d8ec26d75f42e8d77a",
+      "dimensions": [
+        20.0,
+        20.0
+      ]
+    },
+    {
+      "path": "assets/figma-language.svg",
+      "role": "active language icon",
+      "size_bytes": 629,
+      "sha256": "736b5d4f903b8b4bb1131dbf71ccf3a6506d405276882571357c936bb04b3ba2",
+      "dimensions": [
+        24.0,
+        24.0
+      ]
+    },
+    {
+      "path": "assets/figma-support.svg",
+      "role": "active support icon",
+      "size_bytes": 1016,
+      "sha256": "0ce0a02aa365e75a13aca935fe5fdf2797942c4bcb9f62fef553611f637215cb",
+      "dimensions": [
+        24.0,
+        24.0
+      ]
+    },
+    {
+      "path": "assets/caption-mask.svg",
+      "role": "caption contrast mask",
+      "size_bytes": 624,
+      "sha256": "5a4aa0cd9b698c500bee75087bb39cd42a3919ec88bc6cb20f72c3acf958cf51",
+      "dimensions": [
+        1220.0,
+        350.0
+      ]
+    },
+    {
+      "path": "assets/fonts/noto-sans-tc-regular.woff2",
+      "role": "local regular font subset",
+      "size_bytes": 55228,
+      "sha256": "4a5a8f342367832522edb8bab098ffe7b622156dc1f4e55dbd4895edfb02e939"
+    },
+    {
+      "path": "assets/fonts/noto-sans-tc-bold.woff2",
+      "role": "local bold font subset",
+      "size_bytes": 56740,
+      "sha256": "7cbcf5b91708e399e66bbcbc7a49eda6027a7f68c5aed69f9df5b19971d8ab9e"
+    },
+    {
+      "path": "assets/fonts/LICENSE.txt",
+      "role": "font attribution",
+      "size_bytes": 486,
+      "sha256": "58c672c6333c7350d2effe721ddd4751dfbd0a50e9a5584ee81e40eb349b0443"
+    },
+    {
+      "path": "assets/fonts/OFL.txt",
+      "role": "font licence",
+      "size_bytes": 4301,
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    }
+  ],
+  "visual_qa": "evidence/integration-20261110"
+}

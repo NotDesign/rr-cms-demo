@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Rotary Riches 遊戲營運管理後台登入示範。">
+  <title>Rotary Riches · 登入管理後台</title>
+  <link rel="preload" href="assets/fonts/noto-sans-tc-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=20261110-1">
+  <script src="demo-session.js?v=20261110-1" defer></script>
+  <script src="app.js?v=20261110-1" defer></script><script src="scene-config.js?v=20261110-1" defer></script><script src="carousel.js?v=20261110-1" defer></script><script src="effects.js?v=20261110-1" defer></script>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div><div class="shade" aria-hidden="true"></div>
+  <div class="atmosphere" aria-hidden="true"><canvas id="energy"></canvas></div>
+  <header class="masthead"><button class="motion-control" id="motion" type="button" aria-pressed="false"><span aria-hidden="true">Ⅱ</span> 暫停特效</button></header>
+  <main>
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="brand-slot"><span class="brand-placeholder" hidden>ROTARY RICHES</span><img class="brand" src="assets/figma-login-logo.svg" alt="Rotary Riches" width="291.24" height="72.6754"></div>
+      <div class="card-content">
+        <div class="heading"><h1 id="login-title">登入管理後台</h1><p class="intro">登入示範後台，預覽營運資訊。</p></div>
+        <form id="login-form" novalidate aria-describedby="demo-note">
+          <div class="fields">
+            <div class="field"><label for="email">電子郵件</label><input id="email" type="email" inputmode="email" autocomplete="off" placeholder="name@example.com" required spellcheck="false" autocapitalize="none" aria-describedby="email-error"><p class="error" id="email-error"></p></div>
+            <div class="field"><label for="password">密碼</label><div class="password-field"><input id="password" type="password" autocomplete="off" placeholder="••••••••" required aria-describedby="password-error"><button id="reveal" class="icon-button" type="button" aria-label="顯示密碼" aria-pressed="false"><img src="assets/figma-password.svg" width="20" height="20" alt=""></button></div><p class="error" id="password-error"></p></div>
+          </div>
+          <div class="form-actions"><button class="secondary" type="button" data-dialog="forgot">忘記密碼</button><button class="submit" type="submit">登入管理後台</button></div>
+          <p class="agreement">示範模式：任意 Email 與密碼即可進入 CMS。</p><p id="login-result" class="result" role="status"></p>
+        </form>
+      </div>
+      <footer class="card-footer">
+        <button id="locale-button" class="footer-button locale" type="button" data-dialog="language" aria-label="語系，繁體中文" title="語系，繁體中文"><img src="assets/figma-language.svg" width="24" height="24" alt=""><span id="locale-label" class="visually-hidden">繁體中文</span></button>
+        <button class="footer-button" type="button" data-dialog="support" aria-label="支援中心" title="支援中心"><img src="assets/figma-support.svg" width="24" height="24" alt=""></button>
+      </footer>
+    </section>
+  </main>
+  <aside class="hero-copy" aria-label="平台介紹"><h2>R&amp;R 遊戲營運管理後台</h2><p>集中管理遊戲、商戶渠道與傭金結算。</p></aside>
+  <div id="scene-controls" class="scene-controls" role="group" aria-label="背景輪播"><button id="scene-previous" type="button" aria-label="上一張背景" disabled>←</button><span id="scene-label">載入中</span><button id="scene-next" type="button" aria-label="下一張背景" disabled>→</button><button id="scene-pause" type="button" aria-pressed="false" disabled>暫停輪播</button></div>
+  <p id="scene-status" class="visually-hidden" role="status"></p>
+  <div class="page-footer"><span>© Rotary Riches</span><span id="demo-note">互動示範 · 不連線至真實帳戶</span></div>
+  <dialog id="modal" aria-labelledby="modal-title"><div class="dialog-head"><h2 id="modal-title"></h2><button class="icon-button" id="close-modal" aria-label="關閉視窗" type="button">✕</button></div><div id="modal-content"></div></dialog>
+  <template id="forgot"><p>輸入您的電子郵件，體驗重設密碼流程。</p><form id="reset-form" novalidate><label for="reset-email">電子郵件</label><input id="reset-email" type="email" inputmode="email" autocomplete="off" placeholder="name@example.com" required aria-describedby="reset-result"><button class="submit" type="submit">示範重設密碼</button><p class="result" id="reset-result" role="status"></p></form><p class="dialog-note">此為示範，不會寄送郵件或傳輸輸入內容。</p></template>
+  <template id="language"><p>選擇介面語系示例</p><div class="language-options"><button data-locale="繁體中文" type="button">繁體中文</button><button data-locale="English" type="button">English</button><button data-locale="日本語" type="button">日本語</button></div><p class="dialog-note">此處僅展示語系選擇互動，頁面未提供完整翻譯。</p></template>
+  <template id="support"><p>需要登入協助？</p><div class="support-info"><h3>帳戶與存取</h3><p>請聯繫您的組織管理員，確認帳戶狀態與存取權限。</p><h3>密碼協助</h3><p>您可以使用「忘記密碼」體驗重設流程。</p></div><button type="button" class="submit" id="support-reset">開啟重設密碼示範</button><p class="dialog-note">支援內容為靜態示例，沒有連接客服或發送訊息。</p></template>
+</body>
+</html>
