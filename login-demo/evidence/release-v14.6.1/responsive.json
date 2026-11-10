@@ -1,0 +1,55 @@
+{
+  "version": "14.6.1",
+  "date": "2026-11-10",
+  "scope": "Local Chromium viewport checks; online verification follows publication.",
+  "checks": [
+    {
+      "footer": {
+        "bottom": 863,
+        "height": 16,
+        "left": 1152.671875,
+        "right": 1192.078125,
+        "top": 847,
+        "width": 39.40625,
+        "x": 1152.671875,
+        "y": 847
+      },
+      "height": 900,
+      "scrollWidth": 1440,
+      "version": "v14.6.1",
+      "width": 1440
+    },
+    {
+      "footer": {
+        "bottom": 1095,
+        "height": 16,
+        "left": 137.2890625,
+        "right": 176.6953125,
+        "top": 1079,
+        "width": 39.40625,
+        "x": 137.2890625,
+        "y": 1079
+      },
+      "height": 1112,
+      "scrollWidth": 834,
+      "version": "v14.6.1",
+      "width": 834
+    },
+    {
+      "footer": {
+        "bottom": 910.671875,
+        "height": 16,
+        "left": 223.9375,
+        "right": 263.34375,
+        "top": 894.671875,
+        "width": 39.40625,
+        "x": 223.9375,
+        "y": 894.671875
+      },
+      "height": 844,
+      "scrollWidth": 390,
+      "version": "v14.6.1",
+      "width": 390
+    }
+  ]
+}

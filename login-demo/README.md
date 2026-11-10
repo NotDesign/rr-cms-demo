@@ -1,10 +1,12 @@
-# Rotary Riches Login · CMS 整合版
+# Rotary Riches Login · CMS 整合版 v14.6.1
 
 此目錄是 R&R CMS 的登入入口，與儲存庫根目錄 CMS 一起部署。
 
 ## 使用方式
 
-在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
+直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.1)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
+
+本機開發：在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
 
 - 尚未登入時，CMS 自動轉到 `login-demo/`。
 - 使用示範 Email（如 `demo@example.com`）與任意非空示範密碼即可進入。
@@ -29,6 +31,8 @@ npm test
 python3 login-demo/evidence/check-assets.py
 ```
 
-2026-11-10：220 項 Node 測試通過，11 項素材與 15 個相對引用核對通過。Chromium 實際檢查桌機 1440×900、平板 834×1112、手機 390×844 的登入、CMS 管理員選單與登出；登入頁無水平溢出，主控台無錯誤。另驗證報表連結導向、空欄位檢核、重新整理保留狀態與登出後再次存取 CMS。
+v14.6.1（2026-11-10）：222 項 Node 測試通過，11 項素材與 15 個相對引用核對通過。Chromium 實際檢查桌機 1440×900、平板 834×1112、手機 390×844 的登入、CMS 管理員選單與登出；登入頁無水平溢出，主控台無錯誤。另驗證報表連結導向、空欄位檢核、重新整理保留狀態與登出後再次存取 CMS。
 
 結果見 `evidence/integration-20261110/results.json`。未進行實機 Safari／Firefox／觸控鍵盤驗證。圖片與 Logo 保留原權利人權利；字體授權見 `assets/fonts/`。
+
+v14.6.1 另核對三種視窗尺寸的版本號與水平寬度，見 `evidence/release-v14.6.1/responsive.json`；新增本機 HTML 導向與外部返回網址拒絕測試。畫面截圖位於 `../docs/screenshots/`。

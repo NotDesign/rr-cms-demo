@@ -2,8 +2,13 @@
 <html lang="zh-Hant" data-demo-session-pending>
 <head>
   <meta charset="UTF-8">
-  <style>html[data-demo-session-pending] body{visibility:hidden}</style>
-  <script src="login-demo/demo-session.js?v=20261110-1" data-page="cms"></script>
+  <style>
+    .entry-status{display:none}
+    html[data-demo-session-pending] body{visibility:hidden}
+    html[data-demo-session-pending] .entry-status{visibility:visible;position:fixed;inset:0;z-index:999;display:grid;place-content:center;gap:16px;padding:32px;background:#202022;color:#eee;font:16px/1.6 system-ui;text-align:center}
+    .entry-status a{color:#b5dd8b;text-decoration:underline}
+  </style>
+  <script src="login-demo/demo-session.js?v=14.6.1" data-page="cms"></script>
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="googlebot" content="noindex, nofollow, noarchive">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=14.6.0">
+  <link rel="stylesheet" href="styles.css?v=14.6.1">
   <link rel="stylesheet" href="ui-theme.css?v=14.5.2">
   <link rel="stylesheet" href="management.css?v=14.5.4">
   <link rel="stylesheet" href="cms-rules.css?v=14.4.1">
@@ -30,6 +35,7 @@
   <link rel="stylesheet" href="currency-display.css?v=14.5.0">
 </head>
 <body>
+  <div class="entry-status" role="status"><strong>R&amp;R CMS · v14.6.1</strong><span>正在開啟登入頁…</span><a href="https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.1">直接開啟 GitHub 線上版</a><noscript>此互動示範需要啟用 JavaScript。</noscript></div>
   <a href="#content" class="skip-link">跳至報表內容</a>
   <div id="app" class="app-shell">
     <div class="nav-ambient" aria-hidden="true"><div class="ambient-plane ambient-primary"><i></i><i></i></div><div class="ambient-plane ambient-secondary"><i></i><i></i></div></div>
@@ -44,6 +50,6 @@
   <dialog id="site-operation-modal" class="management-dialog site-operation-dialog" aria-labelledby="site-operation-title"></dialog>
   <dialog id="info-card-settings-modal" class="management-dialog info-settings-dialog" aria-labelledby="info-card-settings-title"></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="app.js?v=14.6.0"></script>
+  <script type="module" src="app.js?v=14.6.1"></script>
 </body>
 </html>

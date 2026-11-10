@@ -1,4 +1,12 @@
-# R&R CMS HTML Demo
+# R&R CMS HTML Demo · v14.6.1
+
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.1) · [下載 v14.6.1 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.1.zip) · [版本紀錄](CHANGELOG.md)
+
+## 開啟方式修正（v14.6.1）
+
+直接開啟下載檔的 `index.html` 會自動轉往 GitHub 線上登入頁，避免瀏覽器封鎖本機模組造成空白。登入頁、CMS、資源快取參數與 package.json 統一使用 v14.6.1。若跳轉未執行，畫面仍提供可點選的線上入口。
+
+本機開發請執行 `npm start`，再開啟 `http://127.0.0.1:4173/`。完整版本包含 CMS、登入頁、圖片、字體、示範資料、測試與說明；版本封存分支為 `codex/release-v14.6.1`。
 
 ## 登入頁整合（v14.6.0）
 
