@@ -6,9 +6,9 @@ import vm from 'node:vm';
 const context=vm.createContext({});
 vm.runInContext(readFileSync(new URL('../login-demo/scene-framing.js',import.meta.url),'utf8'),context);
 const {fit}=context.RR_SCENE_FRAMING;
-const scenes=[{imageWidth:1672,imageHeight:941,subject:[0,0,.68,1]},{imageWidth:1920,imageHeight:1080,subject:[0,0,.84,1]}];
+const scenes=[{imageWidth:1672,imageHeight:941,subject:[0,0,.68,1]}];
 for(const [width,height] of [[1920,1080],[1662,1239],[1440,900],[1366,768],[1100,900],[834,1112],[390,844],[320,568]]) {
-  test(`all character bounds fit outside the form at ${width}x${height}`,()=>{
+  test(`portal character bounds fit outside the form at ${width}x${height}`,()=>{
     const stacked=width<1100;
     const cardLeft=width-width*7/120-Math.min(512,Math.max(360,width*.3));
     const inset=width<600?16:24,headerBottom=width<600?56:72;

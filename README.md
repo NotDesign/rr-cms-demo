@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.9
+# R&R CMS HTML Demo · v14.6.10
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.9) · [下載 v14.6.9 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.9.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.10) · [下載 v14.6.10 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.10.zip) · [版本紀錄](CHANGELOG.md)
+
+## 第一張背景恢復滿版（v14.6.10）
+
+三人側臉背景恢復原本的滿版 `cover` 與靠左置中裁切，移除 v14.6.9 套用在這張圖的角色縮放與邊緣淡化。五角色傳送門繼續依登入卡片位置縮放，兩張圖各自管理構圖；WebP、4K 放大下載及綠色大小粒子沿用前版。[驗證紀錄](login-demo/evidence/cover-v14.6.10/README.md)。
 
 ## 自適應構圖、WebP 與粒子大小（v14.6.9）
 

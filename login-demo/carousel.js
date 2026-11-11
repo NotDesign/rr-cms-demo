@@ -26,6 +26,7 @@
       ? { left: inset, top: headerBottom + 16, width: width - inset * 2, height: Math.max(1, sceneSpace.offsetHeight - headerBottom - 96) }
       : { left: inset, top: 32, width: Math.max(1, cardBox.left - inset - 32), height: Math.max(1, height - 96) };
     for (const slide of slides) {
+      if (slide.framing === 'cover') continue;
       const rect = window.RR_SCENE_FRAMING.fit({ imageWidth: slide.image.naturalWidth, imageHeight: slide.image.naturalHeight, subject: slide.subject, area });
       for (const key of ['left', 'top', 'width', 'height']) slide.image.style[key] = `${rect[key]}px`;
     }
@@ -136,6 +137,7 @@
         const image = await loadImage(item.src);image.className = 'scene-image';image.alt = '';
         image.dataset.scene = item.id;image.dataset.subject = item.subject.join(',');
         const layer = document.createElement('div');layer.className = 'scene-layer';layer.dataset.scene = item.id;layer.style.opacity = '0';layer.style.setProperty('--scene-solid', (item.subject[2] * 100) + '%');
+        layer.dataset.framing = item.framing;
         const fill = document.createElement('div');fill.className = 'scene-fill';fill.style.backgroundImage = `url("${image.src}")`;
         layer.append(fill, image);host.append(layer);slides.push({ ...item, image, layer });
       } catch { failures.push(item.id); }

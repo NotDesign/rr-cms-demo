@@ -1,0 +1,317 @@
+[
+  {
+    "card": {
+      "bottom": 935.8359375,
+      "height": 624.671875,
+      "left": 1204.6640625,
+      "right": 1716.6640625,
+      "top": 311.1640625,
+      "width": 512
+    },
+    "documentWidth": 1823,
+    "host": {
+      "bottom": 1247,
+      "height": 1247,
+      "left": 0,
+      "right": 1823,
+      "top": 0,
+      "width": 1823
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 1247,
+          "height": 1247,
+          "left": 0,
+          "right": 1823,
+          "top": 0,
+          "width": 1823
+        },
+        "framing": "cover",
+        "loaded": true,
+        "maskImage": "none",
+        "objectFit": "cover",
+        "objectPosition": "0% 50%",
+        "opacity": "1",
+        "portalOverlapsCard": null,
+        "scene": "portraits"
+      },
+      {
+        "box": {
+          "bottom": 1082.8359375,
+          "height": 950.6796875,
+          "left": 24,
+          "right": 1713.2109375,
+          "top": 132.15625,
+          "width": 1689.2109375
+        },
+        "framing": "subject-fit",
+        "loaded": true,
+        "maskImage": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "objectPosition": "50% 50%",
+        "opacity": "0",
+        "portalOverlapsCard": false,
+        "scene": "portal"
+      }
+    ],
+    "viewport": {
+      "height": 1247,
+      "width": 1823
+    },
+    "name": "desktop-original-window",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 762.3359375,
+      "height": 624.671875,
+      "left": 924.0078125,
+      "right": 1356.0078125,
+      "top": 137.6640625,
+      "width": 432
+    },
+    "documentWidth": 1440,
+    "host": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1440,
+      "top": 0,
+      "width": 1440
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1440,
+          "top": 0,
+          "width": 1440
+        },
+        "framing": "cover",
+        "loaded": true,
+        "maskImage": "none",
+        "objectFit": "cover",
+        "objectPosition": "0% 50%",
+        "opacity": "1",
+        "portalOverlapsCard": null,
+        "scene": "portraits"
+      },
+      {
+        "box": {
+          "bottom": 793.1953125,
+          "height": 718.3984375,
+          "left": 24,
+          "right": 1300.4765625,
+          "top": 74.796875,
+          "width": 1276.4765625
+        },
+        "framing": "subject-fit",
+        "loaded": true,
+        "maskImage": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "objectPosition": "50% 50%",
+        "opacity": "0",
+        "portalOverlapsCard": false,
+        "scene": "portal"
+      }
+    ],
+    "viewport": {
+      "height": 900,
+      "width": 1440
+    },
+    "name": "desktop-1440",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 762.3359375,
+      "height": 624.671875,
+      "left": 924.0078125,
+      "right": 1356.0078125,
+      "top": 137.6640625,
+      "width": 432
+    },
+    "documentWidth": 1440,
+    "host": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1440,
+      "top": 0,
+      "width": 1440
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 900,
+          "height": 900,
+          "left": 0,
+          "right": 1440,
+          "top": 0,
+          "width": 1440
+        },
+        "framing": "cover",
+        "loaded": true,
+        "maskImage": "none",
+        "objectFit": "cover",
+        "objectPosition": "0% 50%",
+        "opacity": "0",
+        "portalOverlapsCard": null,
+        "scene": "portraits"
+      },
+      {
+        "box": {
+          "bottom": 793.1953125,
+          "height": 718.3984375,
+          "left": 24,
+          "right": 1300.4765625,
+          "top": 74.796875,
+          "width": 1276.4765625
+        },
+        "framing": "subject-fit",
+        "loaded": true,
+        "maskImage": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "objectPosition": "50% 50%",
+        "opacity": "1",
+        "portalOverlapsCard": false,
+        "scene": "portal"
+      }
+    ],
+    "viewport": {
+      "height": 900,
+      "width": 1440
+    },
+    "name": "portal-1440",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 1275.7890625,
+      "height": 624.671875,
+      "left": 161,
+      "right": 673,
+      "top": 651.1171875,
+      "width": 512
+    },
+    "documentWidth": 834,
+    "host": {
+      "bottom": 627.1171875,
+      "height": 627.1171875,
+      "left": 0,
+      "right": 834,
+      "top": 0,
+      "width": 834
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 627.1171875,
+          "height": 627.1171875,
+          "left": 0,
+          "right": 834,
+          "top": 0,
+          "width": 834
+        },
+        "framing": "cover",
+        "loaded": true,
+        "maskImage": "none",
+        "objectFit": "cover",
+        "objectPosition": "0% 50%",
+        "opacity": "1",
+        "portalOverlapsCard": null,
+        "scene": "portraits"
+      },
+      {
+        "box": {
+          "bottom": 547,
+          "height": 459,
+          "left": 139.703125,
+          "right": 955.265625,
+          "top": 88,
+          "width": 815.5625
+        },
+        "framing": "subject-fit",
+        "loaded": true,
+        "maskImage": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "objectPosition": "50% 50%",
+        "opacity": "0",
+        "portalOverlapsCard": false,
+        "scene": "portal"
+      }
+    ],
+    "viewport": {
+      "height": 1112,
+      "width": 834
+    },
+    "name": "tablet-834",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 1048.671875,
+      "height": 628.671875,
+      "left": 16,
+      "right": 374,
+      "top": 420,
+      "width": 358
+    },
+    "documentWidth": 390,
+    "host": {
+      "bottom": 404,
+      "height": 404,
+      "left": 0,
+      "right": 390,
+      "top": 0,
+      "width": 390
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 404,
+          "height": 404,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "framing": "cover",
+        "loaded": true,
+        "maskImage": "none",
+        "objectFit": "cover",
+        "objectPosition": "0% 50%",
+        "opacity": "1",
+        "portalOverlapsCard": null,
+        "scene": "portraits"
+      },
+      {
+        "box": {
+          "bottom": 324,
+          "height": 252,
+          "left": 42.7578125,
+          "right": 490.515625,
+          "top": 72,
+          "width": 447.7578125
+        },
+        "framing": "subject-fit",
+        "loaded": true,
+        "maskImage": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "objectPosition": "50% 50%",
+        "opacity": "0",
+        "portalOverlapsCard": false,
+        "scene": "portal"
+      }
+    ],
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "name": "mobile-390",
+    "consoleErrors": []
+  }
+]
