@@ -1,5 +1,5 @@
 {
-  "revision": "2026-11-09",
+  "revision": "2026-11-11",
   "figma_file": "cfU4KXLPSlXTbCwM8Tr1Iz",
   "figma_frame": "444:43692",
   "assets": [
@@ -15,7 +15,7 @@
     },
     {
       "path": "assets/portal-detailed-1920x1080.png",
-      "role": "active portal background, original version 2",
+      "role": "archived portal background, original version 2",
       "size_bytes": 2806086,
       "sha256": "e95769ac96f3dbd82a20ddf478515c12d0d3c0ce861ede75341ba395b7df6cdf",
       "dimensions": [
@@ -96,6 +96,26 @@
       "role": "font licence",
       "size_bytes": 4301,
       "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "path": "assets/portal-refined-v14.6.2.png",
+      "role": "refined portal master, imagegen edit",
+      "size_bytes": 2611766,
+      "sha256": "6fc2a1da17bbc8c4a7d58d3e09de0c810b12bf9f24f7ad4e17604d5a0fd4e2af",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-refined-v14.6.2.jpg",
+      "role": "active refined portal background, JPEG delivery",
+      "size_bytes": 620735,
+      "sha256": "5f3cd8a4c31cf45f303a30e84cbcfdd8d69a0fbec066552b1b8a0bedf1408b3f",
+      "dimensions": [
+        1672,
+        941
+      ]
     }
   ],
   "visual_qa": "evidence/integration-20261110"

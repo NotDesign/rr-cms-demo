@@ -1,10 +1,10 @@
-# Rotary Riches Login · CMS 整合版 v14.6.1
+# Rotary Riches Login · CMS 整合版 v14.6.2
 
 此目錄是 R&R CMS 的登入入口，與儲存庫根目錄 CMS 一起部署。
 
 ## 使用方式
 
-直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.1)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
+直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.2)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
 
 本機開發：在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
 
@@ -21,6 +21,10 @@
 使用本機背景圖片、Logo、SVG 圖示及 Noto Sans TC 字體。保留兩張背景輪播；閃電核心、分岔、模糊光暈與全部粒子均為綠色。閃電採不規則細折點及漸細分岔，粒子池為桌機 128、平板 88、手機 56，沒有大片火焰區塊。
 
 支援暫停、減少動態偏好與背景分頁停止更新。登入頁只提供繁體中文內容；語系按鈕仍為互動示例。CMS 沿用原本繁體中文／越南文／泰文介面。
+
+## v14.6.2 傳送門背景
+
+以內建 imagegen 編修原有五角色背景，強化警戒表情、自然髮束、非重複能量分枝與光影材質。屬 AI 輔助精修，並非真人畫師手繪。網頁使用 `assets/portal-refined-v14.6.2.jpg`；無損 PNG 與前一版原圖一併保留，詳見 [素材與提示詞紀錄](evidence/portal-refinement-v14.6.2/README.md)。
 
 ## 驗證
 

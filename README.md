@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.1
+# R&R CMS HTML Demo · v14.6.2
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.1) · [下載 v14.6.1 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.1.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.2) · [下載 v14.6.2 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.2.zip) · [版本紀錄](CHANGELOG.md)
+
+## 傳送門背景精修（v14.6.2）
+
+五角色傳送門背景更新為更緊張的表情、自然髮束、不規則能量與更有層次的光影。原始構圖、右側登入空間及綠色動態特效保留。網頁使用 620,735 bytes JPEG，比舊 PNG 減少 77.9%；精修 PNG 與原版素材均保留。精修方式與完整提示詞見 [素材紀錄](login-demo/evidence/portal-refinement-v14.6.2/README.md)。
 
 ## 開啟方式修正（v14.6.1）
 
