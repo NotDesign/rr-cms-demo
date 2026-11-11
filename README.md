@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.7.0 / Login v14.6.13
+# R&R CMS HTML Demo · v14.7.0 / Login v14.6.14
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.13) · [開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載最新完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.13.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.14) · [開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載最新完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.14.zip) · [版本紀錄](CHANGELOG.md)
+
+## Logo favicon（Login v14.6.14）
+
+登入頁與 CMS 共用現有 R&R 綠色 Logo 圖形作為 SVG favicon，使用版本化網址更新分頁圖示快取。
 
 ## 特效按鈕對齊（Login v14.6.13）
 

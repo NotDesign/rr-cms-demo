@@ -1,7 +1,7 @@
 /* Front-end demo navigation only. This is not server-side authentication. */
 (() => {
   'use strict';
-  const version = '14.6.13';
+  const version = '14.6.14';
   const script = document.currentScript;
   const localFile = new URL(location.href).protocol === 'file:';
   const scriptURL = localFile ? 'https://notdesign.github.io/rr-cms-demo/login-demo/demo-session.js' : script.src;

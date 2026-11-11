@@ -306,6 +306,16 @@
       ],
       "size_bytes": 802632,
       "sha256": "a35034deac318910a293061bbf715ac26e5d4d5e7e595d41b84a18a830e70ebb"
+    },
+    {
+      "path": "assets/rr-favicon.svg",
+      "role": "Shared Login and CMS favicon, existing R&R green logo symbol",
+      "size_bytes": 3082,
+      "sha256": "7cc3aa5e3c799a03ea1091b975797a248fb0e121b8a9c485ef6c7a540fcd6b0c",
+      "dimensions": [
+        64,
+        64
+      ]
     }
   ],
   "visual_qa": "evidence/integration-20261110"
