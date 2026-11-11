@@ -41,7 +41,9 @@
   function resetParticle(p, seed = false) {
     p.duration = random(3.2, 7.6); p.life = seed ? random(0, p.duration) : 0;
     p.x = random(0, 1); p.travel = random(.25, .68); p.drift = random(-.05, .035);
-    p.size = random(5, 12); p.phase = random(0, Math.PI * 2);
+    p.baseSize = random(5, 12);
+    p.sizeScale = Math.random() < .28 ? random(1.5, 2) : 1;
+    p.size = p.baseSize * p.sizeScale; p.phase = random(0, Math.PI * 2);
     p.sprite = Math.random() < .65 ? 0 : 1; p.stretch = random(1, 1.65);
   }
   particles.forEach(p => resetParticle(p, true));
@@ -60,6 +62,7 @@
     budget = lowPower ? 36 : tier === 'mobile' ? 56 : tier === 'tablet' ? 88 : 128;
     dpr = Math.min(devicePixelRatio || 1, lowPower ? 1 : 1.5);
     canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+    if (qa) canvas.dataset.particleSizes = JSON.stringify(particles.slice(0, budget).map(p => ({ base: p.baseSize, scale: p.sizeScale, size: p.size })));
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     measureSafety(); if (!document.hidden) render();
   }
@@ -221,6 +224,7 @@
   if (qa) Object.defineProperty(window, '__rrEffects', { value: Object.freeze({ snapshot: () => ({
     tier, profile: { ...profile }, sceneMix: { ...sceneMix }, particleCount: budget,
     visibleParticleBudget: Math.ceil(budget * clamp(profile.particleDensity, 0, 1)), flameCount: 0, haze: false,
+    particleSizes: particles.slice(0, budget).map(p => ({ base: p.baseSize, scale: p.sizeScale, size: p.size })),
     lightningStyle: 'fractal-green-core-local-bloom', lightningBloom: bolt.active && !reduced.matches,
     caps, elapsed, renderedFrames, fpsTarget, lowPower, averageDrawMs, dpr,
     running: canAnimate(), reduced: reduced.matches, hidden: document.hidden, pendingFrame: !!frame,

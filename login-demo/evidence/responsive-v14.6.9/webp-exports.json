@@ -1,0 +1,47 @@
+{
+  "quality": 92,
+  "method": 6,
+  "exports": [
+    {
+      "path": "assets/portal-v14.6.9.webp",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "size_bytes": 293662,
+      "sha256": "2222c183ca34ecf4c609a60f0f60c6e14d41cf0bb885151599558b324c9b31a2",
+      "upscaled": false
+    },
+    {
+      "path": "assets/portraits-v14.6.9.webp",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 452402,
+      "sha256": "317dcf51a88b66c1e123b8609618feda10cb085955f741627776ed6815eedac3",
+      "upscaled": false
+    },
+    {
+      "path": "assets/portal-4k-upscaled-v14.6.9.webp",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "size_bytes": 815104,
+      "sha256": "fbcb83a16e3ca288a67c4566e3b6c7dc42d6e03b4fdc7f7108642a28bc9d7892",
+      "upscaled": true
+    },
+    {
+      "path": "assets/portraits-4k-upscaled-v14.6.9.webp",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "size_bytes": 1034398,
+      "sha256": "651d6eb4b9a858af98fb070ab73fe452771863deff91f22ab8e937eff1d25489",
+      "upscaled": true
+    }
+  ],
+  "note": "4K files are resampled exports of the existing images, not native 4K generation. The webpage uses the native-size WebP files."
+}

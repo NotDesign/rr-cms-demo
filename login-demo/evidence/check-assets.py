@@ -5,6 +5,17 @@ from urllib.parse import urlsplit
 import hashlib,json,re,struct,sys,xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[1]
 failures=[]
+def webp_dimensions(data):
+ if data[:4]!=b'RIFF' or data[8:12]!=b'WEBP':return None
+ offset=12
+ while offset+8<=len(data):
+  kind=data[offset:offset+4];size=int.from_bytes(data[offset+4:offset+8],'little');payload=data[offset+8:offset+8+size]
+  if kind==b'VP8X' and len(payload)>=10:return [1+int.from_bytes(payload[4:7],'little'),1+int.from_bytes(payload[7:10],'little')]
+  if kind==b'VP8 ' and len(payload)>=10 and payload[3:6]==b'\x9d\x01\x2a':return [int.from_bytes(payload[6:8],'little')&0x3fff,int.from_bytes(payload[8:10],'little')&0x3fff]
+  if kind==b'VP8L' and len(payload)>=5 and payload[0]==0x2f:
+   bits=int.from_bytes(payload[1:5],'little');return [(bits&0x3fff)+1,((bits>>14)&0x3fff)+1]
+  offset+=8+size+(size%2)
+ return None
 manifest=json.loads((ROOT/'assets/required-assets.json').read_text())
 for item in manifest['assets']:
  path=ROOT/item['path']
@@ -17,6 +28,7 @@ for item in manifest['assets']:
   svg=ET.fromstring(data)
   if svg.tag.rsplit('}',1)[-1]!='svg' or [float(svg.attrib['width']),float(svg.attrib['height'])]!=item['dimensions']:failures.append('Invalid SVG: '+item['path'])
  elif path.suffix=='.woff2' and data[:4]!=b'wOF2':failures.append('Invalid font: '+item['path'])
+ elif path.suffix=='.webp' and webp_dimensions(data)!=item['dimensions']:failures.append('Invalid WebP: '+item['path'])
 references=set()
 class Links(HTMLParser):
  def handle_starttag(self,tag,attrs):

@@ -9,11 +9,27 @@
   const label = document.querySelector('#scene-label');
   const status = document.querySelector('#scene-status');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const stacked = matchMedia('(max-width: 1099px)');
+  const card = document.querySelector('.login-card');
+  const sceneSpace = document.querySelector('.scene-space');
   let slides = [], failures = [], current = 0, transition = null, progress = 0;
   let autoPaused = false, transitionPaused = false, globalPaused = reduced.matches;
   let focused = false, hovering = false, frame = 0, previousTime = null, remaining = config.intervalMs;
   const motionAllowed = () => !reduced.matches && !globalPaused && !document.hidden;
   const autoAllowed = () => motionAllowed() && !autoPaused && !focused && !hovering && slides.length > 1;
+  function layoutImages() {
+    const width = document.documentElement.clientWidth, height = innerHeight;
+    const cardBox = card.getBoundingClientRect();
+    const headerBottom = document.querySelector('.masthead').offsetTop + document.querySelector('.masthead').offsetHeight;
+    const inset = width < 600 ? 16 : 24;
+    const area = stacked.matches
+      ? { left: inset, top: headerBottom + 16, width: width - inset * 2, height: Math.max(1, sceneSpace.offsetHeight - headerBottom - 96) }
+      : { left: inset, top: 32, width: Math.max(1, cardBox.left - inset - 32), height: Math.max(1, height - 96) };
+    for (const slide of slides) {
+      const rect = window.RR_SCENE_FRAMING.fit({ imageWidth: slide.image.naturalWidth, imageHeight: slide.image.naturalHeight, subject: slide.subject, area });
+      for (const key of ['left', 'top', 'width', 'height']) slide.image.style[key] = `${rect[key]}px`;
+    }
+  }
   function weights() {
     if (!slides.length) return;
     let from = slides[current], to = from, blend = 0;
@@ -24,8 +40,8 @@
     // Keep the outgoing image opaque below the incoming one: effective visual weights are (1-blend, blend), avoiding a dark dip or additive brightness peak.
     slides.forEach((slide, index) => {
       const opacity = transition ? index === transition.from ? 1 : index === transition.to ? blend : 0 : index === current ? 1 : 0;
-      slide.image.style.opacity = String(opacity);
-      slide.image.style.zIndex = transition && index === transition.to ? '2' : '1';
+      slide.layer.style.opacity = String(opacity);
+      slide.layer.style.zIndex = transition && index === transition.to ? '2' : '1';
     });
     document.dispatchEvent(new CustomEvent('rr:scene-blend', { detail: {
       from: from.effect, to: to.effect, blend, fromId: from.id, toId: to.id
@@ -118,17 +134,23 @@
       if (!item.src || !(item.libraryId || item.source)) { failures.push(item.id);continue; }
       try {
         const image = await loadImage(item.src);image.className = 'scene-image';image.alt = '';
-        image.dataset.scene = item.id;image.style.opacity = '0';host.append(image);slides.push({ ...item, image });
+        image.dataset.scene = item.id;image.dataset.subject = item.subject.join(',');
+        const layer = document.createElement('div');layer.className = 'scene-layer';layer.dataset.scene = item.id;layer.style.opacity = '0';layer.style.setProperty('--scene-solid', (item.subject[2] * 100) + '%');
+        const fill = document.createElement('div');fill.className = 'scene-fill';fill.style.backgroundImage = `url("${image.src}")`;
+        layer.append(fill, image);host.append(layer);slides.push({ ...item, image, layer });
       } catch { failures.push(item.id); }
     }
     try {
       const image = await loadImage(config.logo.src), logo = document.querySelector('.brand');
       logo.src = image.src;logo.hidden = false;document.querySelector('.brand-placeholder').hidden = true;
     } catch { /* Keep the explicitly labelled placeholder while source bytes are unavailable. */ }
-    weights();updateControls();schedule();
+    layoutImages();weights();updateControls();schedule();
     status.textContent = failures.length ? '部分背景無法載入，請確認本機素材檔案。' : '背景已載入。';
   })();
   updateControls();
+  window.addEventListener('resize', layoutImages);
+  new ResizeObserver(layoutImages).observe(card);
+  document.fonts.ready.then(layoutImages);
   if (new URLSearchParams(location.search).has('effects-test')) {
     Object.defineProperty(window, '__rrCarousel', { value: Object.freeze({ snapshot: () => ({
       loaded: slides.map(s => s.id), failures: [...failures], current, transition: transition && { ...transition },

@@ -1,0 +1,11 @@
+{
+  "version": "14.6.9",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "loginReachedCMS": true,
+  "accountMenuOpened": true,
+  "logoutReturnedToLogin": true,
+  "scope": "front-end demonstration only"
+}

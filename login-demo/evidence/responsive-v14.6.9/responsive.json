@@ -1,0 +1,469 @@
+[
+  {
+    "card": {
+      "bottom": 1048.671875,
+      "height": 628.671875,
+      "left": 16,
+      "right": 374,
+      "top": 420,
+      "width": 358
+    },
+    "documentWidth": 390,
+    "images": [
+      {
+        "box": {
+          "bottom": 317.859375,
+          "height": 239.7265625,
+          "left": 16,
+          "right": 442.1875,
+          "top": 78.1328125,
+          "width": 426.1875
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 317.859375,
+          "left": 16,
+          "right": 373.9975,
+          "top": 78.1328125
+        }
+      },
+      {
+        "box": {
+          "bottom": 324,
+          "height": 252,
+          "left": 42.7578125,
+          "right": 490.515625,
+          "top": 72,
+          "width": 447.7578125
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 324,
+          "left": 42.7578125,
+          "right": 347.23312500000003,
+          "top": 72
+        }
+      }
+    ],
+    "particles": {
+      "count": 56,
+      "inRange": true,
+      "large": 18,
+      "small": 38
+    },
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "consoleErrors": [],
+    "name": "mobile-390"
+  },
+  {
+    "card": {
+      "bottom": 1237.7890625,
+      "height": 624.671875,
+      "left": 161,
+      "right": 673,
+      "top": 613.1171875,
+      "width": 512
+    },
+    "documentWidth": 834,
+    "images": [
+      {
+        "box": {
+          "bottom": 509,
+          "height": 459,
+          "left": 74.2734375,
+          "right": 890.2734375,
+          "top": 50,
+          "width": 816
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 509,
+          "left": 74.2734375,
+          "right": 759.7134374999999,
+          "top": 50
+        }
+      },
+      {
+        "box": {
+          "bottom": 509,
+          "height": 459,
+          "left": 139.703125,
+          "right": 955.265625,
+          "top": 50,
+          "width": 815.5625
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 509,
+          "left": 139.703125,
+          "right": 694.2856250000001,
+          "top": 50
+        }
+      }
+    ],
+    "particles": {
+      "count": 88,
+      "inRange": true,
+      "large": 29,
+      "small": 59
+    },
+    "viewport": {
+      "height": 1112,
+      "width": 834
+    },
+    "consoleErrors": [],
+    "name": "tablet-834"
+  },
+  {
+    "card": {
+      "bottom": 931.8359375,
+      "height": 624.671875,
+      "left": 1066.4609375,
+      "right": 1565.0546875,
+      "top": 307.1640625,
+      "width": 498.59375
+    },
+    "documentWidth": 1662,
+    "images": [
+      {
+        "box": {
+          "bottom": 941.8125,
+          "height": 676.640625,
+          "left": 24,
+          "right": 1226.9296875,
+          "top": 265.171875,
+          "width": 1202.9296875
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 941.8125,
+          "left": 24,
+          "right": 1034.4609375,
+          "top": 265.171875
+        }
+      },
+      {
+        "box": {
+          "bottom": 1021.640625,
+          "height": 836.296875,
+          "left": 24,
+          "right": 1509.96875,
+          "top": 185.34375,
+          "width": 1485.96875
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 1021.640625,
+          "left": 24,
+          "right": 1034.4587500000002,
+          "top": 185.34375
+        }
+      }
+    ],
+    "particles": {
+      "count": 128,
+      "inRange": true,
+      "large": 42,
+      "small": 86
+    },
+    "viewport": {
+      "height": 1239,
+      "width": 1662
+    },
+    "consoleErrors": [],
+    "name": "desktop-1662"
+  },
+  {
+    "card": {
+      "bottom": 762.3359375,
+      "height": 624.671875,
+      "left": 924.0078125,
+      "right": 1356.0078125,
+      "top": 137.6640625,
+      "width": 432
+    },
+    "documentWidth": 1440,
+    "images": [
+      {
+        "box": {
+          "bottom": 724.6171875,
+          "height": 581.25,
+          "left": 24,
+          "right": 1057.3359375,
+          "top": 143.3671875,
+          "width": 1033.3359375
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 724.6171875,
+          "left": 24,
+          "right": 892.0021875,
+          "top": 143.3671875
+        }
+      },
+      {
+        "box": {
+          "bottom": 793.1953125,
+          "height": 718.3984375,
+          "left": 24,
+          "right": 1300.4765625,
+          "top": 74.796875,
+          "width": 1276.4765625
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 793.1953125,
+          "left": 24,
+          "right": 892.0040625,
+          "top": 74.796875
+        }
+      }
+    ],
+    "particles": {
+      "count": 128,
+      "inRange": true,
+      "large": 42,
+      "small": 86
+    },
+    "viewport": {
+      "height": 900,
+      "width": 1440
+    },
+    "consoleErrors": [],
+    "name": "desktop-1440"
+  },
+  {
+    "card": {
+      "bottom": 762.3359375,
+      "height": 624.671875,
+      "left": 924.0078125,
+      "right": 1356.0078125,
+      "top": 137.6640625,
+      "width": 432
+    },
+    "documentWidth": 1440,
+    "images": [
+      {
+        "box": {
+          "bottom": 724.6171875,
+          "height": 581.25,
+          "left": 24,
+          "right": 1057.3359375,
+          "top": 143.3671875,
+          "width": 1033.3359375
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 724.6171875,
+          "left": 24,
+          "right": 892.0021875,
+          "top": 143.3671875
+        }
+      },
+      {
+        "box": {
+          "bottom": 793.1953125,
+          "height": 718.3984375,
+          "left": 24,
+          "right": 1300.4765625,
+          "top": 74.796875,
+          "width": 1276.4765625
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 793.1953125,
+          "left": 24,
+          "right": 892.0040625,
+          "top": 74.796875
+        }
+      }
+    ],
+    "particles": {
+      "count": 128,
+      "inRange": true,
+      "large": 42,
+      "small": 86
+    },
+    "viewport": {
+      "height": 900,
+      "width": 1440
+    },
+    "consoleErrors": [],
+    "name": "portraits-1440"
+  },
+  {
+    "card": {
+      "bottom": 1030.1328125,
+      "height": 610.1328125,
+      "left": 16,
+      "right": 304,
+      "top": 420,
+      "width": 288
+    },
+    "documentWidth": 320,
+    "images": [
+      {
+        "box": {
+          "bottom": 294.421875,
+          "height": 192.8515625,
+          "left": 16,
+          "right": 358.8515625,
+          "top": 101.5703125,
+          "width": 342.8515625
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 294.421875,
+          "left": 16,
+          "right": 303.9953125,
+          "top": 101.5703125
+        }
+      },
+      {
+        "box": {
+          "bottom": 317.171875,
+          "height": 238.359375,
+          "left": 16,
+          "right": 439.5234375,
+          "top": 78.8125,
+          "width": 423.5234375
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 317.171875,
+          "left": 16,
+          "right": 303.9959375,
+          "top": 78.8125
+        }
+      }
+    ],
+    "particles": {
+      "count": 56,
+      "inRange": true,
+      "large": 18,
+      "small": 38
+    },
+    "viewport": {
+      "height": 568,
+      "width": 320
+    },
+    "consoleErrors": [],
+    "name": "mobile-320"
+  },
+  {
+    "card": {
+      "bottom": 678.3359375,
+      "height": 596.671875,
+      "left": 876.5234375,
+      "right": 1286.3203125,
+      "top": 81.6640625,
+      "width": 409.796875
+    },
+    "documentWidth": 1366,
+    "images": [
+      {
+        "box": {
+          "bottom": 642.71875,
+          "height": 549.453125,
+          "left": 24,
+          "right": 1000.8125,
+          "top": 93.265625,
+          "width": 976.8125
+        },
+        "loaded": true,
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portraits-v14.6.9.webp",
+        "subjects": {
+          "bottom": 642.71875,
+          "left": 24,
+          "right": 844.5224999999999,
+          "top": 93.265625
+        }
+      },
+      {
+        "box": {
+          "bottom": 704,
+          "height": 672,
+          "left": 28.2890625,
+          "right": 1222.3203125,
+          "top": 32,
+          "width": 1194.03125
+        },
+        "loaded": true,
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "src": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.9.webp",
+        "subjects": {
+          "bottom": 704,
+          "left": 28.2890625,
+          "right": 840.2303125000001,
+          "top": 32
+        }
+      }
+    ],
+    "particles": {
+      "instrumented": false,
+      "note": "No effects-test query on this post-logout page; size ranges are verified in the other observations."
+    },
+    "viewport": {
+      "height": 768,
+      "width": 1366
+    },
+    "consoleErrors": [],
+    "name": "desktop-1366"
+  }
+]

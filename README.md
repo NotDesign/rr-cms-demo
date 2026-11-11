@@ -1,6 +1,12 @@
-# R&R CMS HTML Demo · v14.6.8
+# R&R CMS HTML Demo · v14.6.9
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.8) · [下載 v14.6.8 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.8.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.9) · [下載 v14.6.9 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.9.zip) · [版本紀錄](CHANGELOG.md)
+
+## 自適應構圖、WebP 與粒子大小（v14.6.9）
+
+兩張背景依角色範圍等比例縮放，桌機角色與登入卡片保留至少 32px 間距；平板與手機將角色圖置於表單上方。綠色小粒子維持 5–12px 基礎尺寸，約 28% 粒子隨機放大至 1.5–2 倍。
+
+網頁改用原生尺寸 WebP，兩張合計 746,064 bytes，比前版約減少 79%。另提供 [傳送門 4K WebP](login-demo/assets/portal-4k-upscaled-v14.6.9.webp) 與 [側臉背景 4K WebP](login-demo/assets/portraits-4k-upscaled-v14.6.9.webp)，均為 3840×2160 原圖放大輸出，並非原生 4K 細節。圖片內容與人物造型不變。[驗證與輸出紀錄](login-demo/evidence/responsive-v14.6.9/README.md)。
 
 ## 握姿與表情修正（v14.6.8）
 

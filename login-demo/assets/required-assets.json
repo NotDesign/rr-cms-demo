@@ -5,7 +5,7 @@
   "assets": [
     {
       "path": "assets/figma-login-background-20261109.png",
-      "role": "active portrait background",
+      "role": "portrait source master, original PNG",
       "size_bytes": 3014047,
       "sha256": "303b44d174b3542caef25edba0e5a5e0c1c0b784df79b2a1d2a3d9914be91dbf",
       "dimensions": [
@@ -229,13 +229,53 @@
     },
     {
       "path": "assets/portal-anatomy-v14.6.8.jpg",
-      "role": "active portal background with natural dumbbell grip and differentiated expressions",
+      "role": "archived portal JPEG, version 14.6.8",
       "size_bytes": 545930,
       "sha256": "2a34afb66149ee23723a52b2d4964ac5fd8cfb78436204c46d8c0f409494454b",
       "dimensions": [
         1672,
         941
       ]
+    },
+    {
+      "path": "assets/portal-v14.6.9.webp",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "size_bytes": 293662,
+      "sha256": "2222c183ca34ecf4c609a60f0f60c6e14d41cf0bb885151599558b324c9b31a2",
+      "role": "active native-size WebP background"
+    },
+    {
+      "path": "assets/portraits-v14.6.9.webp",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 452402,
+      "sha256": "317dcf51a88b66c1e123b8609618feda10cb085955f741627776ed6815eedac3",
+      "role": "active native-size WebP background"
+    },
+    {
+      "path": "assets/portal-4k-upscaled-v14.6.9.webp",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "size_bytes": 815104,
+      "sha256": "fbcb83a16e3ca288a67c4566e3b6c7dc42d6e03b4fdc7f7108642a28bc9d7892",
+      "role": "4K upscaled WebP export, not native 4K detail"
+    },
+    {
+      "path": "assets/portraits-4k-upscaled-v14.6.9.webp",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "size_bytes": 1034398,
+      "sha256": "651d6eb4b9a858af98fb070ab73fe452771863deff91f22ab8e937eff1d25489",
+      "role": "4K upscaled WebP export, not native 4K detail"
     }
   ],
   "visual_qa": "evidence/integration-20261110"
