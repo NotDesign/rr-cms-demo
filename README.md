@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.7
+# R&R CMS HTML Demo · v14.6.8
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.7) · [下載 v14.6.7 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.7.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.8) · [下載 v14.6.8 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.8.zip) · [版本紀錄](CHANGELOG.md)
+
+## 握姿與表情修正（v14.6.8）
+
+修正金髮角色抬起的手臂與啞鈴握法，讓手肘、手腕、手掌與握把角度自然。人物表情分別呈現專注、警覺、沉著與冷靜，減少一致微笑感；小龍收斂大笑，改為專注而活潑的神情。保留自然灰綠光影、前景動勢、光門透視及底部雲霧遮擋。 [素材與提示詞](login-demo/evidence/portal-anatomy-v14.6.8/README.md)。
 
 ## 畫面張力與眼周修整（v14.6.7）
 

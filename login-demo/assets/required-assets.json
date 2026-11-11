@@ -209,9 +209,29 @@
     },
     {
       "path": "assets/portal-action-v14.6.7.jpg",
-      "role": "active portal background with dynamic hair cape mist and refined eyes",
+      "role": "archived dynamic portal artwork, version 14.6.7",
       "size_bytes": 529920,
       "sha256": "6148671ffa5222964a73ccbf333968fb24689103341e6bbfbf0ec796409df6b3",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-anatomy-v14.6.8.png",
+      "role": "portal arm anatomy and distinct expressions master, imagegen edit",
+      "size_bytes": 2260367,
+      "sha256": "ad6a34d05628f3527c1d4d650730e483d5865149f8b0137c365f111b9740cd09",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-anatomy-v14.6.8.jpg",
+      "role": "active portal background with natural dumbbell grip and differentiated expressions",
+      "size_bytes": 545930,
+      "sha256": "2a34afb66149ee23723a52b2d4964ac5fd8cfb78436204c46d8c0f409494454b",
       "dimensions": [
         1672,
         941

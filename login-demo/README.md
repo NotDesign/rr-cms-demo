@@ -1,10 +1,10 @@
-# Rotary Riches Login · CMS 整合版 v14.6.7
+# Rotary Riches Login · CMS 整合版 v14.6.8
 
 此目錄是 R&R CMS 的登入入口，與儲存庫根目錄 CMS 一起部署。
 
 ## 使用方式
 
-直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.7)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
+直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.8)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
 
 本機開發：在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
 
@@ -22,9 +22,13 @@
 
 支援暫停、減少動態偏好與背景分頁停止更新。登入頁只提供繁體中文內容；語系按鈕仍為互動示例。CMS 沿用原本繁體中文／越南文／泰文介面。
 
+## v14.6.8 握姿與表情修正
+
+目前使用 `assets/portal-anatomy-v14.6.8.jpg`。修正金髮角色抬起的手臂與啞鈴握法，讓手肘、手腕、手掌與握把角度自然。人物表情分別呈現專注、警覺、沉著與冷靜，減少一致微笑感；小龍收斂大笑，改為專注而活潑的神情。保留自然灰綠光影、前景動勢、光門透視及底部雲霧遮擋。 [素材與提示詞](evidence/portal-anatomy-v14.6.8/README.md)。
+
 ## v14.6.7 畫面張力與眼周修整
 
-目前使用 `assets/portal-action-v14.6.7.jpg`。減輕左上金髮角色厚重的眼瞼與眼周陰影，保留紫色瞳孔和自然表情。強化刀刃前伸感、髮束與披風的方向性、底部霧氣流向及前後明暗層次，提升整體張力；自然灰綠氣氛、角色一致性與光門透視保留。 [素材與提示詞](evidence/portal-action-v14.6.7/README.md)。
+此版使用 `assets/portal-action-v14.6.7.jpg`。減輕左上金髮角色厚重的眼瞼與眼周陰影，保留紫色瞳孔和自然表情。強化刀刃前伸感、髮束與披風的方向性、底部霧氣流向及前後明暗層次，提升整體張力；自然灰綠氣氛、角色一致性與光門透視保留。 [素材與提示詞](evidence/portal-action-v14.6.7/README.md)。
 
 ## v14.6.6 自然光影與臉部細節
 
