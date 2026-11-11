@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.5
+# R&R CMS HTML Demo · v14.6.6
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.5) · [下載 v14.6.5 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.5.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.6) · [下載 v14.6.6 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.6.zip) · [版本紀錄](CHANGELOG.md)
+
+## 自然灰綠氣氛與臉部細節（v14.6.6）
+
+依四張人物原始立繪精修眼睛、眉睫、鼻唇與臉部明暗，保留角色長相與自然表情。以另一張輪播背景為光影參考，改為自然灰綠環境光、低飽和霧氣與暖色受光。保留光門透視、底部遮擋、角色原色與綠色動態特效。 [素材與提示詞](login-demo/evidence/portal-natural-v14.6.6/README.md)。
 
 ## 前景雲霧與光門透視（v14.6.5）
 

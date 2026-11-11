@@ -1,10 +1,10 @@
-# Rotary Riches Login · CMS 整合版 v14.6.5
+# Rotary Riches Login · CMS 整合版 v14.6.6
 
 此目錄是 R&R CMS 的登入入口，與儲存庫根目錄 CMS 一起部署。
 
 ## 使用方式
 
-直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.5)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
+直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.6)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
 
 本機開發：在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
 
@@ -22,9 +22,13 @@
 
 支援暫停、減少動態偏好與背景分頁停止更新。登入頁只提供繁體中文內容；語系按鈕仍為互動示例。CMS 沿用原本繁體中文／越南文／泰文介面。
 
+## v14.6.6 自然光影與臉部細節
+
+目前使用 `assets/portal-natural-v14.6.6.jpg`。依四張人物原始立繪精修眼睛、眉睫、鼻唇與臉部明暗，保留角色長相與自然表情。以另一張輪播背景為光影參考，改為自然灰綠環境光、低飽和霧氣與暖色受光。保留光門透視、底部遮擋、角色原色與綠色動態特效。 [素材與提示詞](evidence/portal-natural-v14.6.6/README.md)。
+
 ## v14.6.5 前景雲霧與光門透視
 
-目前使用 `assets/portal-mist-v14.6.5.jpg`。底部增加分層雲霧，讓龍的腳、尾巴與下腹若隱若現，臉部與胸前寶石保持清楚。光門依同一空間調整角度、直立方向與遠近縮放。角色、表情、右側登入留白及綠色動態特效保留。 [素材與提示詞](evidence/portal-mist-v14.6.5/README.md)。
+此版使用 `assets/portal-mist-v14.6.5.jpg`。底部增加分層雲霧，讓龍的腳、尾巴與下腹若隱若現，臉部與胸前寶石保持清楚。光門依同一空間調整角度、直立方向與遠近縮放。角色、表情、右側登入留白及綠色動態特效保留。 [素材與提示詞](evidence/portal-mist-v14.6.5/README.md)。
 
 ## v14.6.4 角色一致性與場景簡化
 

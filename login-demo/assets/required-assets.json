@@ -169,12 +169,32 @@
     },
     {
       "path": "assets/portal-mist-v14.6.5.jpg",
-      "role": "active portal background with foreground mist and coherent perspective",
+      "role": "archived portal mist and perspective background, version 14.6.5",
       "size_bytes": 445177,
       "sha256": "5b4c5c54693c4cba04a8148cb1789b27a839e4d1387e1d0629230dbac1c7449d",
       "dimensions": [
         1670,
         942
+      ]
+    },
+    {
+      "path": "assets/portal-natural-v14.6.6.png",
+      "role": "portal natural green lighting and face-detail master, imagegen edit",
+      "size_bytes": 2280015,
+      "sha256": "9a6ae353dc3c92aba31c74c359d487642481e2535c26a04aa9cbde8062a08fc9",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-natural-v14.6.6.jpg",
+      "role": "active portal background with natural gray-green atmosphere and refined faces",
+      "size_bytes": 529605,
+      "sha256": "803fb4a0f986027f48e103398f8fc897257f8cceadfd9c96e95a878213518ede",
+      "dimensions": [
+        1672,
+        941
       ]
     }
   ],
