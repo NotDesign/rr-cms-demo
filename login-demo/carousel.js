@@ -24,7 +24,7 @@
     const inset = width < 600 ? 16 : 24;
     const area = stacked.matches
       ? { left: inset, top: headerBottom + 16, width: width - inset * 2, height: Math.max(1, sceneSpace.offsetHeight - headerBottom - 96) }
-      : { left: inset, top: 32, width: Math.max(1, cardBox.left - inset - 32), height: Math.max(1, height - 96) };
+      : { left: 0, top: 0, width: Math.max(1, cardBox.left - 16), height: Math.max(1, height) };
     for (const slide of slides) {
       if (slide.framing === 'cover') continue;
       const rect = window.RR_SCENE_FRAMING.fit({ imageWidth: slide.image.naturalWidth, imageHeight: slide.image.naturalHeight, subject: slide.subject, area });

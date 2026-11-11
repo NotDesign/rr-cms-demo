@@ -1,0 +1,382 @@
+[
+  {
+    "card": {
+      "bottom": 905.8359375,
+      "height": 624.671875,
+      "left": 1388,
+      "right": 1788,
+      "top": 281.1640625,
+      "width": 400
+    },
+    "documentWidth": 1820,
+    "host": {
+      "bottom": 1187,
+      "height": 1187,
+      "left": 0,
+      "right": 1820,
+      "top": 0,
+      "width": 1820
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 1187,
+          "height": 1187,
+          "left": 0,
+          "right": 1820,
+          "top": 0,
+          "width": 1820
+        },
+        "cardGap": -140.79999999999995,
+        "framing": "cover",
+        "loaded": true,
+        "mask": "none",
+        "objectFit": "cover",
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "subject": {
+          "bottom": 1187,
+          "left": 0,
+          "right": 1528.8,
+          "top": 0
+        }
+      },
+      {
+        "box": {
+          "bottom": 1161.2578125,
+          "height": 1135.5234375,
+          "left": 0,
+          "right": 2017.640625,
+          "top": 25.734375,
+          "width": 2017.640625
+        },
+        "cardGap": 16.004374999999982,
+        "framing": "subject-fit",
+        "loaded": true,
+        "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 1.5%, rgb(0, 0, 0) 94%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 1.5%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "subject": {
+          "bottom": 1161.2578125,
+          "left": 0,
+          "right": 1371.995625,
+          "top": 25.734375
+        }
+      }
+    ],
+    "version": "v14.6.11",
+    "viewport": {
+      "height": 1187,
+      "width": 1820
+    },
+    "name": "reported-1820",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 678.3359375,
+      "height": 596.671875,
+      "left": 951.5234375,
+      "right": 1334,
+      "top": 81.6640625,
+      "width": 382.4765625
+    },
+    "documentWidth": 1366,
+    "host": {
+      "bottom": 768,
+      "height": 768,
+      "left": 0,
+      "right": 1366,
+      "top": 0,
+      "width": 1366
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 768,
+          "height": 768,
+          "left": 0,
+          "right": 1366,
+          "top": 0,
+          "width": 1366
+        },
+        "cardGap": -195.91656250000003,
+        "framing": "cover",
+        "loaded": true,
+        "mask": "none",
+        "objectFit": "cover",
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "subject": {
+          "bottom": 768,
+          "left": 0,
+          "right": 1147.44,
+          "top": 0
+        }
+      },
+      {
+        "box": {
+          "bottom": 768,
+          "height": 768,
+          "left": 3.7890625,
+          "right": 1368.390625,
+          "top": 0,
+          "width": 1364.6015625
+        },
+        "cardGap": 19.8053124999999,
+        "framing": "subject-fit",
+        "loaded": true,
+        "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 1.5%, rgb(0, 0, 0) 94%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 1.5%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "subject": {
+          "bottom": 768,
+          "left": 3.7890625,
+          "right": 931.718125,
+          "top": 0
+        }
+      }
+    ],
+    "version": "v14.6.11",
+    "viewport": {
+      "height": 768,
+      "width": 1366
+    },
+    "name": "desktop-1366",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 678.3359375,
+      "height": 596.671875,
+      "left": 951.5234375,
+      "right": 1334,
+      "top": 81.6640625,
+      "width": 382.4765625
+    },
+    "documentWidth": 1366,
+    "host": {
+      "bottom": 768,
+      "height": 768,
+      "left": 0,
+      "right": 1366,
+      "top": 0,
+      "width": 1366
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 768,
+          "height": 768,
+          "left": 0,
+          "right": 1366,
+          "top": 0,
+          "width": 1366
+        },
+        "cardGap": -195.91656250000003,
+        "framing": "cover",
+        "loaded": true,
+        "mask": "none",
+        "objectFit": "cover",
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "subject": {
+          "bottom": 768,
+          "left": 0,
+          "right": 1147.44,
+          "top": 0
+        }
+      },
+      {
+        "box": {
+          "bottom": 768,
+          "height": 768,
+          "left": 3.7890625,
+          "right": 1368.390625,
+          "top": 0,
+          "width": 1364.6015625
+        },
+        "cardGap": 19.8053124999999,
+        "framing": "subject-fit",
+        "loaded": true,
+        "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 1.5%, rgb(0, 0, 0) 94%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 1.5%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portal",
+        "subject": {
+          "bottom": 768,
+          "left": 3.7890625,
+          "right": 931.718125,
+          "top": 0
+        }
+      }
+    ],
+    "version": "v14.6.11",
+    "viewport": {
+      "height": 768,
+      "width": 1366
+    },
+    "name": "portraits-1366",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 1237.7890625,
+      "height": 624.671875,
+      "left": 161,
+      "right": 673,
+      "top": 613.1171875,
+      "width": 512
+    },
+    "documentWidth": 834,
+    "host": {
+      "bottom": 589.1171875,
+      "height": 627.1171875,
+      "left": 0,
+      "right": 834,
+      "top": -38,
+      "width": 834
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 589.1171875,
+          "height": 627.1171875,
+          "left": 0,
+          "right": 834,
+          "top": -38,
+          "width": 834
+        },
+        "cardGap": -539.56,
+        "framing": "cover",
+        "loaded": true,
+        "mask": "none",
+        "objectFit": "cover",
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "subject": {
+          "bottom": 589.1171875,
+          "left": 0,
+          "right": 700.56,
+          "top": -38
+        }
+      },
+      {
+        "box": {
+          "bottom": 509,
+          "height": 459,
+          "left": 139.703125,
+          "right": 955.265625,
+          "top": 50,
+          "width": 815.5625
+        },
+        "cardGap": -533.2856250000001,
+        "framing": "subject-fit",
+        "loaded": true,
+        "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "subject": {
+          "bottom": 509,
+          "left": 139.703125,
+          "right": 694.2856250000001,
+          "top": 50
+        }
+      }
+    ],
+    "version": "v14.6.11",
+    "viewport": {
+      "height": 1112,
+      "width": 834
+    },
+    "name": "tablet-834",
+    "consoleErrors": []
+  },
+  {
+    "card": {
+      "bottom": 1010.671875,
+      "height": 628.671875,
+      "left": 16,
+      "right": 374,
+      "top": 382,
+      "width": 358
+    },
+    "documentWidth": 390,
+    "host": {
+      "bottom": 366,
+      "height": 404,
+      "left": 0,
+      "right": 390,
+      "top": -38,
+      "width": 390
+    },
+    "images": [
+      {
+        "box": {
+          "bottom": 366,
+          "height": 404,
+          "left": 0,
+          "right": 390,
+          "top": -38,
+          "width": 390
+        },
+        "cardGap": -311.59999999999997,
+        "framing": "cover",
+        "loaded": true,
+        "mask": "none",
+        "objectFit": "cover",
+        "opacity": "0",
+        "overlapsCard": false,
+        "scene": "portraits",
+        "subject": {
+          "bottom": 366,
+          "left": 0,
+          "right": 327.59999999999997,
+          "top": -38
+        }
+      },
+      {
+        "box": {
+          "bottom": 286,
+          "height": 252,
+          "left": 42.7578125,
+          "right": 490.515625,
+          "top": 34,
+          "width": 447.7578125
+        },
+        "cardGap": -331.23312500000003,
+        "framing": "subject-fit",
+        "loaded": true,
+        "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 84%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 3%, rgb(0, 0, 0) 68%, rgba(0, 0, 0, 0))",
+        "objectFit": "contain",
+        "opacity": "1",
+        "overlapsCard": false,
+        "scene": "portal",
+        "subject": {
+          "bottom": 286,
+          "left": 42.7578125,
+          "right": 347.23312500000003,
+          "top": 34
+        }
+      }
+    ],
+    "version": "v14.6.11",
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "name": "mobile-390",
+    "consoleErrors": []
+  }
+]

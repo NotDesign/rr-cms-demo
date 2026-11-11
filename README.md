@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.10
+# R&R CMS HTML Demo · v14.6.11
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.10) · [下載 v14.6.10 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.10.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.11) · [下載 v14.6.11 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.11.zip) · [版本紀錄](CHANGELOG.md)
+
+## 傳送門減少上下留白（v14.6.11）
+
+桌機登入卡片收窄至 360–400px、右側保留 32px，讓第二張傳送門背景能等比例放大；圖片使用完整視窗高度，與表單保留至少 16px 間距。底部淡出從最後 16% 縮短為最後 6%，減少上下暗帶。第一張保留滿版 cover，手機／平板排列與綠色特效維持。[驗證紀錄](login-demo/evidence/edge-fit-v14.6.11/README.md)。
 
 ## 第一張背景恢復滿版（v14.6.10）
 
