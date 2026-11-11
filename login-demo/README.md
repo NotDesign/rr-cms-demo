@@ -1,10 +1,10 @@
-# Rotary Riches Login · CMS 整合版 v14.6.4
+# Rotary Riches Login · CMS 整合版 v14.6.5
 
 此目錄是 R&R CMS 的登入入口，與儲存庫根目錄 CMS 一起部署。
 
 ## 使用方式
 
-直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.4)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
+直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.5)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
 
 本機開發：在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
 
@@ -22,13 +22,17 @@
 
 支援暫停、減少動態偏好與背景分頁停止更新。登入頁只提供繁體中文內容；語系按鈕仍為互動示例。CMS 沿用原本繁體中文／越南文／泰文介面。
 
+## v14.6.5 前景雲霧與光門透視
+
+目前使用 `assets/portal-mist-v14.6.5.jpg`。底部增加分層雲霧，讓龍的腳、尾巴與下腹若隱若現，臉部與胸前寶石保持清楚。光門依同一空間調整角度、直立方向與遠近縮放。角色、表情、右側登入留白及綠色動態特效保留。 [素材與提示詞](evidence/portal-mist-v14.6.5/README.md)。
+
 ## v14.6.4 角色一致性與場景簡化
 
-目前使用 `assets/portal-identity-v14.6.4.jpg`，依使用者提供的五張原始角色立繪恢復自然表情與辨識特徵。保留角色前後層次，背景簡化為光門與少量霧氣，移除密集岩石與能量網紋。綠色 Canvas 閃電、粒子及另一張輪播背景不變。網頁圖片 490,887 bytes；[原始輸出與提示詞紀錄](evidence/portal-identity-v14.6.4/README.md)。
+此版使用 `assets/portal-identity-v14.6.4.jpg`，依使用者提供的五張原始角色立繪恢復自然表情與辨識特徵。保留角色前後層次，背景簡化為光門與少量霧氣，移除密集岩石與能量網紋。綠色 Canvas 閃電、粒子及另一張輪播背景不變。網頁圖片 490,887 bytes；[原始輸出與提示詞紀錄](evidence/portal-identity-v14.6.4/README.md)。
 
 ## v14.6.3 表情與景深
 
-目前使用 `assets/portal-depth-v14.6.3.jpg`：放鬆眉眼與嘴角，呈現輕微緊張的戒備感；女海盜與小龍清楚、近景岩石柔焦，後排角色與傳送門逐層退遠。圖片 461,390 bytes，保留無損 PNG 與前版。詳見 [素材與提示詞紀錄](evidence/portal-depth-v14.6.3/README.md)。
+此版使用 `assets/portal-depth-v14.6.3.jpg`：放鬆眉眼與嘴角，呈現輕微緊張的戒備感；女海盜與小龍清楚、近景岩石柔焦，後排角色與傳送門逐層退遠。圖片 461,390 bytes，保留無損 PNG 與前版。詳見 [素材與提示詞紀錄](evidence/portal-depth-v14.6.3/README.md)。
 
 ## v14.6.2 傳送門背景
 

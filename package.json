@@ -1,6 +1,6 @@
 {
   "name": "rr-cms-demo",
-  "version": "14.6.4",
+  "version": "14.6.5",
   "private": true,
   "type": "module",
   "scripts": {

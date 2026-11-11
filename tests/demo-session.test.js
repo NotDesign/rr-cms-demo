@@ -20,19 +20,19 @@ function browser({page='cms',url='https://example.com/rr-cms-demo/',base='/rr-cm
 }
 test('unauthenticated CMS redirects to its own login, retaining the requested report',()=>{
   const b=browser({url:'https://example.com/rr-cms-demo/#slots'});
-  assert.equal(b.redirects[0],'https://example.com/rr-cms-demo/login-demo/?v=14.6.4&view=%23slots');
+  assert.equal(b.redirects[0],'https://example.com/rr-cms-demo/login-demo/?v=14.6.5&view=%23slots');
   assert.equal(b.attributes.has('data-demo-session-pending'),true);
 });
 test('login saves only a per-project marker and returns to the requested CMS report',()=>{
-  const b=browser({page:'login',url:'https://example.com/rr-cms-demo/login-demo/?v=14.6.4&view=%23slots'});
+  const b=browser({page:'login',url:'https://example.com/rr-cms-demo/login-demo/?v=14.6.5&view=%23slots'});
   assert.equal(b.session.start(),true);b.session.enter();
   assert.deepEqual([...b.storage],[['rr-cms-demo-session:/rr-cms-demo/','active']]);
-  assert.equal(b.redirects.at(-1),'https://example.com/rr-cms-demo/?v=14.6.4#slots');
+  assert.equal(b.redirects.at(-1),'https://example.com/rr-cms-demo/?v=14.6.5#slots');
 });
 test('a return value cannot navigate outside the CMS',()=>{
   for(const view of ['https://example.org/','//example.org/','javascript:alert(1)','../']){
     const b=browser({page:'login',url:'https://example.com/rr-cms-demo/login-demo/?view='+encodeURIComponent(view)});
-    b.session.enter();assert.equal(b.redirects[0],'https://example.com/rr-cms-demo/?v=14.6.4');
+    b.session.enter();assert.equal(b.redirects[0],'https://example.com/rr-cms-demo/?v=14.6.5');
   }
 });
 test('refresh and BFCache recheck the session; logout keeps unrelated preferences',()=>{
@@ -41,7 +41,7 @@ test('refresh and BFCache recheck the session; logout keeps unrelated preference
   b.events.pagehide();assert.equal(b.attributes.has('data-demo-session-pending'),true);
   b.events.pageshow();assert.equal(b.attributes.size,0);
   b.session.logout();assert.equal(storage.get('preference'),'keep');assert.equal(b.session.hasSession(),false);
-  assert.equal(b.redirects.at(-1),'https://example.com/rr-cms-demo/login-demo/?v=14.6.4');
+  assert.equal(b.redirects.at(-1),'https://example.com/rr-cms-demo/login-demo/?v=14.6.5');
   b.events.pageshow();assert.equal(b.attributes.has('data-demo-session-pending'),true);
 });
 test('blocked storage does not pretend login succeeded or throw',()=>{
@@ -50,19 +50,19 @@ test('blocked storage does not pretend login succeeded or throw',()=>{
 });
 test('root hosting works and separate projects do not share demo sessions',()=>{
   const root=browser({page:'login',base:'/',url:'https://example.com/login-demo/'});
-  root.session.start();root.session.enter();assert.equal(root.redirects[0],'https://example.com/?v=14.6.4');
+  root.session.start();root.session.enter();assert.equal(root.redirects[0],'https://example.com/?v=14.6.5');
   const other=browser({storage:root.storage});assert.equal(other.session.hasSession(),false);
 });
 test('opening a downloaded CMS file redirects to the hosted login and retains the report',()=>{
   const b=browser({url:'file:///tmp/rr-cms-demo/index.html#slots',blocked:true});
-  assert.deepEqual(b.redirects,['https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.4&view=%23slots']);
+  assert.deepEqual(b.redirects,['https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.5&view=%23slots']);
   assert.equal(b.session.start(),false);
   assert.equal(b.storage.size,0);
 });
 test('opening the downloaded login uses GitHub and ignores external return targets',()=>{
   for(const [view,expected] of [['%23slots','&view=%23slots'],['https%3A%2F%2Fexample.org','']]){
     const b=browser({page:'login',url:'file:///tmp/rr-cms-demo/login-demo/index.html?view='+view,blocked:true});
-    assert.equal(b.redirects[0],'https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.4'+expected);
+    assert.equal(b.redirects[0],'https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.5'+expected);
     assert.equal(b.session.hasSession(),false);
   }
 });

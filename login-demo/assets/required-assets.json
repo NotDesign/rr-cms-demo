@@ -39,8 +39,8 @@
       "size_bytes": 979,
       "sha256": "08cd49e41a09670961745b5f73ff9356aa3d5b79eb0413d8ec26d75f42e8d77a",
       "dimensions": [
-        20.0,
-        20.0
+        20,
+        20
       ]
     },
     {
@@ -49,8 +49,8 @@
       "size_bytes": 629,
       "sha256": "736b5d4f903b8b4bb1131dbf71ccf3a6506d405276882571357c936bb04b3ba2",
       "dimensions": [
-        24.0,
-        24.0
+        24,
+        24
       ]
     },
     {
@@ -59,8 +59,8 @@
       "size_bytes": 1016,
       "sha256": "0ce0a02aa365e75a13aca935fe5fdf2797942c4bcb9f62fef553611f637215cb",
       "dimensions": [
-        24.0,
-        24.0
+        24,
+        24
       ]
     },
     {
@@ -69,8 +69,8 @@
       "size_bytes": 624,
       "sha256": "5a4aa0cd9b698c500bee75087bb39cd42a3919ec88bc6cb20f72c3acf958cf51",
       "dimensions": [
-        1220.0,
-        350.0
+        1220,
+        350
       ]
     },
     {
@@ -149,9 +149,29 @@
     },
     {
       "path": "assets/portal-identity-v14.6.4.jpg",
-      "role": "active portal background with original character identities and simple light panels",
+      "role": "archived portal identity background, version 14.6.4",
       "size_bytes": 490887,
       "sha256": "d285e95761d84c7b9e8b7a69ee6335d9d4e50892cee4ccf76ce4dd59bfca7583",
+      "dimensions": [
+        1670,
+        942
+      ]
+    },
+    {
+      "path": "assets/portal-mist-v14.6.5.png",
+      "role": "portal mist and perspective master, imagegen edit",
+      "size_bytes": 2107529,
+      "sha256": "8c997e28d7710f9f56774b37e7000fe63997443ab37faf7e0d0a944683a04059",
+      "dimensions": [
+        1670,
+        942
+      ]
+    },
+    {
+      "path": "assets/portal-mist-v14.6.5.jpg",
+      "role": "active portal background with foreground mist and coherent perspective",
+      "size_bytes": 445177,
+      "sha256": "5b4c5c54693c4cba04a8148cb1789b27a839e4d1387e1d0629230dbac1c7449d",
       "dimensions": [
         1670,
         942

@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.4
+# R&R CMS HTML Demo · v14.6.5
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.4) · [下載 v14.6.4 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.4.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.5) · [下載 v14.6.5 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.5.zip) · [版本紀錄](CHANGELOG.md)
+
+## 前景雲霧與光門透視（v14.6.5）
+
+底部增加分層雲霧，讓龍的腳、尾巴與下腹若隱若現，臉部與胸前寶石保持清楚。光門依同一空間調整角度、直立方向與遠近縮放。角色、表情、右側登入留白及綠色動態特效保留。 網頁圖片 445,177 bytes；[素材與提示詞](login-demo/evidence/portal-mist-v14.6.5/README.md)。
 
 ## 角色一致性與簡潔氣氛（v14.6.4）
 
