@@ -1,0 +1,22 @@
+{
+  "cardGap": 16.00281249999989,
+  "documentWidth": 1823,
+  "imageBox": {
+    "height": 1138.0078125,
+    "left": 0,
+    "top": 54.4921875,
+    "width": 2022.0546875
+  },
+  "loaded": true,
+  "naturalSize": [
+    1672,
+    941
+  ],
+  "source": "http://127.0.0.1:4186/login-demo/assets/portal-v14.6.12.webp",
+  "version": "v14.6.12",
+  "viewport": {
+    "height": 1247,
+    "width": 1823
+  },
+  "consoleErrors": []
+}

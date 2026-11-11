@@ -1,0 +1,56 @@
+{
+  "mode": "built-in imagegen",
+  "user_choice": "Continue AI editing; do not use deterministic pixel repair.",
+  "selected_output": "exec-45e280c2-8fb2-4bac-b808-8594b58fda1a.png",
+  "attempts": [
+    {
+      "number": 1,
+      "prompt": "Use case: precise-object-edit. Asset type: existing fantasy game login background. Image 1 is the FULL EDIT TARGET, a 1672 x 941 landscape composition. Image 2 is ONLY a zoomed detail reference showing the defect. Return the entire Image 1 composition at its original dimensions and aspect ratio, not a crop. Primary request: remove ONLY the tiny unnatural peach/orange speck from the red-haired pirate woman's WHITE BLOUSE fabric on the viewer-left breast panel, near x=351,y=554 in Image 1 (approximately x=21.0%,y=58.9%). Image 2 shows the little orange spot slightly left of center in that fabric. Heal that very small blemish by continuing the adjacent ivory cloth color, fine vertical folds, soft shadow and existing textile shading. The fabric must be opaque, smooth and clean in that tiny spot. STRICT INVARIANTS: preserve ALL other pixels/visual content as closely as possible, including the face, expression, anatomy, neckline, lace, skin, gold necklace, corset, poses, hands, hair, weapons, all five characters, portals, dark teal sky, clouds, lighting, saturation, sharpness, image boundaries and large empty area on the right. Do not restyle, redraw or improve anything else. No new decorations, dots, marks, text or watermark. This is a microscopic cloth-blemish cleanup only; preserve existing folds rather than making a flat patch.",
+      "output": "exec-1a9df6e0-f408-4d37-ba07-1962b9822843.png",
+      "selected": false,
+      "role": "rejected full illustration"
+    },
+    {
+      "number": 2,
+      "prompt": "Use case: precise-object-edit. Fix the defect, do not reproduce it. Image 1 is the full wide final canvas to edit and return, unchanged in size and framing (1672x941). Image 2 is an enlarged crop of the same woman's blouse for locating the defect. There is ONE conspicuous orange/peach dot on the viewer-left ivory blouse panel. It is at full-canvas pixels x351,y556, or x21.0%,y59.1%. In the crop it is approximately x44.5%,y54%. Remove that orange dot COMPLETELY. Repaint the small cloth region x343 to360, y548 to566 of the full canvas with the adjacent ivory-gray fabric and smoothly continuing thin vertical folds. All pixels in that patch must look like ivory cloth, with no orange, pink, peach or skin-colored dot, no hole, no mark, and no bump. The prior attempt preserved the defect; the visible orange spot absolutely MUST disappear this time. You may reconstruct a slightly larger patch of fabric if necessary. Preserve the blouse silhouette, neckline, lace, corset and all other characters, faces, expressions, poses, hair, equipment, clouds, colors, contrast, lighting and layout. Do not sharpen or restyle the whole scene. Return the full wide composition, never the crop.",
+      "output": "exec-f6653e5d-0e50-408a-9e25-78ff20e8cc6a.png",
+      "selected": false,
+      "role": "rejected full illustration"
+    },
+    {
+      "number": 3,
+      "prompt": "Use case: precise-object-edit. Edit this close-up only. Remove the orange speck / orange triangular dot near (44.5% from left, 54% from top) on the white fabric. Replace the spot with clean pale ivory cloth, seamlessly matching neighboring vertical folds and shading. There must be absolutely NO orange dot left on the white blouse. Preserve all other visible details, folds, lace, neckline, corset, gold lacing, proportions, color and lighting. Return this same square crop composition. This is a cleanup of an unwanted colored printing artifact on opaque cloth.",
+      "output": "exec-80646f74-28b7-4fcf-882c-df92ce898342.png",
+      "selected": false,
+      "role": "clean fabric detail reference"
+    },
+    {
+      "number": 4,
+      "prompt": "Use case: compositing / precise-object-edit. Image 1 is the full landscape game illustration to preserve and return at 1672x941. Image 2 is a CORRECTED clean close-up of the red-haired pirate woman's blouse; use its clean ivory fabric to repair Image 1. The white fabric in Image 1 contains an unwanted orange dot on the viewer-left breast panel, near full-canvas (351,556), 21.0% across and 59.1% down. Transfer the clean white cloth surface from Image 2 into that same blouse panel of Image 1. REMOVE THE ORANGE DOT COMPLETELY; the result must visibly differ from Image 1 at this defect. Integrate a small clean cloth patch smoothly into the original folds. This is NOT a request to copy the original orange spot. Preserve the original neckline shape, lace, gold necklace, corset, face, hair, pose, all other characters, lighting, colors, entire wide composition and background. Do not change the image scale, camera, aspect ratio or crop. Only clean the blouse surface; no marks or orange spots on it. Return the entire wide Image 1, never the close-up.",
+      "output": "exec-478a3dd7-619b-465d-ac21-05d227298021.png",
+      "selected": false,
+      "role": "rejected full illustration"
+    },
+    {
+      "number": 5,
+      "prompt": "EDIT IMAGE 1; RETURN THE FULL LANDSCAPE SCENE. Specifically REPLACE AND REPAINT the front ivory blouse panel on the RED-HAIRED PIRATE woman in the left foreground. The current viewer-left white blouse panel has a small orange triangle near its center. It is a mistaken colored stain, not a button or part of the character. DO NOT PRESERVE THIS PANEL'S PIXELS. Reconstruct this small white cloth panel from clean ivory textile with flowing pale vertical pleats, following the CLEAN FABRIC in IMAGE 2. This blouse-panel replacement is the required visible change. It should be uniformly ivory, with soft neutral gray shadows and NO pink/orange/peach spot anywhere on the cloth. The replaceable panel spans approximately full-image x=323–397 and y=515–585; its orange stain is at x=351,y=556. Preserve its outer shape, bust volume, gold corset boundary and lace neckline, and preserve the rest of the existing wide illustration and all faces, poses, hair, weapons, portals, clouds, lighting and palette. Do not add a new shape over the spot: repaint the actual small blouse panel. Original landscape canvas and composition 1672x941, with all five characters and large empty right-side sky, no cropping. Image 2 is ONLY the clean fabric detail reference, not the output composition.",
+      "output": "exec-abc44fdc-f5fe-4cd9-bb23-f2dbcc8b3343.png",
+      "selected": false,
+      "role": "rejected full illustration"
+    },
+    {
+      "number": 6,
+      "prompt": "把圖一左前方紅髮女海盜的白色上衣胸前布料重新繪製，做成乾淨、完整、連續的純米白色布面，帶幾道自然的縱向細褶。布料質感參照圖二，白色布面上的顏色只有米白色亮部與灰褐色陰影，整片布料保持均勻乾淨。只重繪這件上衣的白色布面，其他部分保持圖一：蕾絲領口、金色束身衣邊框、項鍊、臉、表情、頭髮、姿勢、人物比例、其他角色、背景、霧氣、整體光影及構圖均保留。輸出圖一的完整 1672×941 橫向畫面，圖二只是布料質感參考。這是一處服裝布面的修整，不是整張圖風格重製。",
+      "output": "exec-57fea3b5-d0c0-43c2-8a9d-a3d56c81d5b2.png",
+      "selected": false,
+      "role": "intermediate target for final edit"
+    },
+    {
+      "number": 7,
+      "prompt": "只編修左前方紅髮女海盜的白色上衣：將胸前左右兩片白色布面完整重新繪製為乾淨的中性象牙白棉布，帶三至四道寬而自然的縱向褶皺。這兩片布料必須重新繪製，不要沿用原來布面的小細節。布面顏色均勻，亮部為象牙白，陰影為淡灰色，材質完全不透明、沒有印花或裝飾。依圖二的乾淨布料作參考。保留原有衣服輪廓、蕾絲、束身衣、金邊與項鍊，其餘角色、五官、表情、髮絲、手、武器、背景光門與霧氣全部延續圖一。輸出完整 1672×941 橫向場景和右側留白，只改衣料表面，禁止裁切。",
+      "output": "exec-45e280c2-8fb2-4bac-b808-8594b58fda1a.png",
+      "selected": true,
+      "role": "final full illustration"
+    }
+  ]
+}

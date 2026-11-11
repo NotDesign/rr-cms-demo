@@ -1,12 +1,16 @@
-# R&R CMS HTML Demo · v14.7.0
+# R&R CMS HTML Demo · v14.7.0 / Login v14.6.12
 
-[開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載 v14.7.0 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.7.0.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.12) · [開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載最新完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.12.zip) · [版本紀錄](CHANGELOG.md)
+
+## 衣料細節修正（v14.6.12）
+
+依使用者選擇繼續使用 AI 修圖，清除女海盜白色上衣上的橘色異常點，重新整理該處衣料與自然布褶。保留角色設定、整體構圖、v14.6.11 縮放與動態效果。更新 [網頁 WebP](login-demo/assets/portal-v14.6.12.webp)、[PNG 原圖](login-demo/assets/portal-retouched-v14.6.12.png) 與 [4K WebP 放大版](login-demo/assets/portal-4k-upscaled-v14.6.12.webp)。[修圖與驗證紀錄](login-demo/evidence/retouch-v14.6.12/README.md)。
 
 ## 圖表 Lottie 動畫（v14.7.0）
 
 玩家人數與投注／派彩折線、遊戲及地區圓環圖，使用隨附的 Lottie SVG 播放器呈現進場與篩選切換。動畫直接由目前數據生成，進場 420ms、切換 300ms，播放完成即清除播放圖層並顯示原生 SVG；Hover、鍵盤詳情與圖例開關共用原本的資料和操作。快速切換從目前幀接續，系統偏好「減少動態效果」時直接顯示結果；播放器無法載入時使用既有 SVG 動畫。播放器版本與 MIT 授權見 [vendor/lottie-web/NOTICE.md](vendor/lottie-web/NOTICE.md)。
 
-圓環圖例的詳細資料列不再因容器高度被壓縮而重疊。登入頁沿用 v14.6.11 的素材、構圖與示範登入流程。
+圓環圖例的詳細資料列不再因容器高度被壓縮而重疊。此版當時登入頁沿用 v14.6.11；目前最新登入頁修圖為 v14.6.12，保留構圖與示範登入流程。
 
 ## 傳送門減少上下留白（v14.6.11）
 

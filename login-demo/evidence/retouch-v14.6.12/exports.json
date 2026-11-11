@@ -1,0 +1,37 @@
+{
+  "method": "built-in imagegen; final master copied unchanged; WebP encoding only; 4K resampling with sips",
+  "webp_quality": 92,
+  "webp_method": 6,
+  "exports": [
+    {
+      "path": "assets/portal-retouched-v14.6.12.png",
+      "role": "portal blouse cleanup master, built-in imagegen edit",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "size_bytes": 2217707,
+      "sha256": "6ba1b4cd809b29ccc6ac980406fd76a6cf2021ab4f1043e21ab6c795b2048c25"
+    },
+    {
+      "path": "assets/portal-v14.6.12.webp",
+      "role": "active native-size WebP background",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "size_bytes": 288362,
+      "sha256": "14460ff017d94d9a82530f0d487e8e078870006425024253dd30e4c4ad322dd6"
+    },
+    {
+      "path": "assets/portal-4k-upscaled-v14.6.12.webp",
+      "role": "4K upscaled WebP export, not native 4K detail",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "size_bytes": 802632,
+      "sha256": "a35034deac318910a293061bbf715ac26e5d4d5e7e595d41b84a18a830e70ebb"
+    }
+  ]
+}

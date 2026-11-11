@@ -245,7 +245,7 @@
       ],
       "size_bytes": 293662,
       "sha256": "2222c183ca34ecf4c609a60f0f60c6e14d41cf0bb885151599558b324c9b31a2",
-      "role": "active native-size WebP background"
+      "role": "archived WebP background, version 14.6.9"
     },
     {
       "path": "assets/portraits-v14.6.9.webp",
@@ -265,7 +265,7 @@
       ],
       "size_bytes": 815104,
       "sha256": "fbcb83a16e3ca288a67c4566e3b6c7dc42d6e03b4fdc7f7108642a28bc9d7892",
-      "role": "4K upscaled WebP export, not native 4K detail"
+      "role": "archived 4K upscaled WebP export, version 14.6.9"
     },
     {
       "path": "assets/portraits-4k-upscaled-v14.6.9.webp",
@@ -276,6 +276,36 @@
       "size_bytes": 1034398,
       "sha256": "651d6eb4b9a858af98fb070ab73fe452771863deff91f22ab8e937eff1d25489",
       "role": "4K upscaled WebP export, not native 4K detail"
+    },
+    {
+      "path": "assets/portal-retouched-v14.6.12.png",
+      "role": "portal blouse cleanup master, built-in imagegen edit",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "size_bytes": 2217707,
+      "sha256": "6ba1b4cd809b29ccc6ac980406fd76a6cf2021ab4f1043e21ab6c795b2048c25"
+    },
+    {
+      "path": "assets/portal-v14.6.12.webp",
+      "role": "active native-size WebP background",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "size_bytes": 288362,
+      "sha256": "14460ff017d94d9a82530f0d487e8e078870006425024253dd30e4c4ad322dd6"
+    },
+    {
+      "path": "assets/portal-4k-upscaled-v14.6.12.webp",
+      "role": "4K upscaled WebP export, not native 4K detail",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "size_bytes": 802632,
+      "sha256": "a35034deac318910a293061bbf715ac26e5d4d5e7e595d41b84a18a830e70ebb"
     }
   ],
   "visual_qa": "evidence/integration-20261110"
