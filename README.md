@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.2
+# R&R CMS HTML Demo · v14.6.3
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.2) · [下載 v14.6.2 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.2.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.3) · [下載 v14.6.3 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.3.zip) · [版本紀錄](CHANGELOG.md)
+
+## 表情與景深修正（v14.6.3）
+
+角色改為輕微緊張、專注戒備的表情，小龍收起齜牙。新增前景岩石柔焦、女海盜與小龍的清楚焦點，以及向後遞減的角色、傳送門與山岩細節。網頁圖片為 461,390 bytes JPEG，原始 PNG 與前版均保留。[素材與提示詞紀錄](login-demo/evidence/portal-depth-v14.6.3/README.md)。
 
 ## 傳送門背景精修（v14.6.2）
 

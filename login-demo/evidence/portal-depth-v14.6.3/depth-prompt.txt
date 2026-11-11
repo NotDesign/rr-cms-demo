@@ -1,0 +1,13 @@
+Use case: precise-object-edit.
+Asset: the existing wide fantasy illustration for a login-page background. The attached image is the EDIT TARGET. Preserve the recently softened, gently alert expressions exactly; preserve all five characters' identities, full poses and placement, clothing, hands, hair, weapons, orb, portal colors and general layout. All humans are adults 25+. Keep the dark right-hand third completely clear for the HTML login card. No text or UI.
+
+Targeted refinement: make the scene feel convincingly three-dimensional, with objects clearly near, middle-distance and far away. Add tasteful cinematic depth of field and atmospheric perspective through deliberate painterly edges and focus, while retaining the human-illustrator finish.
+
+Depth planes:
+1. The rocks along the immediate bottom edge and bottom-left corner are nearest to the viewer. Make this limited foreground visibly out of focus, with organic soft silhouettes, restrained reflected highlights and a small amount of foreground mist crossing behind the cropped rock silhouettes. Avoid covering faces or hands.
+2. Keep the red-haired pirate and the blue-white dragon as the primary middle-foreground focal plane: crisp eyes, nuanced faces, selected hair strands, hands and key armor/leather edges. Preserve their non-aggressive, slightly concerned expressions.
+3. The central armored warrior is one plane behind: retain recognizable face and polished armor but mildly soften secondary detail, reduce microcontrast, and introduce subtle haze around his lower torso to separate him from the foreground characters.
+4. The blonde fighter and Egyptian mage read as farther back: gently softened edges, a modest reduction in contrast and saturation, with thin atmospheric veils at their lower bodies, while faces remain readable.
+5. Push the portals, high rock spires and remote smoke further into the background with clearly softer focus, lower fine-detail contrast and layered emerald haze. Portal glow should still feel luminous but should not compete in sharpness with the pirate's and dragon's faces. Keep varied non-repeating branches and energetic asymmetry, not uniform blur.
+
+Use gradual focus falloff and believable occlusion, not a flat blur filter, not a horizontal tilt-shift strip, not fake cutout halos. Preserve natural lighting, nuanced shadows and material colors. Keep rich dark values and selective warm/cool highlights. No excessive bokeh discs, no glowing outline around every character, no extra objects, no composition changes. The final result should immediately show near foreground, clear focal characters, and receding portal scenery. Landscape 16:9, opaque.

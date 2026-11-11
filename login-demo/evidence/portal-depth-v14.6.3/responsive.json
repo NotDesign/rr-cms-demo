@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-11",
+  "version": "14.6.3",
+  "browser": "Brave",
+  "scope": "Local viewport emulation; final depth image decoded and selected. No horizontal overflow. Native mobile devices not tested.",
+  "nodeTests": {
+    "passed": 222,
+    "failed": 0
+  },
+  "assetsChecked": 15,
+  "referencesChecked": 15,
+  "consoleErrors": [],
+  "viewports": [
+    {
+      "background": [
+        {
+          "loaded": true,
+          "opacity": "0",
+          "src": "http://127.0.0.1:4186/login-demo/assets/figma-login-background-20261109.png"
+        },
+        {
+          "loaded": true,
+          "opacity": "1",
+          "src": "http://127.0.0.1:4186/login-demo/assets/portal-depth-v14.6.3.jpg"
+        }
+      ],
+      "card": {
+        "height": 624.671875,
+        "right": 1356.0078125,
+        "width": 512,
+        "x": 844.0078125,
+        "y": 137.6640625
+      },
+      "height": 900,
+      "scrollWidth": 1440,
+      "version": "v14.6.3",
+      "width": 1440
+    },
+    {
+      "background": [
+        {
+          "loaded": true,
+          "opacity": "0",
+          "src": "http://127.0.0.1:4186/login-demo/assets/figma-login-background-20261109.png"
+        },
+        {
+          "loaded": true,
+          "opacity": "1",
+          "src": "http://127.0.0.1:4186/login-demo/assets/portal-depth-v14.6.3.jpg"
+        }
+      ],
+      "card": {
+        "height": 624.671875,
+        "right": 673,
+        "width": 512,
+        "x": 161,
+        "y": 171.6640625
+      },
+      "height": 1112,
+      "scrollWidth": 834,
+      "version": "v14.6.3",
+      "width": 834
+    },
+    {
+      "background": [
+        {
+          "loaded": true,
+          "opacity": "0",
+          "src": "http://127.0.0.1:4186/login-demo/assets/figma-login-background-20261109.png"
+        },
+        {
+          "loaded": true,
+          "opacity": "1",
+          "src": "http://127.0.0.1:4186/login-demo/assets/portal-depth-v14.6.3.jpg"
+        }
+      ],
+      "card": {
+        "height": 628.671875,
+        "right": 374,
+        "width": 358,
+        "x": 16,
+        "y": 76
+      },
+      "height": 844,
+      "scrollWidth": 390,
+      "version": "v14.6.3",
+      "width": 390
+    }
+  ]
+}

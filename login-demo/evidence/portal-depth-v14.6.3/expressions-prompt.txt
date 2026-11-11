@@ -1,0 +1,11 @@
+Use case: precise-object-edit.
+Input image is the EDIT TARGET: the latest refined fantasy login-page background. Make ONE targeted revision: soften only the facial expressions of the four adult humans and the dragon. Preserve the entire existing composition, identities, poses, anatomy, costumes, hands, weapons, natural hair strands, painterly materials, irregular energy patterns, all lighting and colors, portal positions, rock and smoke detail, and dark empty right-hand third. Preserve the same landscape framing and all image edges. No text, logos or UI.
+
+The current faces are too angry and hostile. The desired emotion is restrained alertness with a subtle hint of concern, natural and approachable while focused. Expression intensity should be approximately 2 out of 10 rather than 8 out of 10.
+- Red-haired pirate: relax the deep V-shaped brow and forehead creases, soften the narrowed glare, retain attentive eyes and a neutral gently parted mouth with relaxed corners. A thoughtful vigilant look, not an angry scowl.
+- Blonde fighter: relax the knitted eyebrows and tight jaw, keep eyes focused with slight uncertainty, a neutral natural mouth, no grimace.
+- Armored warrior: calm composed vigilance, a subtly raised attentive brow and relaxed mouth, preserve his dignified strength and face.
+- Egyptian mage: soften the furrowed brows and alarmed mouth into quiet attentive concern.
+- Dragon: remove the aggressive snarl and exposed teeth, close the mouth into a relaxed neutral line, soften eye ridges into gentle alertness. Keep the dragon's recognizable proportions, blue-white mane, horns, whiskers, armor and orb unchanged; no big grin.
+
+Do not add broad smiles, joy, fear, crying or dramatic surprise. Use small believable facial-muscle changes. All human characters are adults 25+. Refine faces only; retain the quality, detailed non-repeating hair, painterly light/shadow and energetic atmosphere of this exact input image. Opaque background.

@@ -109,9 +109,29 @@
     },
     {
       "path": "assets/portal-refined-v14.6.2.jpg",
-      "role": "active refined portal background, JPEG delivery",
+      "role": "archived refined portal background, version 14.6.2",
       "size_bytes": 620735,
       "sha256": "5f3cd8a4c31cf45f303a30e84cbcfdd8d69a0fbec066552b1b8a0bedf1408b3f",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-depth-v14.6.3.png",
+      "role": "portal depth master with softened expressions, imagegen edit",
+      "size_bytes": 2201030,
+      "sha256": "aba93ed67f762916c36d7262d1fcd2780cf644dd243194999c5e55de270bd44f",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-depth-v14.6.3.jpg",
+      "role": "active portal background with depth and softened expressions",
+      "size_bytes": 461390,
+      "sha256": "de8f656939945038046c7bab161faf092ffff0abe0c47432317ae02ff98f40a9",
       "dimensions": [
         1672,
         941
