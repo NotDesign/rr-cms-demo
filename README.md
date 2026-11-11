@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.7.0 / Login v14.6.12
+# R&R CMS HTML Demo · v14.7.0 / Login v14.6.13
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.12) · [開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載最新完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.12.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.13) · [開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載最新完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.13.zip) · [版本紀錄](CHANGELOG.md)
+
+## 特效按鈕對齊（Login v14.6.13）
+
+右上「暫停特效／播放特效」按鈕右緣與表單輸入框右緣對齊。桌機使用共用卡片內距，平板與手機依置中卡片位置計算。
 
 ## 衣料細節修正（v14.6.12）
 

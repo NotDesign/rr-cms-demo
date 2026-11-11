@@ -1,10 +1,14 @@
-# Rotary Riches Login · CMS 整合版 v14.6.12
+# Rotary Riches Login · CMS 整合版 v14.6.13
 
 此目錄是 R&R CMS 的登入入口，與儲存庫根目錄 CMS 一起部署。
 
+## 特效按鈕對齊（v14.6.13）
+
+特效按鈕的右邊界對齊輸入框，桌機、平板與手機共用卡片寬度、內距及頁面邊距變數。
+
 ## 使用方式
 
-直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.12)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
+直接開啟 [GitHub 線上版](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.13)。下載完整專案後，直接開啟 HTML 也會轉到同一線上版。
 
 本機開發：在儲存庫根目錄執行 `npm start`，開啟 `http://127.0.0.1:4173/`。
 

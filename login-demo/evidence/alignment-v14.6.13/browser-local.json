@@ -1,0 +1,122 @@
+{
+  "measurements": [
+    {
+      "buttonRight": 1758,
+      "cardWidth": 400,
+      "emailRight": 1758,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 1758,
+      "version": "v14.6.13",
+      "viewport": [
+        1823,
+        1247
+      ]
+    },
+    {
+      "buttonRight": 632,
+      "cardWidth": 512,
+      "emailRight": 632,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 632,
+      "version": "v14.6.13",
+      "viewport": [
+        834,
+        1194
+      ]
+    },
+    {
+      "buttonRight": 349,
+      "cardWidth": 358,
+      "emailRight": 349,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 349,
+      "version": "v14.6.13",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "buttonRight": 281,
+      "cardWidth": 288,
+      "emailRight": 281,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 281,
+      "version": "v14.6.13",
+      "viewport": [
+        320,
+        740
+      ]
+    },
+    {
+      "buttonRight": 531,
+      "cardWidth": 512,
+      "emailRight": 531,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 531,
+      "version": "v14.6.13",
+      "viewport": [
+        600,
+        900
+      ]
+    },
+    {
+      "buttonRight": 515.5,
+      "cardWidth": 512,
+      "emailRight": 515.5,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 515.5,
+      "version": "v14.6.13",
+      "viewport": [
+        601,
+        900
+      ]
+    },
+    {
+      "buttonRight": 764.5,
+      "cardWidth": 512,
+      "emailRight": 764.5,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 764.5,
+      "version": "v14.6.13",
+      "viewport": [
+        1099,
+        900
+      ]
+    },
+    {
+      "buttonRight": 1035,
+      "cardWidth": 360,
+      "emailRight": 1035,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 1035,
+      "version": "v14.6.13",
+      "viewport": [
+        1100,
+        900
+      ]
+    },
+    {
+      "buttonRight": 1375,
+      "cardWidth": 400,
+      "emailRight": 1375,
+      "error": 0,
+      "overflow": false,
+      "passwordRight": 1375,
+      "version": "v14.6.13",
+      "viewport": [
+        1440,
+        900
+      ]
+    }
+  ],
+  "consoleErrors": []
+}
