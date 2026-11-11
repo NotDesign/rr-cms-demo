@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.6
+# R&R CMS HTML Demo · v14.6.7
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.6) · [下載 v14.6.6 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.6.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.7) · [下載 v14.6.7 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.7.zip) · [版本紀錄](CHANGELOG.md)
+
+## 畫面張力與眼周修整（v14.6.7）
+
+減輕左上金髮角色厚重的眼瞼與眼周陰影，保留紫色瞳孔和自然表情。強化刀刃前伸感、髮束與披風的方向性、底部霧氣流向及前後明暗層次，提升整體張力；自然灰綠氣氛、角色一致性與光門透視保留。 [素材與提示詞](login-demo/evidence/portal-action-v14.6.7/README.md)。
 
 ## 自然灰綠氣氛與臉部細節（v14.6.6）
 

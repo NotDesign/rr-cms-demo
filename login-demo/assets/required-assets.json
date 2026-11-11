@@ -189,9 +189,29 @@
     },
     {
       "path": "assets/portal-natural-v14.6.6.jpg",
-      "role": "active portal background with natural gray-green atmosphere and refined faces",
+      "role": "archived natural gray-green portal background, version 14.6.6",
       "size_bytes": 529605,
       "sha256": "803fb4a0f986027f48e103398f8fc897257f8cceadfd9c96e95a878213518ede",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-action-v14.6.7.png",
+      "role": "portal dynamic composition and eye refinement master, imagegen edit",
+      "size_bytes": 2244448,
+      "sha256": "faac9e8b9cb48220a4db992849f12aa157588d596db5a6bc64dbc623f4dfbf75",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "assets/portal-action-v14.6.7.jpg",
+      "role": "active portal background with dynamic hair cape mist and refined eyes",
+      "size_bytes": 529920,
+      "sha256": "6148671ffa5222964a73ccbf333968fb24689103341e6bbfbf0ec796409df6b3",
       "dimensions": [
         1672,
         941
