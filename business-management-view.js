@@ -1,10 +1,10 @@
 import {withOriginalCurrency} from './currency-display.js?v=14.5.0';
-import {wagerOverview} from './game-wagers.js?v=14.5.2';
+import {wagerOverview} from './game-wagers.js?v=14.7.0';
 import {escape as e,money,signed,tone,totals,organizationRecords} from './core.js?v=14.5.0';
 import {cashWrapper,cashWrapperName,organizationParents,organizationSections,optionalOrganizationParent} from './organization-hierarchy.js?v=14.5.5';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {gameIdentity} from './detail-views.js?v=14.5.3';
-import {managementMetric as metric} from './game-management-view.js?v=14.5.5';
+import {managementMetric as metric} from './game-management-view.js?v=14.7.0';
 import {operationsTime} from './game-operations.js?v=14.5.2';
 import {BUSINESS_SECTIONS,campaignTypes,businessStatus,businessOrganizations,campaignStatus,settlementPeriod,settlementPreview} from './business-management.js?v=14.5.5';
 const button=(text,attrs,cls='')=>'<button class="button small '+cls+'" '+attrs+'>'+text+'</button>';

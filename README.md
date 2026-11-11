@@ -1,6 +1,12 @@
-# R&R CMS HTML Demo · v14.6.11
+# R&R CMS HTML Demo · v14.7.0
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.11) · [下載 v14.6.11 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.11.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上 Demo](https://notdesign.github.io/rr-cms-demo/?v=14.7.0#stats) · [下載 v14.7.0 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.7.0.zip) · [版本紀錄](CHANGELOG.md)
+
+## 圖表 Lottie 動畫（v14.7.0）
+
+玩家人數與投注／派彩折線、遊戲及地區圓環圖，使用隨附的 Lottie SVG 播放器呈現進場與篩選切換。動畫直接由目前數據生成，進場 420ms、切換 300ms，播放完成即清除播放圖層並顯示原生 SVG；Hover、鍵盤詳情與圖例開關共用原本的資料和操作。快速切換從目前幀接續，系統偏好「減少動態效果」時直接顯示結果；播放器無法載入時使用既有 SVG 動畫。播放器版本與 MIT 授權見 [vendor/lottie-web/NOTICE.md](vendor/lottie-web/NOTICE.md)。
+
+圓環圖例的詳細資料列不再因容器高度被壓縮而重疊。登入頁沿用 v14.6.11 的素材、構圖與示範登入流程。
 
 ## 傳送門減少上下留白（v14.6.11）
 

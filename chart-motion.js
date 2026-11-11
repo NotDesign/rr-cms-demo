@@ -1,5 +1,5 @@
+import {lineLayer,arcLayer,chartColor,mountLottieChart} from './chart-lottie.js?v=14.7.0';
 const running=new WeakMap();
-const duration=280;
 const svgNS='http://www.w3.org/2000/svg';
 export function donutArc(start,end){
  const size=Math.max(0,end-start),at=t=>[100+70*Math.cos(t*2*Math.PI-Math.PI/2),100+70*Math.sin(t*2*Math.PI-Math.PI/2)].join(' ');
@@ -21,20 +21,25 @@ export function captureChartState(root){
 }
 export function animateCharts(root,previous={lines:new Map(),arcs:new Map(),numbers:new Map(),bars:new Map()},translate=value=>value){
  if(!root)return;cancelChartMotion(root);
- if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
- const tasks=[],ghosts=[];
+ const preference=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+ if(preference?.matches)return;
+ const tasks=[],ghosts=[],charts=new Map(),players=[];
+ const addLayer=(svg,animation,el)=>{if(!svg)return;let chart=charts.get(svg);if(!chart){chart={layers:[],elements:[]};charts.set(svg,chart);}chart.layers.push(animation);chart.elements.push(el);};
  for(const el of root.querySelectorAll('[data-donut-key]')){
   const start=Number(el.dataset.arcStart),end=Number(el.dataset.arcEnd),opacity=el.dataset.arcVisible==='true'?1:0,old=previous.arcs.get(el.dataset.donutKey)||{start,end:start,opacity:0};
+  addLayer(el.closest('svg'),arcLayer(el.dataset.donutKey,old,{start,end,opacity},chartColor(el)),el);
   tasks.push(t=>{const a=old.start+(start-old.start)*t,b=old.end+(end-old.end)*t;el.setAttribute('d',donutArc(a,b));el.setAttribute('opacity',old.opacity+(opacity-old.opacity)*t);el.dataset.currentStart=a;el.dataset.currentEnd=b;});
  }
  for(const svg of root.querySelectorAll('.line-chart')){
   const old=previous.lines.get(svg.id),same=old?.periods===svg.dataset.periods,visible=new Set();
   for(const el of svg.querySelectorAll('polyline[data-chart-series]')){
    const key=el.dataset.chartSeries,target=points(el.getAttribute('points')),prior=same?old.series.get(key):null,from=prior?.points.length===target.length?prior.points:target.map(([x])=>[x,200]),dots=[...svg.querySelectorAll('circle[data-chart-series="'+key+'"]')];visible.add(key);
+   addLayer(svg,lineLayer(key,from,target,chartColor(el),prior?.opacity??0,1),el);
    tasks.push(t=>{const ps=target.map(([x,y],i)=>[from[i][0]+(x-from[i][0])*t,from[i][1]+(y-from[i][1])*t]);el.setAttribute('points',ps.map(p=>p.join(',')).join(' '));el.setAttribute('opacity',(prior?.opacity??0)+(1-(prior?.opacity??0))*t);dots.forEach((dot,i)=>{dot.setAttribute('cx',ps[i][0]);dot.setAttribute('cy',ps[i][1]);dot.setAttribute('opacity',(prior?.opacity??0)+(1-(prior?.opacity??0))*t);});});
   }
   if(same)for(const [key,prior] of old.series)if(!visible.has(key)){
    const el=document.createElementNS(svgNS,'polyline');el.dataset.chartSeries=key;el.setAttribute('fill','none');el.setAttribute('stroke',prior.stroke);el.setAttribute('stroke-width','2.5');el.setAttribute('aria-hidden','true');el.style.pointerEvents='none';svg.insertBefore(el,svg.firstChild);ghosts.push(el);
+   addLayer(svg,lineLayer(key,prior.points,prior.points.map(([x])=>[x,200]),chartColor(el),prior.opacity,0),el);
    tasks.push(t=>{el.setAttribute('points',prior.points.map(([x,y])=>x+','+(y+(200-y)*t)).join(' '));el.setAttribute('opacity',prior.opacity*(1-t));});
   }
  }
@@ -44,8 +49,14 @@ export function animateCharts(root,previous={lines:new Map(),arcs:new Map(),numb
  }
  for(const b of bars(root)){const to=parseFloat(b.el.style[b.prop])||0,from=previous.bars.get(b.key)??0;tasks.push(t=>{b.el.style[b.prop]=(from+(to-from)*t)+'%';});}
  if(!tasks.length)return;
- const clean=()=>{ghosts.forEach(el=>el.remove());root.classList.remove('chart-is-animating');};
+ for(const [svg,chart] of charts){const player=mountLottieChart(svg,chart.layers,chart.elements);if(player)players.push(player);}
+ const update=t=>{tasks.forEach(f=>f(t));players.forEach(player=>player.render(t));};
+ const onPreference=event=>{if(event.matches)finish();};
+ const clean=()=>{players.forEach(player=>player.destroy());ghosts.forEach(el=>el.remove());root.classList.remove('chart-is-animating');preference?.removeEventListener?.('change',onPreference);};
+ const finish=()=>{cancelAnimationFrame(active.frame);update(1);clean();running.delete(root);};
+ const duration=previous.lines.size||previous.arcs.size?300:420;
  const active={frame:0,clean},start=performance.now();root.classList.add('chart-is-animating');running.set(root,active);tasks.forEach(f=>f(0));
- const tick=now=>{if(running.get(root)!==active)return;const elapsed=Math.min(1,(now-start)/duration);tasks.forEach(f=>f(chartEase(elapsed)));if(elapsed<1&&root.isConnected)active.frame=requestAnimationFrame(tick);else{tasks.forEach(f=>f(1));clean();running.delete(root);}};
+ preference?.addEventListener?.('change',onPreference);
+ const tick=now=>{if(running.get(root)!==active)return;const elapsed=Math.min(1,(now-start)/duration);update(chartEase(elapsed));if(elapsed<1&&root.isConnected)active.frame=requestAnimationFrame(tick);else finish();};
  active.frame=requestAnimationFrame(tick);
 }

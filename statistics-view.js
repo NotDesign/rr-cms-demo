@@ -1,10 +1,10 @@
-import {donutLegendDetails} from './region-chart.js?v=14.5.2';
+import {donutLegendDetails} from './region-chart.js?v=14.7.0';
 import {displayAmount,currencyCode} from './currency-display.js?v=14.5.0';
 import {infoCard} from './metric-card.js?v=14.5.0';
-import {wagerRegionTable} from './game-wagers.js?v=14.5.2';
+import {wagerRegionTable} from './game-wagers.js?v=14.7.0';
 import {money,signed,tone,escape as e} from './core.js?v=14.5.0';
 import {statisticsModel,popularitySelection} from './analytics.js?v=14.5.2';
-import {donutArc} from './chart-motion.js?v=14.4.1';
+import {donutArc} from './chart-motion.js?v=14.7.0';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
 import {gameIdentity} from './detail-views.js?v=14.5.3';
 import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';

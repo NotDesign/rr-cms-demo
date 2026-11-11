@@ -1,7 +1,7 @@
 import {currencyCode} from './currency-display.js?v=14.5.0';
 import {escape as e,money,signed,tone} from './core.js?v=14.5.0';
 import {chartTipAttrs} from './chart-interactions.js?v=14.5.0';
-import {donutArc,captureChartState,animateCharts} from './chart-motion.js?v=14.4.1';
+import {donutArc,captureChartState,animateCharts} from './chart-motion.js?v=14.7.0';
 
 const palette=['#E6C066','#65e3b6','#79cfdc','#e7a68c','#a8bfbd','#a0adb9','#c8d0c6','#d4bd98','#58baa4','#d6a86b','#7ba3b6','#a5cc91','#c89179','#8faaa5','#c5b987','#88bdb5','#95a6bc','#d3cba9','#b49c80','#7db69a','#bfc6b0','#acb7c3'];
 export function regionSelection(groups,metric='players',hidden=[]){

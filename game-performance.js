@@ -1,6 +1,6 @@
 import {escape as e,money,signed,tone} from './core.js?v=14.5.0';
 import {netWinsFor} from './net-win.js?v=14.4.1';
-import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.5.2';
+import {wagerMetrics,wagerRegionTable} from './game-wagers.js?v=14.7.0';
 import {infoCard} from './metric-card.js?v=14.5.0';
 import {gameIdentity} from './detail-views.js?v=14.5.3';
 import {uiIcon} from './ui-icons.js?v=14.4.8';
