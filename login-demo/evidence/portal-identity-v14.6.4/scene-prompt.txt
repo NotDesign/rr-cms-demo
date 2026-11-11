@@ -1,0 +1,23 @@
+Use case: compositing.
+Image 1 = EDIT TARGET, an existing five-character login-page background whose four human characters have just been matched to the supplied original character sheets.
+Image 2 = CANONICAL DRAGON CHARACTER REFERENCE.
+Image 3 = ATMOSPHERE/SIMPLICITY REFERENCE ONLY (Plarium promotional art). Do not copy any Plarium logo, text, characters or designs.
+
+Make two targeted changes to Image 1:
+A. Restore the blue dragon's identity, facial design and round compact mascot proportions from Image 2.
+B. Greatly simplify the environment to the clean cinematic ensemble atmosphere of Image 3.
+
+PRESERVE ALL FOUR HUMAN CHARACTERS FROM IMAGE 1. Their facial features, natural original expressions, distinct art styles, faces, eye colors, hair, body proportions, costumes, accessories and weapons are approved identity details for this pass. Do not make them angrier, worried, weaker, more generic or more photorealistic. All human characters are adults 25+. Preserve their scene placements and the general layout.
+
+DRAGON:
+Use Image 2 as the exact design of the dragon. Round plump compact body, short round face, large bright circular eyes, rounded golden nose, big friendly open-mouthed happy smile, fluffy round white cheeks/beard, blue scales, blue/gold robes with the correct cuff motifs, turquoise belt jewel, curved blue/gold horns and the crown. Do not stretch into a tall humanoid, long-faced wolf or stern animal. Keep the original cheerful character and recognizable silhouette. Preserve a luminous pearl in the raised right-side hand with its simple curved water-like aura from Image 2; remove the tangled lightning around the orb. Integrate in the forward center/right of the character group, entirely left of the login-space boundary.
+
+CLEAN ENVIRONMENT:
+The viewer should read FIVE CHARACTERS, FIVE RESTRAININED LUMINOUS PORTAL PLANES and QUIET DARK ATMOSPHERE, with clear hierarchy. Remove all mountain towers, tall rocky spires, foreground boulders, rubble, busy energy webs, tangled electrical branches, starburst fireworks, and dense curling green smoke. Replace the whole environment with a deep dark navy/emerald atmospheric gradient, inspired by the simplicity and selective lighting of Image 3.
+Place five clean tilted rectangular portal panels behind their associated characters. Use simple fine glowing edges, quiet broad interior light gradients, no patterned or veined surfaces. Existing purple, cyan, green, amber and blue accent colors can remain, with restrained brightness and bloom. Use just a few tiny sparse green motes. No new decorative objects.
+
+COMPOSITION/DEPTH:
+Keep the entire ensemble in the left approximately 64% of the landscape canvas. Right approximately 36% is clear, dark, smooth negative space for the actual HTML login form, with no important character or object there. Pirate and round dragon forward and in crisp focus, Lu Bu taller one plane behind, fitness woman and queen further back but recognizable. Make near/far clear through overlap, depth of portal planes, selective edge sharpness and gentle value separation. A very small amount of low soft mist at the bottom can unify the composition. Depth should remain without cluttered scenery or heavy haze across faces.
+
+FINISH:
+Controlled painterly game-key-art lighting, strong readable dark values, small coherent colored rim highlights, natural non-repeating hair. Less visual noise, more breathing room and confident focal hierarchy, like the mood reference. Do not add a logo or central emblem. No text, no user interface, no watermark. Preserve the full landscape framing. Opaque image.

@@ -1,0 +1,15 @@
+Use case: precise-object-edit.
+Two input images:
+IMAGE 1 = EDIT TARGET, the latest refined illustration with foreground blur and atmospheric depth.
+IMAGE 2 = ORIGINAL EXPRESSION REFERENCE, the first version before any facial-expression edits.
+
+Change ONLY the five characters' faces in IMAGE 1 so their facial expressions and recognizable facial features closely match IMAGE 2. The user's instruction is specifically to return to the original image's normal expressions. Do not invent another emotional interpretation or average the expressions between the two images. Use IMAGE 2 as the facial reference of truth:
+- Pirate woman: the original self-assured neutral face, natural brows and lips, confident direct gaze; remove the worried/weak raised inner eyebrows from Image 1.
+- Blonde woman: original composed confident look, natural brow and mouth shapes.
+- Armored warrior: the original strong, serious dignified expression, eye direction, brow and mouth shape.
+- Egyptian mage: the original poised, neutral confident expression.
+- Dragon: restore the original lively open-mouthed smile, bright open eyes and cheerful facial character exactly as in Image 2; remove the closed-mouth stern expression in Image 1.
+
+For the faces, preserve the expression character of the original reference without exaggerated anger, additional worry, sadness, fear, or extra tension. All human characters are adults age 25+.
+
+Everything outside the facial expression regions must stay as in IMAGE 1: exact composition, each character's position, body pose, hands, outfit, weapons, orb, improved non-repeating hair strands, painterly materials and shadows, irregular energy branching, portal colors and locations, and all foreground/midground/background depth treatment. Keep the soft out-of-focus foreground rocks, clear pirate and dragon focal plane, receding secondary characters and soft distant portals. Preserve the quiet dark right-hand third for the actual HTML login card. Do not restore the repeating energy textures or flat focus of Image 2. No UI, no text, no logo, no watermark. Same full landscape framing, opaque background.

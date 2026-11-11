@@ -1,0 +1,12 @@
+Use case: identity-preserve.
+Image 1 is the existing fantasy login background to EDIT. Images 2–5 are canonical character sheets, in order: pirate, Lu Bu, blonde fitness woman, Cleopatra. Correct the FOUR HUMAN CHARACTERS in Image 1 to faithfully match their corresponding supplied character sheets. Treat those original character designs and natural expressions as the source of truth.
+
+Preserve the original layout, poses appropriate to the scene, existing dragon, portal scenery, depth of field, lighting and dark empty right third. This pass corrects human character identity only; do not redesign the composition or change the dragon.
+
+Priority: recognizable facial structure, eye color, brows, lips and original expression; then hair style, costume, key accessories and silhouette.
+Pirate: the exact teal-eyed, copper-red-haired face from Image 2, confident natural neutral expression, burgundy lips, patterned teal bandana, gold hoops and small round pendant, white blouse, blue laced corset, brown sash and belts, dark trousers and sword. Do not add worried raised inner brows, angry scowl or a new face.
+Lu Bu: the exact strong square-jawed face and normal dignified serious brows from Image 3, swept black hair, two long red feather plumes, reference dark/gold dragon armor and red cape, and reference halberd. Do not soften him into a concerned man or invent armor motifs.
+Fitness woman: the distinctive stylized adult face and violet eyes from Image 4, same natural slight smile and large expressive eyes, blonde high ponytail tied in purple, purple sports top, black leggings with purple side stripes, green wristbands and dumbbells. Preserve her own face style rather than turning her into a generic realistic fighter.
+Cleopatra: the exact face, black bob with straight bangs, original poised natural expression, gold/turquoise horned headdress, black and gold outfit with white drapery, turquoise ornaments and distinctive ring-headed staff from Image 5.
+
+All human characters are adults 25+. Keep anatomical hands, coherent costume edges and materials. Adapt only pose and scene lighting as needed to integrate the canonical designs into Image 1. Maintain painterly material quality, non-repeating natural hair and the focal depth separation of Image 1. No text, logos, interface or watermark. Same complete landscape framing, opaque background.

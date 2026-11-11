@@ -1,6 +1,10 @@
-# R&R CMS HTML Demo · v14.6.3
+# R&R CMS HTML Demo · v14.6.4
 
-[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.3) · [下載 v14.6.3 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.3.zip) · [版本紀錄](CHANGELOG.md)
+[開啟線上登入頁](https://notdesign.github.io/rr-cms-demo/login-demo/?v=14.6.4) · [下載 v14.6.4 完整專案 ZIP](https://github.com/NotDesign/rr-cms-demo/archive/refs/heads/codex/release-v14.6.4.zip) · [版本紀錄](CHANGELOG.md)
+
+## 角色一致性與簡潔氣氛（v14.6.4）
+
+依五張角色原始立繪校正五官、自然表情、造型與配件，小龍恢復圓潤開朗的原設定。背景簡化成角色、五片光門與少量底部霧氣，藉前後錯落與明暗維持景深，右側保留暗色登入空間。網頁圖片 490,887 bytes；PNG、歷史版本與完整提示詞均保留。[素材紀錄](login-demo/evidence/portal-identity-v14.6.4/README.md)。
 
 ## 表情與景深修正（v14.6.3）
 

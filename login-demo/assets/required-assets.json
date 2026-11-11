@@ -129,12 +129,32 @@
     },
     {
       "path": "assets/portal-depth-v14.6.3.jpg",
-      "role": "active portal background with depth and softened expressions",
+      "role": "archived portal background with depth and softened expressions, version 14.6.3",
       "size_bytes": 461390,
       "sha256": "de8f656939945038046c7bab161faf092ffff0abe0c47432317ae02ff98f40a9",
       "dimensions": [
         1672,
         941
+      ]
+    },
+    {
+      "path": "assets/portal-identity-v14.6.4.png",
+      "role": "portal identity and simplified atmosphere master, imagegen edit",
+      "size_bytes": 2248864,
+      "sha256": "d9200def82d8b3a23a568cef8f22ea6feea5e753b458ac806ffbab905f3039cd",
+      "dimensions": [
+        1670,
+        942
+      ]
+    },
+    {
+      "path": "assets/portal-identity-v14.6.4.jpg",
+      "role": "active portal background with original character identities and simple light panels",
+      "size_bytes": 490887,
+      "sha256": "d285e95761d84c7b9e8b7a69ee6335d9d4e50892cee4ccf76ce4dd59bfca7583",
+      "dimensions": [
+        1670,
+        942
       ]
     }
   ],
